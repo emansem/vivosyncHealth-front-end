@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80">
+  <!-- Medical Cross Icon with Heartbeat -->
+  <g transform="translate(10, 5)">
+    <circle cx="30" cy="35" r="25" fill="#269c65" />
+    <path d="M15 35 L25 35 L28 20 L33 50 L38 25 L43 35 L48 35" 
+          stroke="white" 
+          fill="none" 
+          stroke-width="3"
+          stroke-linecap="round" />
+  </g>
+  
+  <!-- Company Name -->
+  <text x="70" y="45" 
+        font-family="Arial, sans-serif" 
+        font-weight="700" 
+        font-size="28">
+    <tspan fill="#269c65">VivoSync</tspan>
+    <tspan fill="#269c65" font-weight="600">Health</tspan>
+  </text>
+  
+  <!-- Refined Tagline -->
+  <text x="70" y="65" 
+        font-family="Arial, sans-serif" 
+        font-size="12" 
+        font-weight="500"
+        fill="#555555">
+    Advancing Life Through Connected Care
+  </text>
+</svg>

@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+li {
+  list-style: none;
+}
+body {
+  background-color: #eeeeee;
+}
+/* styles/globals.css */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 20px;
+}
+th,
+td {
+  text-align: left;
+  padding: 14px;
+  white-space: "nowrap";
+}
+tbody {
+  background-color: #fff;
+}
+tbody tr {
+  border: #ddd solid 1px;
+}
+th {
+  font-size: 16px;
+  font-weight: 500;
+  color: #f2f2f2;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #269c65;
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #89d3b0;
+  border-radius: 20px;
+}
+td {
+  color: #78716c;
+}
+
+/* .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #198754;
+} */
+
+/* Custom checkbox */
+.checkmark {
+  @apply absolute top-2.5 left-0 -translate-y-1/2
+        h-5 w-5 
+        bg-[#eeeeee] 
+        rounded-md
+        transition-colors
+        hover:bg-[#cccccc]
+        peer-checked:bg-primary_color
+        border-[1px]
+        border-[#ccc]
+        after:content-['']
+        after:absolute
+        after:left-[6px]
+        after:top-[2px]
+        after:w-[5px]
+        after:h-[10px]
+        after:border-white
+        after:border-r-2
+        after:border-b-2
+        after:rotate-45
+        after:opacity-0
+        peer-checked:after:opacity-100;
+}
