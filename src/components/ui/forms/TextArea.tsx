@@ -1,17 +1,17 @@
 interface textAreaTypes {
   id: string;
-  textArea: string;
-  textAreaLabel: string;
-  inputType: string;
+  textAreaLabel?: string;
 }
 
-function textAreaField({ id, textAreaLabel }: textAreaTypes) {
+function TextArea({ id }: textAreaTypes) {
   return (
-    <div>
-      <label htmlFor={id}>{textAreaLabel}</label>
-      <textarea id={id}></textarea>
-    </div>
+    <>
+      <textarea
+        className="w-full h-28 shadow-shadow1 border px-4 py-3 rounded-lg resize-none appearance-none my-2 outline-none overflow-hidden"
+        id={id}
+      ></textarea>
+    </>
   );
 }
 
-export default textAreaField;
+export default TextArea;

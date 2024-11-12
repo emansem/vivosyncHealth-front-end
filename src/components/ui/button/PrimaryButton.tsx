@@ -18,7 +18,7 @@ export default function PrimaryButton({
 }: ButtonInterface) {
   const isBackGround = backgroud
     ? "bg-primary_color"
-    : `shadow-shadow1 border-[1px]`;
+    : `shadow-shadow1 bg-gray-200 border-[1px]`;
   const backgroudHover = backgroud
     ? "hover:bg-secondary_color"
     : `hover:shadow-shadow3`;
@@ -26,7 +26,7 @@ export default function PrimaryButton({
   return (
     <button
       type="submit"
-      className={` font-medium shadow-shadow1 w-full ${color}  ${isBackGround} ${backgroudHover} text-base md:text-xl transition-all ease-linear duration-200 cursor-pointer h-12 md:h-14 rounded-md`}
+      className={` font-medium shadow-shadow1 w-full ${color}  ${isBackGround} ${backgroudHover} text-base md:text-[18px] transition-all ease-linear duration-200 cursor-pointer h-10 md:h-12 rounded-md`}
       disabled={isSubmitting}
     >
       <span>{children}</span>
