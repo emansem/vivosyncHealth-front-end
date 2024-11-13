@@ -10,6 +10,8 @@ import {
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { InnerCardLayout } from "@/src/components/ui/layout/CardLayout";
 import { RenderForm } from "./RenderForm";
+import { TOTAL_FORM_STEPS } from "@/app/lib/constant";
+import { DisableButton } from "@/src/components/ui/button/DisableButton";
 
 export const StepFormLayout = () => {
   const dispatch = useAppDispatch();
@@ -42,12 +44,22 @@ export const StepFormLayout = () => {
       </InnerCardLayout>
       <div className="flex justify-between my-6">
         <div onClick={handlePrevStep} className=" w-36 md:w-48">
-          <PrimaryButton backgroud={false}>Back</PrimaryButton>
+          {currentStep > 1 ? (
+            <PrimaryButton backgroud color="text-white">
+              Back
+            </PrimaryButton>
+          ) : (
+            <DisableButton>Back</DisableButton>
+          )}
         </div>
         <div onClick={handleNext} className=" w-36 md:w-48">
-          <PrimaryButton backgroud color="text-white">
-            Continue
-          </PrimaryButton>
+          {currentStep < TOTAL_FORM_STEPS ? (
+            <PrimaryButton backgroud color="text-white">
+              Continue
+            </PrimaryButton>
+          ) : (
+            <DisableButton>Continue</DisableButton>
+          )}
         </div>
       </div>
     </>

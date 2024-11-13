@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-interface ButtonInterface {
+export interface ButtonInterface {
   children: React.ReactNode;
   backgroud: boolean;
   color?: string;
