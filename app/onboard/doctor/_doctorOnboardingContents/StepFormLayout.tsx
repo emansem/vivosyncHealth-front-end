@@ -58,7 +58,9 @@ export const StepFormLayout = () => {
               Continue
             </PrimaryButton>
           ) : (
-            <DisableButton>Continue</DisableButton>
+            <PrimaryButton backgroud color="text-white">
+              Submit
+            </PrimaryButton>
           )}
         </div>
       </div>

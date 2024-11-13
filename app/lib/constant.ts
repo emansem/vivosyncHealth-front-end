@@ -15,6 +15,33 @@ interface FormFields {
     placeholder: string,
     type: string
 }
+interface WithdrawalAccount {
+    name: string,
+    placehoder: string,
+    type: 'text' | "number" | "password"
+}
+export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccount[] = [
+    {
+        name: "bank_name",
+        placehoder: "Enter your Bank name",
+        type: "text"
+    },
+    {
+        name: "account_name",
+        placehoder: "Enter your Bank account name",
+        type: "text"
+    },
+    {
+        name: "account_number",
+        placehoder: "Enter your Account number",
+        type: "number"
+    },
+    {
+        name: "pin_code",
+        placehoder: "Enter your withdrawal password",
+        type: "password"
+    },
+]
 
 export const STEP_ONE_FORM_FIELDS: FormFields[] = [
     {
@@ -67,3 +94,6 @@ export const STEP_TWO_FORM_FIELDS: FormFields[] = [
     }
 ];
 
+
+export const accountBalance = 250000;
+export const minWithdrawal = 10000;

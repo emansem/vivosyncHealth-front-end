@@ -22,7 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputType>(
     return (
       <div className=" w-full">
         <input
-          className={`${baseInputStyles} px-3 my-3
+          className={`${baseInputStyles} px-3 my-2
             ${error ? "border-red-500" : "border-border_color"}`}
           type={inputType}
           ref={ref}

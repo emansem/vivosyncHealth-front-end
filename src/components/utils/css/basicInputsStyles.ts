@@ -6,7 +6,6 @@ export const baseInputStyles = `
   py-2
   text-base md:text-[18px] 
   text-stone-400 
-  focus-outline-none focus:ring-2 focus:ring-offset-primary_color
   border-[1px] 
   border-border_color
   shadow-shadow1 

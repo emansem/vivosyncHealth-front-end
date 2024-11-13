@@ -12,6 +12,7 @@ function TextArea({ value, name, onChange, id }: textAreaTypes) {
   return (
     <>
       <textarea
+        required
         onChange={onChange}
         name={name}
         value={value}
