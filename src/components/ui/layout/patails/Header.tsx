@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { inter } from "@/lib/fonts";
+import { inter } from "@/app/lib/fonts";
 import { Bell, LogOut, MenuIcon, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
