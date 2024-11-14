@@ -5,8 +5,13 @@ import { accountBalance } from "@/app/lib/constant";
 import RequestWithdrawalLayout from "./_withdrawalContent/RequestWithdrawalLayout";
 import { BalanceCard } from "./_withdrawalContent/BalanceCard";
 import RecentWithdrawalSection from "./_withdrawalContent/RecentWithdrawalSection";
+import { useOpenAndClose } from "@/app/lib/hooks";
+import { NoWithdrawalAccount } from "./_withdrawalContent/WithdrawalAccount";
+import AddWithdrawalAccount from "./_withdrawalContent/AddWithdrawalAccount";
 
 const WithdrawalPage = () => {
+  const { handle0pen, open, handleClose } = useOpenAndClose();
+
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">
       {/* Balance Cards */}
@@ -30,7 +35,10 @@ const WithdrawalPage = () => {
 
       {/* Withdrawal Form and Bank Info */}
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Left Side - Withdrawal Form */}
+        {/* {open && <AddWithdrawalAccount handleClose={handleClose} />} */}
+
+        {/* <NoWithdrawalAccount handleOPen={handle0pen} /> */}
+
         <WithdrawalSection />
       </div>
     </div>
@@ -43,7 +51,7 @@ const WithdrawalSection = () => {
   return (
     <>
       <RequestWithdrawalLayout />
-      {/* Right Side - Recent Withdrawals */}
+
       <RecentWithdrawalSection />
     </>
   );

@@ -1,4 +1,5 @@
 import { TOTAL_FORM_STEPS } from "@/app/lib/constant";
+import { FormErrors } from "@/app/lib/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
@@ -20,9 +21,7 @@ export interface DoctorOnboardingForm {
     working_days: string;
 }
 
-interface FormErrors {
-    [key: string]: string;  // This allows us to store errors for any field
-}
+
 interface DoctorOnboardingState {
     currentStep: number;
     formData: DoctorOnboardingForm;

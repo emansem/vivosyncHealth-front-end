@@ -1,4 +1,5 @@
 import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
+import { WithdrawalAccountInputs } from "./types";
 
 export const primary_color = "#269c65";
 export const TOTAL_FORM_STEPS = 3;
@@ -15,12 +16,8 @@ interface FormFields {
     placeholder: string,
     type: string
 }
-interface WithdrawalAccount {
-    name: string,
-    placehoder: string,
-    type: 'text' | "number" | "password"
-}
-export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccount[] = [
+
+export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccountInputs[] = [
     {
         name: "bank_name",
         placehoder: "Enter your Bank name",
@@ -37,7 +34,7 @@ export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccount[] = [
         type: "number"
     },
     {
-        name: "pin_code",
+        name: "withdrawal_password",
         placehoder: "Enter your withdrawal password",
         type: "password"
     },

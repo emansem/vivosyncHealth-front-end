@@ -1,3 +1,4 @@
+"use client";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { Landmark } from "lucide-react";
 import React from "react";
@@ -20,16 +21,23 @@ function WithdrawalAccount() {
   );
 }
 
-export function NoWithdrawalAccount() {
+export function NoWithdrawalAccount({
+  handleOPen
+}: {
+  handleOPen: () => void;
+}) {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex items-center flex-col gap-4  mb-4">
         <h2 className="text-xl  font-semibold">Add new withdrawal account</h2>
-        <p className="text-base text-text_color2">
+        <p className="text-base text-center text-text_color2">
           To request a withdrawal, you need to set up your withdrawal account
         </p>
       </div>
-      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+      <div
+        onClick={handleOPen}
+        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+      >
         <PrimaryButton color="text-white" backgroud>
           Add account
         </PrimaryButton>

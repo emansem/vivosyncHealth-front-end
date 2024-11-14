@@ -1,3 +1,4 @@
+"use client";
 import WithdrawalAccount from "./WithdrawalAccount";
 
 import RequestWithdrawal from "./RequestWithdrawal";

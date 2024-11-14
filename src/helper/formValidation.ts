@@ -39,3 +39,22 @@ export const formValidation = {
     }
 
 }
+
+export const withdrawalAccountFormValidation = {
+    bank_name: {
+        required: "Bank name is required",
+
+    },
+    account_name: {
+        required: "Account name is required",
+
+    },
+    account_number: {
+        required: "Account number is required",
+
+    },
+    withdrawal_password: {
+        required: "withdrawal password is required",
+
+    },
+}
