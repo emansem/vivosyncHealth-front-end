@@ -33,3 +33,14 @@ export function CardLayout({ children }: CardLayoutProps) {
     </div>
   );
 }
+
+export const InnerCardLayout = ({ children }: CardLayoutProps) => {
+  return (
+    <div
+      className="w-full  bg-white rounded-md shadow-shadow1 
+                   p-6 md:px-6 md:py-4 "
+    >
+      {children}
+    </div>
+  );
+};

@@ -1,41 +1,36 @@
-import React from "react";
+"use client";
+import { TOTAL_FORM_STEPS } from "@/app/lib/constant";
+import { useAppSelector } from "@/app/lib/hooks";
 
-function page() {
+import { StepFormLayout } from "./_doctorOnboardingContents/StepFormLayout";
+
+function Page() {
+  const { currentStep } = useAppSelector((state) => state.doctorStep);
+  const progressBarWidth = ((currentStep - 1) / (TOTAL_FORM_STEPS - 1)) * 100;
   return (
-    <div>
-      <div className="flex flex-col gap-4">
-        <div className="text-xl text-stone-600 font-medium">
-          <h1>Complete your profile in few steps</h1>
-        </div>
-        <div>
-          <p className="relative h-4 w-full rounded-full bg-white ">
-            <span className="absolute left-0 bg-primary_color h-full w-20 rounded-full right-0 bottom-0"></span>
-          </p>
-        </div>
-      </div>
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 "></div>
       <div>
-        <ul className="flex justify-between  gap-4 flex-col md:flex-row md:items-center">
-          <li>
-            <p>1</p>
-            <span>Personal information</span>
+        <ul className="flex justify-between bg-white  md:gap-32 shadow-shadow1 px-6 py-3 rounded-md  gap-2  flex-col md:flex-row md:items-center">
+          <li className="text-base text-stone-600 font-medium">
+            Complete your profile in few steps ({currentStep}/{TOTAL_FORM_STEPS}
+            )
           </li>
-          <li>
-            <p>2</p>
-            <span>Professional Details</span>
-          </li>
-          <li>
-            <p>3</p>
-            <span>Practice information</span>
-          </li>
-          <li>
-            <p>4</p>
-            <span>Documents Verification</span>
+          <li className="flex-1">
+            <p className="relative w-full bg-gray-200 h-3 rounded-full">
+              <span
+                style={{ width: `${progressBarWidth}%` }}
+                className="bg-primary_color  absolute h-full left-0 top-0 bottom-0 rounded-full "
+              ></span>
+            </p>
           </li>
         </ul>
       </div>
-      <div></div>
+      <main>
+        <StepFormLayout />
+      </main>
     </div>
   );
 }
 
-export default page;
+export default Page;

@@ -56,7 +56,7 @@ const SideBarMenus = () => {
         <Navlink Icon={UsersRound} link="/doctor/patients">
           Patients
         </Navlink>
-        <Navlink Icon={UserPlus} link="/hello">
+        <Navlink Icon={UserPlus} link="/doctor/team">
           My team
         </Navlink>
         <Navlink Icon={MessageSquare} link="/doctor/messages">
@@ -65,13 +65,13 @@ const SideBarMenus = () => {
         <Navlink Icon={File} link="/doctor/pricing">
           Pricing
         </Navlink>
-        <Navlink Icon={CreditCard} link="/hello">
+        <Navlink Icon={CreditCard} link="/doctor/transaction">
           Transactions
         </Navlink>
-        <Navlink Icon={WalletCards} link="/hello">
+        <Navlink Icon={WalletCards} link="/doctor/withdrawal">
           Withdrawal
         </Navlink>
-        <Navlink Icon={Settings} link="/hello">
+        <Navlink Icon={Settings} link="/doctor/update-profile">
           Settings
         </Navlink>
         <Navlink Icon={HelpCircle} link="/hello">

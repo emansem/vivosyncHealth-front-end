@@ -54,6 +54,9 @@ th {
 td {
   color: #78716c;
 }
+.transperentBg {
+  background: rgba(0, 0, 0, 0.5);
+}
 
 /* .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #198754;
