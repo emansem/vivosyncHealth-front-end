@@ -1,4 +1,5 @@
 import { UseFormRegisterReturn } from "react-hook-form";
+import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
 
 export interface WithdrawalAccountInputs {
     name: string,
@@ -27,6 +28,13 @@ export interface FormFields {
     placeHolder: string;
     type: "text" | "number" | "password" | "tel" | "textArea" | "select" | "email";
 }
+
+export interface OnboardingFormFields {
+    name: keyof DoctorOnboardingForm,
+    placeholder: string,
+    type: string
+}
+
 
 
 export interface RegisterFormInputsProps {

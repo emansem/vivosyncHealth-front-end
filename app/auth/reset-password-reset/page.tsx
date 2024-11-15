@@ -2,26 +2,29 @@ import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { CardLayout, PageHeading } from "@/src/components/ui/layout/CardLayout";
 import Input from "@/src/components/ui/forms/Input";
 import React from "react";
+import { PASSWORD_REST_FIELDS } from "@/app/lib/constant";
 
 function page() {
   return (
     <div className="px-4">
       <CardLayout>
-        <div>
+        <form>
           <PageHeading
             title="Reset Password"
             subTitle="Reset your password, please enter the new password below"
           />
-          <Input
-            inputType="password"
-            inputPlaceholder="Enter your new password"
-          />
-          <Input
-            inputType="text"
-            inputPlaceholder="Confirm your  new password"
-          />
+          {PASSWORD_REST_FIELDS.map((field) => (
+            <Input
+              key={field.name}
+              name={field.name}
+              inputType={field.type}
+              inputPlaceholder={field.placeHolder}
+              id={field.name}
+            />
+          ))}
+
           <PrimaryButton backgroud children="Confirm" color="text-white" />
-        </div>
+        </form>
       </CardLayout>
     </div>
   );

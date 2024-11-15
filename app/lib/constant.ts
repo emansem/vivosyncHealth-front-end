@@ -1,5 +1,5 @@
 import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
-import { WithdrawalAccountInputs } from "./types";
+import { FormFields, OnboardingFormFields, WithdrawalAccountInputs } from "./types";
 
 export const primary_color = "#269c65";
 export const TOTAL_FORM_STEPS = 3;
@@ -10,12 +10,7 @@ export const FORM_FIELDS = {
     HOSPITAL_ADDRESS: "hospital_address"
 } as const;
 
-// Better structure for looping:
-interface FormFields {
-    name: keyof DoctorOnboardingForm,
-    placeholder: string,
-    type: string
-}
+
 
 export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccountInputs[] = [
     {
@@ -40,7 +35,7 @@ export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccountInputs[] = [
     },
 ]
 
-export const STEP_ONE_FORM_FIELDS: FormFields[] = [
+export const STEP_ONE_FORM_FIELDS: OnboardingFormFields[] = [
     {
         name: 'medical_license',
         placeholder: 'Medical license number',
@@ -63,7 +58,7 @@ export const STEP_ONE_FORM_FIELDS: FormFields[] = [
     }
 ];
 
-export const STEP_TWO_FORM_FIELDS: FormFields[] = [
+export const STEP_TWO_FORM_FIELDS: OnboardingFormFields[] = [
     {
         name: "country",
         placeholder: 'Country',
@@ -94,3 +89,23 @@ export const STEP_TWO_FORM_FIELDS: FormFields[] = [
 
 export const accountBalance = 250000;
 export const minWithdrawal = 10000;
+
+export const PASSWORD_RESET_MESSAGE = "To reset your password, we've sent a verification link to your email address."
+
+export const PASSWORD_REST_FIELDS: FormFields[] = [
+    {
+        name: "password",
+        type: "password",
+        placeHolder: "Enter new password",
+        label: "New Password",
+
+    },
+    {
+        name: "confirm_password",
+        type: "password",
+        placeHolder: "Confirm new password",
+        label: "Confrim New Password",
+
+    }
+
+]
