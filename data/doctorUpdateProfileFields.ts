@@ -1,6 +1,6 @@
-import { DoctorUpdateProfileFields } from "@/app/lib/types";
+import { FormFields } from "@/app/lib/types";
 
-export const DOCTOR_UPDATE_PROFILE_FIELDS: DoctorUpdateProfileFields[] = [
+export const DOCTOR_UPDATE_PROFILE_FIELDS: FormFields[] = [
     {
         name: "full_name",
         placeHolder: "Dr. John Doe",

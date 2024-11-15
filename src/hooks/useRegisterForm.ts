@@ -2,15 +2,8 @@
 import { useForm } from "react-hook-form";
 import { formValidation, } from "../helper/formValidation";
 import { ChangeEvent, useState } from "react";
-interface RegisterFieldTypes {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    phoneNumber: string;
-    name: string,
-    checkBox: string
+import { RegisterFieldTypes } from "@/app/lib/types";
 
-}
 function useRegister() {
     const {
         register,
@@ -27,7 +20,7 @@ function useRegister() {
 
     }
     //Pre-register the inputs
-    const registerField = {
+    const registerField: Record<keyof RegisterFieldTypes, ReturnType<typeof register>> = {
         email: register("email", formValidation.email),
         password: register("password", formValidation.password),
         phoneNumber: register("phoneNumber", formValidation.phoneNumber),

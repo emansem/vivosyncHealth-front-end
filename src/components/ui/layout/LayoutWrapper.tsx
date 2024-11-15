@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { DashboardLayout } from "./Dashboard";
 import { MainLayout } from "./MainPageLayout";
+import { AuthLayout } from "./patails/AuthLayout";
 
 function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathName = usePathname();
@@ -17,7 +18,7 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
   if (pathName === "/") {
     return <MainLayout>{children}</MainLayout>;
   } else {
-    return <MainLayout>{children}</MainLayout>;
+    return <AuthLayout>{children}</AuthLayout>;
   }
 }
 
