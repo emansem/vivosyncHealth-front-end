@@ -1,14 +1,19 @@
-import React from "react";
-interface FieldTypes {
+interface FieldTypes<T> {
   label: string;
-  key: keyof any;
+  key: keyof T;
 }
-interface MobileTableProps {
-  data: any[];
-  fields: FieldTypes[];
+interface MobileTableProps<T> {
+  data: T[];
+  fields: FieldTypes<T>[];
 }
 
-function MobileTable({ data, fields }: MobileTableProps) {
+const getStatusColor = (status: string) => {
+  return status === "active"
+    ? "bg-green-100 text-green-800"
+    : "bg-red-100 text-red-800";
+};
+
+function MobileTable<T>({ data, fields }: MobileTableProps<T>) {
   return (
     <div className="w-full md:hidden space-y-4">
       {data.map((patient, index) => (
@@ -28,17 +33,14 @@ function MobileTable({ data, fields }: MobileTableProps) {
                   <span
                     className={`
               px-3 py-1 rounded-full text-sm font-medium
-              ${
-                patient.status === "active"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }
+             ${getStatusColor(String(patient[field.key]))}
+
             `}
                   >
-                    {patient[field.key]}
+                    {String(patient[field.key])}
                   </span>
                 ) : (
-                  <span>{patient[field.key]}</span>
+                  <span>{String(patient[field.key])}</span>
                 )}
               </div>
             ))}

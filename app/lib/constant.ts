@@ -91,6 +91,7 @@ export const accountBalance = 250000;
 export const minWithdrawal = 10000;
 
 export const PASSWORD_RESET_MESSAGE = "To reset your password, we've sent a verification link to your email address."
+export const EMAIL_VERIFICATION_MESSAGE = `We've sent a verification link to your email address. Please check your inbox and click the link to your account`
 
 export const PASSWORD_REST_FIELDS: FormFields[] = [
     {

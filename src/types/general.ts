@@ -18,12 +18,7 @@ export interface PaginationButtonProps {
 export interface ShowActiveTagProps {
     showActiveTag: (index: number) => void;
 }
-//Patientlist body data props types
-export interface TableBodyProps {
-    subscriptionData: unknown[];
-    startIndex?: number;
-    endIndex?: number;
-}
+
 
 //Patient list data types
 export interface Patient {
@@ -34,7 +29,12 @@ export interface Patient {
     expireDate: string;
     status: string
 }
-
+//Patientlist body data props types
+export interface TableBodyProps {
+    subscriptionData: Patient[]
+    startIndex?: number;
+    endIndex?: number;
+}
 //Mobile patientlist fileds types
 export interface PatientField {
     label: string;

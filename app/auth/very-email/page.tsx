@@ -1,15 +1,11 @@
 "use client";
+import { EMAIL_VERIFICATION_MESSAGE } from "@/app/lib/constant";
 import EmailVerifyWrapper from "@/src/components/ui/auth/EmailVerifyWrapper";
 
 import React from "react";
 
 function VerifyEmail() {
-  return (
-    <EmailVerifyWrapper
-      message=" We've sent a verification link to your email address. Please check
-            your inbox and click the link to your account"
-    />
-  );
+  return <EmailVerifyWrapper message={EMAIL_VERIFICATION_MESSAGE} />;
 }
 
 export default VerifyEmail;
