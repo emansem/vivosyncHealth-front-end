@@ -6,7 +6,8 @@ import { baseInputStyles } from "../../utils/css/basicInputsStyles";
 interface InputType {
   id?: string;
   inputPlaceholder?: string;
-  error?: string | any;
+  error?: string;
+  label?: string;
   name?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   value?: string;
@@ -16,11 +17,24 @@ interface InputType {
 // eslint-disable-next-line react/display-name
 const Input = forwardRef<HTMLInputElement, InputType>(
   (
-    { id, inputPlaceholder, error, onChange, name, value, inputType, ...props },
+    {
+      id,
+      inputPlaceholder,
+      label,
+      error,
+      onChange,
+      name,
+      value,
+      inputType,
+      ...props
+    },
     ref
   ) => {
     return (
       <div className=" w-full">
+        <label className="label" htmlFor={id}>
+          {label}
+        </label>
         <input
           className={`${baseInputStyles} px-3 my-2
             ${error ? "border-red-500" : "border-border_color"}`}

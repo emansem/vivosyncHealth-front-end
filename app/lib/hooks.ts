@@ -82,6 +82,7 @@ export const useOnchangeDoctorOnboarding = () => {
     return { handleFormChange }
 }
 
+//Handle doctor withdrawal account
 export const useWithdrawalAccount = () => {
     const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<WithdrawalAccountData>();
 
@@ -105,6 +106,7 @@ export const useWithdrawalAccount = () => {
 
 }
 
+//handle open and close a model
 export const useOpenAndClose = () => {
     const [open, setOpen] = useState(false);
     const handle0pen = () => setOpen(true);
@@ -112,6 +114,24 @@ export const useOpenAndClose = () => {
     return { handleClose, handle0pen, open }
 }
 
+
+// Handle upload image, preview and get the image files
+export const useUPloadImage = () => {
+    const [previewImage, setPreviewImage] = useState<string>("");
+    const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (e.target?.result) {
+                    setPreviewImage(e.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    return { previewImage, handlePhotoChange }
+}
 
 
 

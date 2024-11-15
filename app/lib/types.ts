@@ -20,3 +20,9 @@ export interface WithdrawalAccountForm {
     isSubmitting?: boolean;
     errors?: FormErrors;
 }
+export interface DoctorUpdateProfileFields {
+    name: string;
+    label: string;
+    placeHolder: string;
+    type: "text" | "number" | "password" | "tel" | "textArea";
+}
