@@ -1,10 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { formValidation } from "../helper/formValidation";
-interface LoginFormValue {
-  email: string;
-  password: string;
-}
+import { LoginFormValue } from "@/app/lib/types";
 
 function useLoginForm() {
   const {
@@ -14,7 +11,10 @@ function useLoginForm() {
   } = useForm<LoginFormValue>();
 
   //Pre-register the inputs
-  const registerField = {
+  const registerField: Record<
+    keyof LoginFormValue,
+    ReturnType<typeof register>
+  > = {
     email: register("email", formValidation.email),
     password: register("password", formValidation.password)
   };

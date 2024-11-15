@@ -56,3 +56,8 @@ export interface RegisterFieldTypes {
     checkBox: string
 
 }
+
+export interface LoginFormValue {
+    email: string;
+    password: string;
+}
