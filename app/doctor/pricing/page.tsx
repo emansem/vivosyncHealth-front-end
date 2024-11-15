@@ -1,47 +1,11 @@
 import { subscriptionPlans } from "@/data/demoPlansData";
-import {
-  DOCTOR_SUBSCRIPTION_PLAN_FIELD,
-  MobileSubscriptionPlansField
-} from "@/data/table";
+import { MobileSubscriptionPlansField } from "@/data/table";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import MobileTable from "@/src/components/utils/table/MobileTable";
-import { TableHead } from "@/src/components/utils/table/TableHead";
-import TableLayout from "@/src/components/utils/table/TableLayout";
-import { EllipsisVertical } from "lucide-react";
 
-const TableData = () => {
-  return (
-    <tbody>
-      {subscriptionPlans.map((plan, index) => (
-        <tr className="hover:bg-green-50" key={index}>
-          <td>{plan.name}</td>
-          <td>{plan.price}</td>
-          <td>{plan.discountPercentage}</td>
-          <td>{plan.status}</td>
-          <td className="flex  justify-end">
-            <div className="flex  ">
-              <span>Update</span>
-              <span>Delete</span>
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  );
-};
+import PlanDeskTopTable from "./_pricingContents/PlanDeskTopTable";
 
-const DesktopTable = () => {
-  return (
-    <>
-      <TableLayout>
-        <TableHead tableHeadTitle={DOCTOR_SUBSCRIPTION_PLAN_FIELD} />
-        <TableData />
-      </TableLayout>
-    </>
-  );
-};
-
-function page() {
+function PricingPage() {
   return (
     <div>
       <div className="flex justify-end py-2 ">
@@ -54,7 +18,7 @@ function page() {
         </div>
       </div>
       <div className="hidden md:block">
-        <DesktopTable />
+        <PlanDeskTopTable />
       </div>
       <div className="md:hidden">
         <MobileTable
@@ -66,4 +30,4 @@ function page() {
   );
 }
 
-export default page;
+export default PricingPage;
