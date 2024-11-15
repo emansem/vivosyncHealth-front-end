@@ -3,9 +3,9 @@
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from '../lib/redux/store'
 import { DoctorOnboardingForm, setError, updateFormData } from "./redux/features/form/multipleStepFormSlice"
-import { setWithdrawalAccountData, setWithdrawalFormFieldsError, updateWithdrawalFormData } from "./redux/features/form/withdrawalAccountSlice"
-import { STEP_ONE_FORM_FIELDS, STEP_TWO_FORM_FIELDS, WITHDRAWAL_ACCOUNT_FIELDS } from './constant'
-import { ChangeEvent, useEffect, useState } from 'react'
+
+import { STEP_ONE_FORM_FIELDS, STEP_TWO_FORM_FIELDS } from './constant'
+import { ChangeEvent, useState } from 'react'
 import { WithdrawalAccountData } from './types'
 import { useForm } from 'react-hook-form'
 import { withdrawalAccountFormValidation } from '@/src/helper/formValidation'

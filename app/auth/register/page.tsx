@@ -1,10 +1,6 @@
 "use client";
-
 import { CardLayout, PageHeading } from "@/src/components/ui/layout/CardLayout";
-
 import RegisterForm from "./_registerFormContent/RegisterForm";
-
-//Form inputs to submit
 
 function Signup() {
   return (

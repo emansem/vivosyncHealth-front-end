@@ -28,8 +28,13 @@ function useRegister() {
         checkBox: register("checkBox", formValidation.checkBox)
 
     };
-    const onSubmitForm = (data: RegisterFieldTypes) => {
-        console.log("Form submitted", data, value);
+    const onSubmitForm = async (data: RegisterFieldTypes) => {
+        try {
+
+            console.log('Form data:', data);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
     };
     return {
         errors,

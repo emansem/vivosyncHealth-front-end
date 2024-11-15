@@ -7,13 +7,18 @@ import { TogglePassword } from "@/src/components/utils/PasswordToggle";
 import useGeneralHook from "@/src/hooks/useGeneralHook";
 import useRegister from "@/src/hooks/useRegisterForm";
 import FormFooterPart from "./FormFooterPart";
+import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 
 function RegisterForm() {
   const { isPasswordVisible, handleTogglePassword } = useGeneralHook();
   const { registerField, errors, handleSubmit, value, onSelect, isSubmitting } =
     useRegister();
+  const onSubmitHandler = async (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit(e);
+  };
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={onSubmitHandler}>
       {REGISTER_FORM_FIELDS.map((field) =>
         field.type === "select" ? (
           <SelectInput
@@ -21,7 +26,7 @@ function RegisterForm() {
             options={UserType}
             onChange={onSelect}
             value={value}
-            id="select"
+            id={field.name}
           />
         ) : field.type !== "password" ? (
           <Input
@@ -30,6 +35,7 @@ function RegisterForm() {
             id={field.name}
             inputType={field.type}
             {...registerField[field.name as keyof RegisterFieldTypes]}
+            name={field.name}
             error={errors[field.name as keyof RegisterFieldTypes]?.message}
           />
         ) : (
@@ -38,6 +44,9 @@ function RegisterForm() {
               inputPlaceholder={field.placeHolder}
               id={field.name}
               inputType={isPasswordVisible ? "text" : "password"}
+              {...registerField[field.name as keyof RegisterFieldTypes]}
+              name={field.name}
+              error={errors[field.name as keyof RegisterFieldTypes]?.message}
             />
             <TogglePassword
               isVisable={isPasswordVisible}
