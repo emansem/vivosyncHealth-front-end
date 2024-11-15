@@ -1,23 +1,5 @@
 "use client";
-import { doctorProfile } from "@/data/doctorDemoData";
-import {
-  MapPin,
-  Clock,
-  Phone,
-  Mail,
-  Calendar,
-  Award,
-  Languages,
-  UserCircle,
-  Building2,
-  FileText
-} from "lucide-react";
 
-import {
-  Card,
-  InfoItem,
-  SectionTitle
-} from "./_profileCOntent/ReusableContent";
 import TopState from "./_profileCOntent/TopState";
 import PersonalInformation from "./_profileCOntent/PersonalInformation";
 import MiddleSection from "./_profileCOntent/MiddleSection";
