@@ -54,7 +54,7 @@ const UserAvater = () => {
           src="https://i.postimg.cc/026P6nxK/image.jpg"
           alt="Dr eman sem"
           fill
-          sizes="70px"
+          sizes="100px"
           className="object-cover"
         />
       </div>

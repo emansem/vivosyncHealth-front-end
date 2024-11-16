@@ -1,5 +1,5 @@
 import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
-import { FormFields, OnboardingFormFields, WithdrawalAccountInputs } from "./types";
+import { FormFields, OnboardingFormFields, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
 
 export const primary_color = "#269c65";
 export const TOTAL_FORM_STEPS = 3;
@@ -110,3 +110,19 @@ export const PASSWORD_REST_FIELDS: FormFields[] = [
     }
 
 ]
+
+export const SUBSCRIPTION_PLAN_TYPES: SubscriptionPlanType[] = [
+    {
+        label: "Basic",
+        key: "Basic"
+    },
+    {
+        label: "Standard",
+        key: "Standard"
+    },
+    {
+        label: "Premium",
+        key: "Premium"
+    }
+];
+

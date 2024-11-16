@@ -1,5 +1,6 @@
 import { UseFormRegisterReturn } from "react-hook-form";
 import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
+import { SubscriptionPlan } from "@/src/types/general";
 
 export interface WithdrawalAccountInputs {
     name: string,
@@ -68,4 +69,21 @@ export interface RegisterFieldTypes {
 export interface LoginFormValue {
     email: string;
     password: string;
+}
+
+export type SubscriptionPlanType = {
+    label: string;
+    key: "Basic" | "Standard" | "Premium";
+};
+
+export interface ReviewProps {
+    handleToggleReviews: (index: number) => void;
+
+    activeIndices: number[];
+}
+
+export interface SubscriptionPlanHeaderType {
+    getPlanType: (label: string) => void;
+    subscriptionPlan?: SubscriptionPlan[];
+    plan_type: string;
 }

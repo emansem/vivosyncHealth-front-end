@@ -17,8 +17,10 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
   }
   if (pathName === "/") {
     return <MainLayout>{children}</MainLayout>;
-  } else {
+  } else if (pathName.startsWith("/auth")) {
     return <AuthLayout>{children}</AuthLayout>;
+  } else {
+    return <MainLayout>{children}</MainLayout>;
   }
 }
 
