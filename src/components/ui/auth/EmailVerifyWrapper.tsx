@@ -21,8 +21,8 @@ export function EmailVerifyWrapper({ message }: VerifyEmailProps) {
           </div>
           <div className="bg-red-50 p-4 rounded-lg font-medium border-red-200 border  text-red-700  text-sm">
             <p>
-              Didn't receive the email? Check your spam folder or request a new
-              verification link.
+              Didn&apos;t receive the email? Check your spam folder or request a
+              new verification link.
             </p>
           </div>
           <div>

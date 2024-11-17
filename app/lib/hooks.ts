@@ -1,14 +1,18 @@
 // import { useState } from "react"
 "use client"
 import { useDispatch, useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
 import type { RootState, AppDispatch } from '../lib/redux/store'
 import { DoctorOnboardingForm, setError, updateFormData } from "./redux/features/form/multipleStepFormSlice"
 
 import { STEP_ONE_FORM_FIELDS, STEP_TWO_FORM_FIELDS } from './constant'
 import { ChangeEvent, useState } from 'react'
-import { WithdrawalAccountData } from './types'
+import { RegisterApiRequest, WithdrawalAccountData } from './types'
 import { useForm } from 'react-hook-form'
 import { withdrawalAccountFormValidation } from '@/src/helper/formValidation'
+import { useMutation } from '@tanstack/react-query'
+import { api } from './service/fetchData'
+import axios from 'axios'
 
 
 
@@ -133,6 +137,51 @@ export const useUPloadImage = () => {
     return { previewImage, handlePhotoChange }
 }
 
+export const useResendLink = (token: string) => {
+    const handleClick = async () => {
+        try {
+            const response = await fetch("http://localhost:5740/api/auth/resend-link", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            })
+            const result = await response.json();
+            console.log(result)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return { handleClick }
+}
+//create user user
+export const useRegisterUser = () => {
+    const createUser = useMutation({
+
+        mutationFn: (userData: RegisterApiRequest) => {
+            return api.post(`/register`, userData)
+        },
+
+        onSuccess: (data) => {
+            console.log('Registration successful:', data.data);
+            toast.success(data.data.message);
+            localStorage.setItem('jwt', data.data.jwt);
+
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                console.log("error saving user details", error)
+                const errorMessage = error.response?.data.message
+
+                toast.error(errorMessage)
+            }
+
+
+        }
+    })
+    return { createUser }
+}
 
 
 

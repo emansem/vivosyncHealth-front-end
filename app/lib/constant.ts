@@ -1,4 +1,3 @@
-import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
 import { FormFields, OnboardingFormFields, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
 
 export const primary_color = "#269c65";
@@ -9,7 +8,7 @@ export const FORM_FIELDS = {
     YEARS_OF_EXPERIENCE: 'years_of_experience',
     HOSPITAL_ADDRESS: "hospital_address"
 } as const;
-
+export const APIURL = "http://localhost:5740/api";
 
 
 export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccountInputs[] = [

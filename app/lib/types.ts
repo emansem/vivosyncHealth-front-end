@@ -65,7 +65,14 @@ export interface RegisterFormInputsProps {
     };
     isPasswordvisible: boolean;
 }
-
+export interface RegisterApiRequest {
+    name: string
+    password: string
+    email: string
+    phone: string
+    user_type: string
+    gender: string
+}
 
 export interface RegisterFieldTypes {
     email: string;

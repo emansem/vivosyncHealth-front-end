@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { formValidation, } from "../helper/formValidation";
 import { ChangeEvent, useState } from "react";
 import { RegisterFieldTypes } from "@/app/lib/types";
+import { useRegisterUser } from "@/app/lib/hooks";
 
 function useRegister() {
     const {
@@ -10,15 +11,13 @@ function useRegister() {
         handleSubmit,
         formState: { isSubmitting, errors }
     } = useForm<RegisterFieldTypes>();
-
     //Get a value from a select a option
-
     const [value, setValue] = useState<string>("");
-
     const onSelect = (e: ChangeEvent<HTMLSelectElement>) => {
         setValue(e.target.value);
 
     }
+    const { createUser } = useRegisterUser()
     //Pre-register the inputs
     const registerField: Record<keyof RegisterFieldTypes, ReturnType<typeof register>> = {
         email: register("email", formValidation.email),
@@ -29,12 +28,18 @@ function useRegister() {
 
     };
     const onSubmitForm = async (data: RegisterFieldTypes) => {
-        try {
 
-            console.log('Form data:', data);
-        } catch (error) {
-            console.error('Error submitting form:', error);
+        const userData = {
+            name: data.name,
+            password: data.password,
+            email: data.email,
+            phone: data.phoneNumber,
+            user_type: value,
+            gender: 'not_specify'
         }
+        createUser.mutate(userData)
+
+
     };
     return {
         errors,
