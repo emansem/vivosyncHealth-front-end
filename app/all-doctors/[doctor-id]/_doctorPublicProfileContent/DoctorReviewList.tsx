@@ -10,7 +10,10 @@ export const DoctorReviewsList = ({
   return (
     <div className="flex gap-5 flex-col">
       {patientReviews.slice(0, 5).map((review, index) => (
-        <li className="shadow-shadow3 px-6 py-3 rounded-lg " key={index}>
+        <li
+          className="shadow-shadow2 px-6 py-3 rounded-lg bg-white"
+          key={index}
+        >
           <div className="flex gap-3 mb-4 border-b-2 pb-4 items-center">
             <div className="relative cursor-pointer w-12 h-12 min-w-12 min-h-12 md:w-12 md:h-12 rounded-full overflow-hidden">
               <Image

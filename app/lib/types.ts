@@ -1,6 +1,16 @@
 import { UseFormRegisterReturn } from "react-hook-form";
 import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
 import { SubscriptionPlan } from "@/src/types/general";
+import { LucideIcon } from "lucide-react";
+
+
+export interface ReferralLinkProps {
+    referralLink: string;
+}
+
+export interface ReferralTableProps {
+    referrals: ReferralData[];
+}
 
 export interface WithdrawalAccountInputs {
     name: string,
@@ -86,4 +96,19 @@ export interface SubscriptionPlanHeaderType {
     getPlanType: (label: string) => void;
     subscriptionPlan?: SubscriptionPlan[];
     plan_type: string;
+}
+
+export interface ReferralData {
+    id: string;
+    referredUser: string;
+    status: "pending" | "active" | "completed";
+    joinedDate: string;
+    reward: number;
+}
+
+
+export interface StatsCardProps {
+    icon: LucideIcon;
+    label: string;
+    value: string | number;
 }

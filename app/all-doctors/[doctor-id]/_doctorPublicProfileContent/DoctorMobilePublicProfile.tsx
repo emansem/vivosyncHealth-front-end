@@ -15,6 +15,10 @@ import React, {
 import { FaBookMedical } from "react-icons/fa";
 import { ReviewSection } from "./ReviewSection";
 import { useSubscriptionPlan } from "@/src/hooks/useSubscriptionPlan";
+import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
+import { useOpenAndClose } from "@/app/lib/hooks";
+import { SubscriptionPlanSection } from "./PricingPlanSection";
+import CancelButton from "@/src/components/ui/button/CancelButton";
 interface StateHeadingProps {
   HeadIcon?: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
@@ -56,7 +60,7 @@ const StatesSection = () => {
       <ul className="flex flex-col gap-5">
         <li className="flex items-center py-2 px-4 shadow-shadow justify-between">
           <p className={stateStyles.statesPtag}>
-            <span className="p-2 rounded-full shadow-shadow3 bg-white">
+            <span className="p-2 rounded-full  bg-white">
               <StarIcon
                 fill={stateStyles.starColor}
                 size={stateStyles.stateIconSize}
@@ -69,7 +73,7 @@ const StatesSection = () => {
             </div>
           </p>
           <p className={stateStyles.statesPtag}>
-            <span className="p-2 rounded-full shadow-shadow3 bg-white">
+            <span className="p-2 rounded-full  bg-white">
               <FaBookMedical
                 color={stateStyles.iconColor}
                 size={stateStyles.stateIconSize}
@@ -81,7 +85,7 @@ const StatesSection = () => {
             </div>
           </p>
           <p className={stateStyles.statesPtag}>
-            <span className="p-2 rounded-full shadow-shadow3 bg-white">
+            <span className="p-2 rounded-full  bg-white">
               <Users
                 color={stateStyles.iconColor}
                 size={stateStyles.stateIconSize}
@@ -120,7 +124,7 @@ const StateHeading = ({ HeadIcon, title }: StateHeadingProps) => {
 };
 
 const LanguagesSection = () => {
-  const stateExtraStyle = `text-base text-primary_color bg-primary_color/10  block py-1 px-4 rounded-full`;
+  const stateExtraStyle = `text-base text-stone-700 bg-stone-900/10  block py-1 px-4 rounded-full`;
   return (
     <div>
       <StateHeading HeadIcon={Languages} title="Languages" />
@@ -155,7 +159,7 @@ const AboutSection = () => {
         <p className="text-base leading-6 text-text_color2">
           {isOpen ? aboutDetails : `${aboutDetails.slice(0, 200)}...`}
           <span
-            className="text-lg text-primary_color cursor-pointer"
+            className="text-base text-primary_color cursor-pointer"
             onClick={handleSeeMore}
           >
             {isOpen ? " See Less" : "See More"}
@@ -167,7 +171,7 @@ const AboutSection = () => {
 };
 
 const WorkingDays = () => {
-  const stateExtraStyle = `text-base text-primary_color bg-primary_color/10  block py-1 px-4 rounded-full`;
+  const stateExtraStyle = `text-base text-primary_color border border-primary_color/20 bg-primary_color/10  block py-1 px-4 rounded-full`;
   return (
     <div>
       <StateHeading HeadIcon={NotebookTabs} title="Working Days" />
@@ -184,6 +188,7 @@ const WorkingDays = () => {
 
 function DoctorMobilePublicProfile() {
   const { handleToggle, activeIndices } = useSubscriptionPlan();
+  const { open, handle0pen, handleClose } = useOpenAndClose();
   return (
     <div className="bg-white relative flex flex-col gap-4 p-4 rounded-md">
       <AvatarSection />
@@ -196,6 +201,19 @@ function DoctorMobilePublicProfile() {
         activeIndices={activeIndices}
         handleToggleReviews={handleToggle}
       />
+      <div onClick={handle0pen} className="fixed bottom-0 left-4 right-4 mb-2">
+        <PrimaryButton backgroud color="text-white">
+          Pricing Plans
+        </PrimaryButton>
+      </div>
+      {open && (
+        <div className="fixed flex  justify-center items-center inset-0 transperentBg z-10 py-3 px-6">
+          <div className="bg-stone-50 flex flex-col gap-5 p-4 rounded-lg">
+            <SubscriptionPlanSection />
+            <CancelButton handleClick={handleClose}>Close</CancelButton>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
