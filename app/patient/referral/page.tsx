@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { ReferralLink } from "./_referralContent/ReferralLink";
 import { StatsSection } from "./_referralContent/StateSection";

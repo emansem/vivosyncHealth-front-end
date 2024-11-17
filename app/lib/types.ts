@@ -112,3 +112,18 @@ export interface StatsCardProps {
     label: string;
     value: string | number;
 }
+export interface SubscriptionData {
+    id: string;
+    doctorName: string;
+    doctorId: string;
+    plan: "basic" | "premium" | "enterprise";
+    startDate: string;
+    endDate: string;
+    status: "active" | "expired" | "cancelled";
+    amount: number;
+    autoRenew: boolean;
+}
+
+export interface SubscriptionTableProps {
+    subscriptions: SubscriptionData[];
+}
