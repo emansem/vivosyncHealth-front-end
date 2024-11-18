@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import { useState } from "react"
 "use client"
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,13 +7,14 @@ import type { RootState, AppDispatch } from '../lib/redux/store'
 import { DoctorOnboardingForm, setError, updateFormData } from "./redux/features/form/multipleStepFormSlice"
 
 import { STEP_ONE_FORM_FIELDS, STEP_TWO_FORM_FIELDS } from './constant'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { RegisterApiRequest, WithdrawalAccountData } from './types'
 import { useForm } from 'react-hook-form'
 import { withdrawalAccountFormValidation } from '@/src/helper/formValidation'
 import { useMutation } from '@tanstack/react-query'
 import { api } from './service/fetchData'
 import axios from 'axios'
+import { useGetUser, useUpdateData } from '@/src/hooks/serviceHook'
 
 
 
@@ -138,29 +140,38 @@ export const useUPloadImage = () => {
 }
 
 export const useResendLink = (token: string) => {
-    const handleClick = async () => {
-        try {
-            const response = await fetch("http://localhost:5740/api/auth/resend-link", {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ token })
-            })
-            const result = await response.json();
-            console.log(result)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    return { handleClick }
+
+    const apiEndpoint = '/auth/resend-link'
+    const { updateUser } = useUpdateData(apiEndpoint,)
+    const [isDisabled, setIsDisabled] = useState(false);  // Track button disabled state
+
+    const handleClick = () => {
+        // Disable the button
+        setIsDisabled(true);
+
+        // Send the request
+        updateUser.mutate(token, {
+            onSuccess: () => {
+
+                setTimeout(() => {
+                    setIsDisabled(false);
+                }, 60000);
+            },
+            onError: () => {
+                setIsDisabled(false);
+            }
+        });
+    };
+
+    return { handleClick, isDisabled };
+
 }
 //create user user
 export const useRegisterUser = () => {
     const createUser = useMutation({
 
         mutationFn: (userData: RegisterApiRequest) => {
-            return api.post(`/register`, userData)
+            return api.post(`/auth/register`, userData)
         },
 
         onSuccess: (data) => {
@@ -182,6 +193,57 @@ export const useRegisterUser = () => {
     })
     return { createUser }
 }
+
+//Verify user email in 5 steps haha
+export const useVerifyEmail = (token: string) => {
+    const [noUser, setNoUser] = useState(false)
+    const [hasTokenExpired, setHasTokenExpired] = useState(false);
+    const [isUserEmailVerified, setIsUserEmailVerified] = useState(false);
+    const endPoint = "/auth/verify-email";
+    const { data: user, isLoading, error } = useGetUser();
+    const { updateUser } = useUpdateData(endPoint);
+
+    // Handle user fetch errors
+    useEffect(() => {
+        if (error && axios.isAxiosError(error)) {
+            toast.error(error.response?.data.message);
+            setNoUser(true);
+        }
+    }, [error]);
+
+    const user_type = user?.user_type;
+
+    //handle email verification
+    const verifyEmail = useCallback(() => {
+        const isEmailVerified = user?.isEmailVerified;
+
+        if (!isEmailVerified && user && token) {
+            const isTokenExpired = user.TokenExpireTime < Date.now();
+            if (!isTokenExpired) {
+                console.log(token)
+                updateUser.mutate(token, {
+                    onError: (error) => {
+
+                        setIsUserEmailVerified(false);
+                    }
+                })
+            } else {
+
+                setHasTokenExpired(true);
+            }
+        } else {
+            setIsUserEmailVerified(true);
+        }
+
+    }, [user?.isEmailVerified, user?.TokenExpireTime, token]);
+
+    useEffect(() => {
+        verifyEmail();
+    }, [verifyEmail]);
+
+    return { isLoading, user_type, hasTokenExpired, noUser, isUserEmailVerified };
+};
+
 
 
 

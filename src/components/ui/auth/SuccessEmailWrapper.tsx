@@ -1,4 +1,4 @@
-import { MailCheck, MailX } from "lucide-react";
+import { CircleAlert, MailCheck, MailX } from "lucide-react";
 import PrimaryButton from "../button/PrimaryButton";
 import { CardLayout } from "../layout/CardLayout";
 import { VerifyEmailProps } from "@/src/types/general";
@@ -29,7 +29,14 @@ function SuccessEmailWrapper({ message, buttonText }: VerifyEmailProps) {
   );
 }
 
-export const ErrorVerifyingEmail = ({ onClick }: { onClick: () => void }) => {
+interface ErrorVerifyingEmailProps {
+  onClick: () => void;
+  buttonText: string;
+}
+export const ErrorVerifyingEmail = ({
+  onClick,
+  buttonText
+}: ErrorVerifyingEmailProps) => {
   return (
     <div className="px-4">
       <CardLayout>
@@ -49,7 +56,7 @@ export const ErrorVerifyingEmail = ({ onClick }: { onClick: () => void }) => {
 
           <div>
             <PrimaryButton onClick={onClick} color="text-white" backgroud>
-              Resend Link
+              {buttonText}
             </PrimaryButton>
           </div>
         </div>
@@ -59,3 +66,33 @@ export const ErrorVerifyingEmail = ({ onClick }: { onClick: () => void }) => {
 };
 
 export default SuccessEmailWrapper;
+interface WarningProps {
+  warningMessage: string;
+  buttonText: string;
+  onClick?: () => void;
+}
+
+export const WarningAlert = ({
+  warningMessage,
+  buttonText,
+  onClick
+}: WarningProps) => {
+  return (
+    <CardLayout>
+      <div className="flex flex-col gap-3 md:gap-6">
+        <div className="flex items-center  justify-center h-18 p-3 bg-red-600/10 self-center w-18 rounded-full">
+          <CircleAlert size={38} color="#dc2626" />
+        </div>
+        <div className="flex flex-col items-center text-center gap-2">
+          <p className="text-base text-text_color2 ">{warningMessage}</p>
+        </div>
+
+        <div>
+          <PrimaryButton onClick={onClick} color="text-white" backgroud>
+            {buttonText}
+          </PrimaryButton>
+        </div>
+      </div>
+    </CardLayout>
+  );
+};

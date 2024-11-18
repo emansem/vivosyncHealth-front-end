@@ -1,44 +1,39 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useResendLink } from "@/app/lib/hooks";
-import { updateData } from "@/service/updateData";
+import { useResendLink, useVerifyEmail } from "@/app/lib/hooks";
 import SuccessEmailWrapper, {
-  ErrorVerifyingEmail
+  ErrorVerifyingEmail,
+  WarningAlert
 } from "@/src/components/ui/auth/SuccessEmailWrapper";
+
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-interface UpdatedData {
-  token: string;
-}
+import React from "react";
 
 function VerifiedEmailSuccess() {
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState("");
-  const token = searchParams.get("token");
-  console.log("Token:", token);
+  const token = searchParams.get("token") as string;
+  const { isLoading, hasTokenExpired, noUser, isUserEmailVerified } =
+    useVerifyEmail(token);
+  const { handleClick, isDisabled } = useResendLink(token);
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      if (token) {
-        const data = { token: token };
-        const updatedData = await updateData<UpdatedData>({ data });
-        const { status } = updatedData;
-        setStatus(status);
-      }
-    };
-
-    verifyToken();
-  }, [token]);
-
-  const { handleClick } = useResendLink(token as string);
+  if (isLoading) return <div>Loading...</div>;
+  const buttonText = isDisabled ? "Wait 1 minute" : "Resend Link";
+  const warningMessage =
+    "No user found , please click the button bellow to create your account in just few steps";
   return (
     <>
-      {status === "Error" ? (
-        <ErrorVerifyingEmail onClick={handleClick} />
-      ) : (
+      {noUser ? (
+        <WarningAlert
+          warningMessage={warningMessage}
+          buttonText="Go to register"
+        />
+      ) : !hasTokenExpired && isUserEmailVerified ? (
         <SuccessEmailWrapper
           message="Thank you for verifying your email address. Your account is fully activated."
           buttonText="Go to Dashboard"
         />
+      ) : (
+        <ErrorVerifyingEmail buttonText={buttonText} onClick={handleClick} />
       )}
     </>
   );
