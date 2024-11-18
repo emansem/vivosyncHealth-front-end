@@ -28,7 +28,9 @@ export default function PrimaryButton({
     <button
       onClick={onClick}
       type="submit"
-      className={` font-medium shadow-shadow1 w-full ${color}  ${isBackGround} ${backgroudHover} text-base md:text-[18px] transition-all ease-linear duration-200 cursor-pointer h-10 md:h-12 rounded-md`}
+      className={` font-medium shadow-shadow1 w-full ${color} ${
+        isSubmitting ? "cursor-not-allowed" : " cursor-pointer"
+      } ${isBackGround} ${backgroudHover} text-base md:text-[18px] transition-all ease-linear duration-200 h-10 md:h-12 rounded-md`}
       disabled={isSubmitting}
     >
       <span>{children}</span>

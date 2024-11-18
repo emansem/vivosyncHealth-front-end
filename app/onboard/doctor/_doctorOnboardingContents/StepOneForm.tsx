@@ -20,7 +20,7 @@ export const StepOneForm = () => {
               name={field.name}
               inputType={field.type}
               inputPlaceholder={field.placeholder}
-              value={formData[field.name as keyof DoctorOnboardingForm]}
+              // value={formData[field.name as keyof DoctorOnboardingForm]}
               onChange={handleFormChange}
               error={errors?.[field.name]}
             />

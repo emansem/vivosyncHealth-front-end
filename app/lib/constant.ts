@@ -46,6 +46,11 @@ export const STEP_ONE_FORM_FIELDS: OnboardingFormFields[] = [
         type: 'text'
     },
     {
+        name: 'speciality',
+        placeholder: 'Specialities',
+        type: 'text'
+    },
+    {
         name: 'years_of_experience',
         placeholder: 'Years of experience',
         type: 'text'

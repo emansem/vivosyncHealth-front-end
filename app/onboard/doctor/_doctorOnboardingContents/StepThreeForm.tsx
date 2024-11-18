@@ -14,10 +14,11 @@ import { Upload } from "lucide-react";
 import Input from "@/src/components/ui/forms/Input";
 import { useState, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
+import { uploadImage } from "@/app/lib/service/uploadImage";
 export const StepThreeForm = () => {
   const { handleFormChange } = useOnchangeDoctorOnboarding();
-  const { formData } = useAppSelector((state) => state.doctorStep);
-  console.log(formData);
+  const { formData, errors } = useAppSelector((state) => state.doctorStep);
+  // console.log(formData);
   return (
     <>
       <div className={FormStepsStyles.formStepsHeading}>
@@ -28,15 +29,15 @@ export const StepThreeForm = () => {
           <TextArea
             onChange={handleFormChange}
             name="about"
-            value={formData.about}
+            // value={formData.about}
             id="about"
           />
         </div>
         <div className={FormStepsStyles.formStepsDev}>
           <Input
-            name="language"
+            name="languages"
             onChange={handleFormChange}
-            value={formData.language}
+            // value={formData.languages}
             inputType="text"
             inputPlaceholder="Languages Exp: French, English"
           />
@@ -60,14 +61,17 @@ const UploadProfilePicture = () => {
     }
 
     const reader = new FileReader();
-    reader.onload = (event: ProgressEvent<FileReader>) => {
+    reader.onload = async (event: ProgressEvent<FileReader>) => {
       if (event.target && typeof event.target.result === "string") {
         setPreview(event.target.result);
+        const profileImage = await uploadImage(file);
+        console.log(file);
+        console.log(profileImage);
         // Dispatch after preview is ready
         dispatch(
           updateFormData({
             field: "profile_photo" as keyof DoctorOnboardingForm,
-            value: event.target.result
+            value: profileImage
           })
         );
       }
@@ -102,6 +106,7 @@ const UploadProfilePicture = () => {
           </div>
         </label>
         <input
+          required
           name="profile_photo"
           onChange={handleFile}
           accept="image/*"

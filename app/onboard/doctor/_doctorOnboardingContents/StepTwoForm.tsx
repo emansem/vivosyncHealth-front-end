@@ -17,7 +17,7 @@ export const StepTwoForm = () => {
             <Input
               onChange={handleFormChange}
               name={field.name}
-              value={formData[field.name]}
+              // value={formData[field.name]}
               inputType={field.type}
               error={errors?.[field.name]}
               inputPlaceholder={field.placeholder}

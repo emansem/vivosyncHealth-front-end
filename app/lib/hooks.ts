@@ -67,6 +67,7 @@ export const useMultipleFormValidation = () => {
 
 export const useOnchangeDoctorOnboarding = () => {
     const dispatch = useAppDispatch();
+    const { formData } = useAppSelector((state) => state.doctorStep)
 
     const handleFormChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -85,6 +86,7 @@ export const useOnchangeDoctorOnboarding = () => {
             })
         );
     };
+
     return { handleFormChange }
 }
 

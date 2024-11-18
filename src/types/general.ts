@@ -1,6 +1,8 @@
+import React from "react";
+
 export interface VerifyEmailProps {
     message: string;
-    buttonText?: string
+    buttonText?: string | React.ReactNode
 }
 
 //pagination types

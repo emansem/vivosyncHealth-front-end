@@ -15,7 +15,7 @@ export const LogInForm = () => {
       {/* LOGIN FORM INPUTS */}
       {LOGIN_INPUTS_FIELD.map((field) =>
         field.type === "password" ? (
-          <div className=" relative">
+          <div key={field.name} className=" relative">
             <Input
               {...registerField[field.name as keyof LoginFormValue]}
               name={field.name}

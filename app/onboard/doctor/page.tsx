@@ -3,8 +3,44 @@ import { TOTAL_FORM_STEPS } from "@/app/lib/constant";
 import { useAppSelector } from "@/app/lib/hooks";
 
 import { StepFormLayout } from "./_doctorOnboardingContents/StepFormLayout";
-
+import { useGetUser } from "@/src/hooks/serviceHook";
+import SuccessEmailWrapper, {
+  SuccessWrapperAlert
+} from "@/src/components/ui/auth/SuccessEmailWrapper";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useCallback, useEffect } from "react";
 function Page() {
+  const { data, isLoading, error } = useGetUser();
+  const isProfileCompleted = data?.isProfileCompleted;
+
+  useEffect(() => {
+    if (error && axios.isAxiosError(error)) {
+      toast.error(error.response?.data.message);
+      window.location.href = `${window.location.protocol}//${window.location.hostname}/auth/register`;
+    }
+  }, [error]);
+
+  if (isLoading) return <div>loading..</div>;
+
+  const message =
+    "Profile Complete Your account is now fully active and ready to use.";
+
+  return (
+    <>
+      {isProfileCompleted ? (
+        <SuccessWrapperAlert
+          buttonText="Go To Dashboard"
+          warningMessage={message}
+        />
+      ) : (
+        <DoctorOnboardingLayout />
+      )}
+    </>
+  );
+}
+
+const DoctorOnboardingLayout = () => {
   const { currentStep } = useAppSelector((state) => state.doctorStep);
   const progressBarWidth = ((currentStep - 1) / (TOTAL_FORM_STEPS - 1)) * 100;
   return (
@@ -31,6 +67,6 @@ function Page() {
       </main>
     </div>
   );
-}
+};
 
 export default Page;
