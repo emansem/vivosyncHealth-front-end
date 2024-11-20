@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useVerifyEmail } from "@/src/hooks/authentication/useVerifyUserEmail";
-import { useResendLink } from "@/src/hooks/authentication/useResendToken";
 import SuccessEmailWrapper from "@/src/components/ui/auth/SuccessEmailWrapper";
-import { ErrorVerifyingEmail } from "@/src/components/ui/auth/ErrorVerifyingEmail";
 import Link from "next/link";
 import { WarningAlert } from "@/src/components/ui/alert/WarningAlert";
 import { useSearchParams } from "next/navigation";
@@ -20,42 +18,39 @@ function VerifiedEmailSuccess() {
   };
 
   //custom hook to verify user email
-  const { isLoading, hasTokenExpired, user_type, noUser, isUserEmailVerified } =
+  const { isLoading, hasTokenExpired, user_type, noUser } =
     useVerifyEmail(data);
 
-  //custom hook to resend user email verification token
-  const { handleResendEmail, isDisabled } = useResendLink(data);
-
-  const buttonText = isDisabled ? "Wait 1 minute" : "Resend Link";
-  const warningMessage =
-    "No user found , please click the button bellow to create your account in just few steps";
+  //Check the user type if the user is a patient redirect to dashboard or ask the user to complet his profile
   const userType = user_type === "doctor" && (
     <Link href="/onboard/doctor"> Complete your profile</Link>
   );
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return <div>Verifying email...</div>;
+  }
+
+  //If email verification token has expired, redirect to get a new token
+  if (hasTokenExpired) {
+    window.location.href = "http://localhost:3000/auth/verify/failed";
+    return;
+  }
+
+  //If there is no user found, show the a warning alert to create a new account
   if (noUser) {
     return (
       <WarningAlert
-        warningMessage={warningMessage}
+        warningMessage="No user found , please click the button below to create your account in just few steps"
         buttonText={<Link href="/auth/register"> Go to register</Link>}
       />
     );
   }
-  if (!hasTokenExpired && isUserEmailVerified) {
-    return (
-      <SuccessEmailWrapper
-        message="Thank you for verifying your email address. Your account is fully activated."
-        buttonText={userType}
-      />
-    );
-  }
 
+  //If all is good and the user is a doctor, ask them to complet their account
   return (
-    <ErrorVerifyingEmail
-      isLoading={isDisabled}
-      buttonText={buttonText}
-      onClick={handleResendEmail}
+    <SuccessEmailWrapper
+      message="Thank you for verifying your email address. Your account is fully activated."
+      buttonText={userType}
     />
   );
 }

@@ -63,6 +63,7 @@ interface User {
     user_type: string,
     isProfileCompleted: boolean,
     TokenExpireTime: number
+    email: string,
 
 }
 

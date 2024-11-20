@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { TokenType } from "@/app/lib/types";
 import axios from "axios";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useGetUser, useUpdateData } from "../serviceHook";
 
@@ -28,30 +29,34 @@ export const useVerifyEmail = (token: TokenType) => {
     const user_type = user?.user_type;
 
     //handle email verification
-    const verifyEmail = useCallback(() => {
-        const isEmailVerified = user?.isEmailVerified;
+    useEffect(() => {
+        // Add a check to prevent multiple runs
+        if (!user) return
 
-        if (!isEmailVerified && user && token) {
+        if (user.isEmailVerified) {
+            // Only show toast if transitioning from unverified to verified
+            if (!isUserEmailVerified) {
+                setIsUserEmailVerified(true);
+                toast.success("Email is already verified");
+            }
+            return;
+        }
+
+        if (token) {
             const isTokenExpired = user.TokenExpireTime < Date.now();
             if (!isTokenExpired) {
                 mutate(token, {
-                    onError: () => {
-                        setIsUserEmailVerified(false);
-                    }
-                })
+                    onError: () => setIsUserEmailVerified(false)
+                });
+                return
             } else {
-
-                setHasTokenExpired(true);
+                if (!hasTokenExpired) {
+                    setHasTokenExpired(true);
+                }
             }
-        } else {
-            setIsUserEmailVerified(true);
         }
+    }, [mutate, user, isUserEmailVerified, hasTokenExpired]);
 
-    }, [user, token, mutate]);
-
-    useEffect(() => {
-        verifyEmail();
-    }, [verifyEmail]);
 
     return { isLoading, user_type, hasTokenExpired, noUser, isUserEmailVerified };
 };

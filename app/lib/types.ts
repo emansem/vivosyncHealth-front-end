@@ -5,6 +5,7 @@ import { LucideIcon } from "lucide-react";
 
 export interface TokenType {
     token: string
+    email?: string,
 }
 export interface ReferralLinkProps {
     referralLink: string;
