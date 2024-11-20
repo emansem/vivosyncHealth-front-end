@@ -4,12 +4,11 @@ import { useAppSelector } from "@/app/lib/hooks";
 
 import { StepFormLayout } from "./_doctorOnboardingContents/StepFormLayout";
 import { useGetUser } from "@/src/hooks/serviceHook";
-import SuccessEmailWrapper, {
-  SuccessWrapperAlert
-} from "@/src/components/ui/auth/SuccessEmailWrapper";
+
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
+import { SuccessWrapperAlert } from "@/src/components/ui/alert/SuccessAlert";
 function Page() {
   const { data, isLoading, error } = useGetUser();
   const isProfileCompleted = data?.isProfileCompleted;
@@ -24,7 +23,7 @@ function Page() {
   if (isLoading) return <div>loading..</div>;
 
   const message =
-    "Profile Complete Your account is now fully active and ready to use.";
+    "Your profile is complete and verified. You can now access the dashboard.";
 
   return (
     <>

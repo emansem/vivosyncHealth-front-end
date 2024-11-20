@@ -1,9 +1,6 @@
 import { primary_color } from "@/app/lib/constant";
-import {
-  useOnchangeDoctorOnboarding,
-  useAppSelector,
-  useAppDispatch
-} from "@/app/lib/hooks";
+import { useAppDispatch } from "@/app/lib/hooks";
+import { useOnchangeDoctorOnboarding } from "@/src/hooks/authentication/useDoctorOnboard";
 import {
   updateFormData,
   DoctorOnboardingForm
@@ -17,7 +14,6 @@ import Image from "next/image";
 import { uploadImage } from "@/app/lib/service/uploadImage";
 export const StepThreeForm = () => {
   const { handleFormChange } = useOnchangeDoctorOnboarding();
-  const { formData, errors } = useAppSelector((state) => state.doctorStep);
   // console.log(formData);
   return (
     <>
@@ -52,7 +48,7 @@ const UploadProfilePicture = () => {
   const dispatch = useAppDispatch();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
-
+  console.log(preview);
   // Handle file preview when file changes
   useEffect(() => {
     if (!file) {

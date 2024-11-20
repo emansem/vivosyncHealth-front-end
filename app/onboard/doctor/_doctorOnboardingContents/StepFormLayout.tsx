@@ -1,62 +1,20 @@
-import {
-  useAppDispatch,
-  useMultipleFormValidation,
-  useAppSelector
-} from "@/app/lib/hooks";
-import {
-  nextStep,
-  prevStep
-} from "@/app/lib/redux/features/form/multipleStepFormSlice";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { InnerCardLayout } from "@/src/components/ui/layout/CardLayout";
 import { RenderForm } from "./RenderForm";
 import { TOTAL_FORM_STEPS } from "@/app/lib/constant";
 import { DisableButton } from "@/src/components/ui/button/DisableButton";
-import { useupdatedOnboardingData } from "@/src/hooks/serviceHook";
-import toast from "react-hot-toast";
-import { get, request } from "http";
+import {
+  useUpdatedOnboardingData,
+  useMultipleFormValidation
+} from "@/src/hooks/authentication/useDoctorOnboard";
 
 export const StepFormLayout = () => {
-  const dispatch = useAppDispatch();
-  const { validateStepOneForm, validateStepTwoForm } =
+  const { handleNext, currentStep, handlePrevStep } =
     useMultipleFormValidation();
-  const { currentStep, formData } = useAppSelector((state) => state.doctorStep);
   const apiEndpoint = "/doctors/onboard";
-  const { updateOnboardData } = useupdatedOnboardingData(apiEndpoint);
+  const { isPending, handleSubmitDoctorOnboardData } =
+    useUpdatedOnboardingData(apiEndpoint);
 
-  const handleNext = () => {
-    switch (currentStep) {
-      case 1:
-        const isFormOneValid = validateStepOneForm();
-        if (!isFormOneValid) return;
-        dispatch(nextStep());
-      case 2:
-        const isValid = validateStepTwoForm();
-        if (!isValid) return;
-        dispatch(nextStep());
-
-      default:
-        break;
-    }
-  };
-  const handlePrevStep = () => {
-    dispatch(prevStep());
-  };
-  const submitForm = () => {
-    const { profile_photo, about, languages } = formData;
-    if (profile_photo === "" || about === "" || languages === "") {
-      toast.error("Please fill all the fields");
-      return;
-    }
-    updateOnboardData.mutate(formData, {
-      onSuccess() {
-        toast.success("Account successfully updated");
-        window.location.href = `${window.location.protocol}://${window.location.hostname}/onboard/success`;
-      }
-    });
-  };
-  // console.log(formData);
-  const isPending = updateOnboardData.isPending;
   return (
     <>
       <InnerCardLayout>
@@ -80,7 +38,7 @@ export const StepFormLayout = () => {
           ) : (
             <PrimaryButton
               isSubmitting={isPending}
-              onClick={submitForm}
+              onClick={handleSubmitDoctorOnboardData}
               backgroud
               color="text-white"
             >

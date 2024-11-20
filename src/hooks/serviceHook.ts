@@ -1,11 +1,17 @@
-import { DoctorOnboardingForm } from "@/app/lib/redux/features/form/multipleStepFormSlice";
 import { api } from "@/app/lib/service/fetchData"
 import { ApiResponse } from "@/app/lib/types";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+export interface User {
+    isEmailVerified: boolean,
+    user_type: string,
+    isProfileCompleted: boolean,
+    TokenExpireTime: number
+    email: string,
 
+}
 //A reusable custom hook to post data to the server
 export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
     return useMutation({
@@ -44,7 +50,7 @@ export const useUpdateData = <TData, TVariables>(apiEndpoint: string) => {
         },
         onSuccess: (result) => {
             if (result) {
-                console.log("Success updating data", result.data);
+                toast.success(result.data.message)
             }
 
         },
@@ -56,14 +62,6 @@ export const useUpdateData = <TData, TVariables>(apiEndpoint: string) => {
         }
     })
 
-
-}
-interface User {
-    isEmailVerified: boolean,
-    user_type: string,
-    isProfileCompleted: boolean,
-    TokenExpireTime: number
-    email: string,
 
 }
 
@@ -77,27 +75,7 @@ export const useGetUser = (): UseQueryResult<User, Error> => {
     });
 };
 
-export const useUpdatedOnboardingData = (apiEndpoint: string) => {
-    const updateOnboardData = useMutation({
-        mutationFn: (updatingData: DoctorOnboardingForm) => {
 
-            return api.put(apiEndpoint, updatingData);
-        },
-        onSuccess: (data) => {
-            if (data) {
-                console.log("Success updating data", data.data);
-            }
-
-        },
-        onError: (error) => {
-            if (axios.isAxiosError(error)) {
-                console.log("Error updating doctorData", error.response?.data)
-                toast.error(error.response?.data.message);
-            }
-        }
-    })
-    return { updateOnboardData }
-}
 export const useVerifyPasswordRestToken = () => {
     const [hasTokenExpired, setHasTokenExpired] = useState(false);
     const verifyToken = useMutation({

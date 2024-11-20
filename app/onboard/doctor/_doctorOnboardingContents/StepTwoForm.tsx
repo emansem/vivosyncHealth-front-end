@@ -1,10 +1,11 @@
 import { STEP_TWO_FORM_FIELDS } from "@/app/lib/constant";
-import { useAppSelector, useOnchangeDoctorOnboarding } from "@/app/lib/hooks";
+import { useAppSelector } from "@/app/lib/hooks";
 import Input from "@/src/components/ui/forms/Input";
 import { FormStepsStyles } from "@/src/components/utils/css/generalstyles";
+import { useOnchangeDoctorOnboarding } from "@/src/hooks/authentication/useDoctorOnboard";
 
 export const StepTwoForm = () => {
-  const { formData, errors } = useAppSelector((state) => state.doctorStep);
+  const { errors } = useAppSelector((state) => state.doctorStep);
   const { handleFormChange } = useOnchangeDoctorOnboarding();
   return (
     <>
