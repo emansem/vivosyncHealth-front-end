@@ -6,7 +6,7 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-//A reusable custom hook to handle all post methods
+//A reusable custom hook to post data to the server
 export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
     return useMutation({
 
@@ -16,7 +16,7 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
 
         onSuccess: (result) => {
             const { message, jwt } = result.data;
-            console.log('Registration successful:', result.data);
+            console.log('Succesfull sent data to the server:', result.data);
             toast.success(message);
             if (jwt) {
                 localStorage.setItem('jwt', jwt);
@@ -35,15 +35,16 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
     })
 }
 
-export const useUpdateData = (apiEndpoint: string) => {
-    const updateUser = useMutation({
-        mutationFn: (updatingData: string) => {
-            console.log('updated data', updatingData)
-            return api.put(apiEndpoint, { updatingData });
+//A reusable custom hook to update data on the server
+export const useUpdateData = <TData, TVariables>(apiEndpoint: string) => {
+    return useMutation({
+        mutationFn: (data: TVariables) => {
+            console.log('updated data',)
+            return api.put<ApiResponse<TData>>(apiEndpoint, data);
         },
-        onSuccess: (data) => {
-            if (data) {
-                console.log("Success updating data", data.data);
+        onSuccess: (result) => {
+            if (result) {
+                console.log("Success updating data", result.data);
             }
 
         },
@@ -54,7 +55,7 @@ export const useUpdateData = (apiEndpoint: string) => {
             }
         }
     })
-    return { updateUser }
+
 
 }
 interface User {

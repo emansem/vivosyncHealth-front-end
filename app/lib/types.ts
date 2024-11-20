@@ -3,7 +3,9 @@ import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlic
 import { SubscriptionPlan } from "@/src/types/general";
 import { LucideIcon } from "lucide-react";
 
-
+export interface TokenType {
+    token: string
+}
 export interface ReferralLinkProps {
     referralLink: string;
 }
@@ -14,8 +16,14 @@ export interface ReferralTableProps {
 export interface ApiResponse<T> {
     message: string,
     status: string,
+    token?: string,
     jwt?: string,
     data?: T
+}
+export interface AlertProps {
+    warningMessage: string
+    buttonText: string | React.ReactNode;
+    onClick?: () => void;
 }
 
 export interface WithdrawalAccountInputs {

@@ -1,7 +1,6 @@
 "use client";
 import { Mail } from "lucide-react";
 import React from "react";
-import PrimaryButton from "../button/PrimaryButton";
 import { CardLayout } from "../layout/CardLayout";
 import { VerifyEmailProps } from "@/src/types/general";
 
@@ -20,15 +19,17 @@ export function EmailVerifyWrapper({ message }: VerifyEmailProps) {
             <p className="text-base text-text_color2 ">{message}</p>
           </div>
           <div className="bg-red-50 p-4 rounded-lg font-medium border-red-200 border  text-red-700  text-sm">
-            <p>
-              Didn&apos;t receive the email? Check your spam folder or request a
-              new verification link.
-            </p>
+            <p>Didn&apos;t receive the email? Check your spam folder</p>
           </div>
           <div>
-            <PrimaryButton color="text-white" backgroud>
-              Resend link
-            </PrimaryButton>
+            {/* <PrimaryButton
+              isSubmitting={isDisabled}
+              onClick={handleResendEmail}
+              color="text-white"
+              backgroud
+            >
+              {isDisabled ? "Please wait 1 minute.." : " Resend link"}
+            </PrimaryButton> */}
           </div>
         </div>
       </CardLayout>

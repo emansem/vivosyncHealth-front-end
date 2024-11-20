@@ -41,8 +41,12 @@ function useRegister() {
         if (userData) {
             mutate(userData, {
                 onSuccess: () => {
+                    // const { token } = data.data
                     //Reset the input fields after the user was registerd successfully
                     reset()
+                    setTimeout(() => {
+                        window.location.href = `http://localhost:3000/auth/verify-email`
+                    }, 1000);
                 }
             })
         }
