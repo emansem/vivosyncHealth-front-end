@@ -2,6 +2,7 @@ import { DoctorOnboardingForm } from "@/app/lib/redux/features/form/multipleStep
 import { api } from "@/app/lib/service/fetchData"
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
 import axios from "axios";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 
@@ -65,4 +66,33 @@ export const useupdatedOnboardingData = (apiEndpoint: string) => {
         }
     })
     return { updateOnboardData }
+}
+export const useVerifyPasswordRestToken = () => {
+    const [hasTokenExpired, setHasTokenExpired] = useState(false);
+    const verifyToken = useMutation({
+        mutationFn: (token: string) => {
+            console.log('updated data', token)
+            return api.post("/auth/verify-password-token", { token });
+        },
+        onSuccess: (data) => {
+            if (data) {
+                console.log("success verifying email", data.data);
+            }
+
+        },
+        onError: (error) => {
+
+            if (axios.isAxiosError(error)) {
+                const errorMessage = error.response?.data.message as string
+                toast.error(errorMessage);
+                console.log('error', error.response?.data)
+
+                if (errorMessage.includes('Token has expired')) {
+                    setHasTokenExpired(true)
+                }
+
+            }
+        }
+    })
+    return { verifyToken, hasTokenExpired }
 }

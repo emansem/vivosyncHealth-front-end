@@ -1,10 +1,4 @@
-import {
-  Check,
-  CircleAlert,
-  CircleCheckBig,
-  MailCheck,
-  MailX
-} from "lucide-react";
+import { CircleAlert, CircleCheckBig, MailCheck, MailX } from "lucide-react";
 import PrimaryButton from "../button/PrimaryButton";
 import { CardLayout } from "../layout/CardLayout";
 import { VerifyEmailProps } from "@/src/types/general";

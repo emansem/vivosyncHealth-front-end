@@ -8,7 +8,7 @@ import { DoctorOnboardingForm, setError, updateFormData } from "./redux/features
 
 import { STEP_ONE_FORM_FIELDS, STEP_TWO_FORM_FIELDS } from './constant'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import { RegisterApiRequest, WithdrawalAccountData } from './types'
+import { LoginFormValue, RegisterApiRequest, WithdrawalAccountData } from './types'
 import { useForm } from 'react-hook-form'
 import { withdrawalAccountFormValidation } from '@/src/helper/formValidation'
 import { useMutation } from '@tanstack/react-query'
@@ -225,7 +225,6 @@ export const useVerifyEmail = (token: string) => {
                 console.log(token)
                 updateUser.mutate(token, {
                     onError: (error) => {
-
                         setIsUserEmailVerified(false);
                     }
                 })
@@ -245,6 +244,92 @@ export const useVerifyEmail = (token: string) => {
 
     return { isLoading, user_type, hasTokenExpired, noUser, isUserEmailVerified };
 };
+//login user
+export const useLoginUser = () => {
+    const loginUser = useMutation({
+        mutationFn: (loginData: LoginFormValue) => {
+            return api.post('/auth/login', loginData)
+
+        },
+        onSuccess: (data) => {
+            console.log('Login succesfull', data.data);
+            toast.success(data.data.message);
+
+
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                // console.log("error logging user", error)
+                const errorMessage = error.response?.data.message
+
+                toast.error(errorMessage)
+            }
+
+
+        }
+
+    })
+    return { loginUser }
+}
+
+//Handle forgot password
+export const useForgotPassword = () => {
+    const forgotPassword = useMutation({
+        mutationFn: (email: string) => {
+            return api.post('/auth/forgot-password', { email })
+
+        },
+        onSuccess: (data) => {
+            console.log(' succesfull', data.data);
+            toast.success(data.data.message);
+
+
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                console.log("error sending user email", error)
+                const errorMessage = error.response?.data.message
+
+                toast.error(errorMessage)
+            }
+
+
+        }
+
+    })
+    return { forgotPassword }
+}
+
+interface Password {
+    password: string,
+    confirm_password: string
+}
+export const useResetPassword = () => {
+    const passwordMinLength = 6
+    const [passwordValues, setPasswordValues] = useState<Password>({
+        password: "",
+        confirm_password: ''
+    })
+    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value, name } = e.target;
+        setPasswordValues(prev =>
+            ({ ...prev, [name]: value })
+        )
+
+    }
+    const handleSubmit = () => {
+        if (passwordValues.password !== passwordValues.confirm_password) {
+            toast.error("Password donot match");
+        } else if (!passwordValues.password || !passwordValues.confirm_password) {
+            toast.error("Please fill all the fields");
+        } else if (passwordValues.password.length < passwordMinLength || passwordValues.confirm_password.length < passwordMinLength) {
+            toast.error("Password must be more than 6 characters");
+        }
+    }
+    return { handleOnChange, handleSubmit }
+}
+
+
 
 
 

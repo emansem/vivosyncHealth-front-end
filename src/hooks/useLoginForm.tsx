@@ -2,13 +2,17 @@
 import { useForm } from "react-hook-form";
 import { formValidation } from "../helper/formValidation";
 import { LoginFormValue } from "@/app/lib/types";
+import { useLoginUser } from "@/app/lib/hooks";
 
 function useLoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors }
+    reset,
+    formState: { errors }
   } = useForm<LoginFormValue>();
+  const { loginUser } = useLoginUser();
+  const isPending = loginUser.isPending;
 
   //Pre-register the inputs
   const registerField: Record<
@@ -18,12 +22,17 @@ function useLoginForm() {
     email: register("email", formValidation.email),
     password: register("password", formValidation.password)
   };
-  const onSubmitForm = (data: LoginFormValue) => {
-    console.log("Form submitted", data);
+  const onSubmitForm = async (data: LoginFormValue) => {
+    loginUser.mutate(data, {
+      onSuccess: () => {
+        reset();
+      }
+    });
   };
+
   return {
     errors,
-    isSubmitting,
+    isSubmitting: isPending,
     registerField,
     handleSubmit: handleSubmit(onSubmitForm)
   };
