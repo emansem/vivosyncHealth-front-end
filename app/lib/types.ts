@@ -11,6 +11,12 @@ export interface ReferralLinkProps {
 export interface ReferralTableProps {
     referrals: ReferralData[];
 }
+export interface ApiResponse<T> {
+    message: string,
+    status: string,
+    jwt?: string,
+    data?: T
+}
 
 export interface WithdrawalAccountInputs {
     name: string,

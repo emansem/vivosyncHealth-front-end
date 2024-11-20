@@ -8,7 +8,7 @@ import { DoctorOnboardingForm, setError, updateFormData } from "./redux/features
 
 import { STEP_ONE_FORM_FIELDS, STEP_TWO_FORM_FIELDS } from './constant'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import { LoginFormValue, RegisterApiRequest, WithdrawalAccountData } from './types'
+import { LoginFormValue, WithdrawalAccountData } from './types'
 import { useForm } from 'react-hook-form'
 import { withdrawalAccountFormValidation } from '@/src/helper/formValidation'
 import { useMutation } from '@tanstack/react-query'
@@ -67,7 +67,6 @@ export const useMultipleFormValidation = () => {
 
 export const useOnchangeDoctorOnboarding = () => {
     const dispatch = useAppDispatch();
-    const { formData } = useAppSelector((state) => state.doctorStep)
 
     const handleFormChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -168,33 +167,7 @@ export const useResendLink = (token: string) => {
     return { handleClick, isDisabled };
 
 }
-//create user user
-export const useRegisterUser = () => {
-    const createUser = useMutation({
 
-        mutationFn: (userData: RegisterApiRequest) => {
-            return api.post(`/auth/register`, userData)
-        },
-
-        onSuccess: (data) => {
-            console.log('Registration successful:', data.data);
-            toast.success(data.data.message);
-            localStorage.setItem('jwt', data.data.jwt);
-
-        },
-        onError: (error) => {
-            if (axios.isAxiosError(error)) {
-                console.log("error saving user details", error)
-                const errorMessage = error.response?.data.message
-
-                toast.error(errorMessage)
-            }
-
-
-        }
-    })
-    return { createUser }
-}
 
 //Verify user email in 5 steps haha
 export const useVerifyEmail = (token: string) => {
@@ -224,7 +197,7 @@ export const useVerifyEmail = (token: string) => {
             if (!isTokenExpired) {
                 console.log(token)
                 updateUser.mutate(token, {
-                    onError: (error) => {
+                    onError: () => {
                         setIsUserEmailVerified(false);
                     }
                 })
@@ -300,16 +273,33 @@ export const useForgotPassword = () => {
     return { forgotPassword }
 }
 
-interface Password {
+interface ChangePassword {
     password: string,
     confirm_password: string
 }
-export const useResetPassword = () => {
+export const useResetPassword = (token: string) => {
     const passwordMinLength = 6
-    const [passwordValues, setPasswordValues] = useState<Password>({
+    const [passwordValues, setPasswordValues] = useState<ChangePassword>({
         password: "",
         confirm_password: ''
     })
+    const changePassword = useMutation({
+        mutationFn: (passwordValues: ChangePassword) => {
+            return api.put(`/auth//reset-password/?token=${token}`, passwordValues)
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data.message)
+            }
+        },
+        onSuccess: (data) => {
+            toast.success(data.data.message);
+            setTimeout(() => {
+                window.location.href = "http://localhost:3000/auth/login"
+            }, 500);
+        }
+    })
+
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { value, name } = e.target;
         setPasswordValues(prev =>
@@ -319,14 +309,18 @@ export const useResetPassword = () => {
     }
     const handleSubmit = () => {
         if (passwordValues.password !== passwordValues.confirm_password) {
-            toast.error("Password donot match");
+            return toast.error("Password donot match");
         } else if (!passwordValues.password || !passwordValues.confirm_password) {
-            toast.error("Please fill all the fields");
+            return toast.error("Please fill all the fields");
         } else if (passwordValues.password.length < passwordMinLength || passwordValues.confirm_password.length < passwordMinLength) {
-            toast.error("Password must be more than 6 characters");
+            return toast.error("Password must be more than 6 characters");
         }
+        if (!token) return
+        changePassword.mutate(passwordValues)
+
     }
-    return { handleOnChange, handleSubmit }
+
+    return { handleOnChange, handleSubmit, isPending: changePassword.isPending }
 }
 
 

@@ -1,10 +1,39 @@
 import { DoctorOnboardingForm } from "@/app/lib/redux/features/form/multipleStepFormSlice";
 import { api } from "@/app/lib/service/fetchData"
+import { ApiResponse } from "@/app/lib/types";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
+//A reusable custom hook to handle all post methods
+export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
+    return useMutation({
+
+        mutationFn: (data: TVariables) => {
+            return api.post<ApiResponse<TData>>(apiEndpoint, data)
+        },
+
+        onSuccess: (result) => {
+            const { message, jwt } = result.data;
+            console.log('Registration successful:', result.data);
+            toast.success(message);
+            if (jwt) {
+                localStorage.setItem('jwt', jwt);
+            }
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                console.log("error saving user details", error)
+                const errorMessage = error.response?.data.message
+
+                toast.error(errorMessage)
+            }
+
+
+        }
+    })
+}
 
 export const useUpdateData = (apiEndpoint: string) => {
     const updateUser = useMutation({
@@ -46,7 +75,7 @@ export const useGetUser = (): UseQueryResult<User, Error> => {
     });
 };
 
-export const useupdatedOnboardingData = (apiEndpoint: string) => {
+export const useUpdatedOnboardingData = (apiEndpoint: string) => {
     const updateOnboardData = useMutation({
         mutationFn: (updatingData: DoctorOnboardingForm) => {
 

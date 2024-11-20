@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 
 export default function useGeneralHook() {
@@ -8,6 +8,11 @@ export default function useGeneralHook() {
     const elementRef = useRef<HTMLDivElement | null>(null);
     const [isOpen, setIsOPen] = useState(true);
     const [openProfileMenu, setOpenProfileMenu] = useState(false);
+    const [selectedValue, setSelectdValue] = useState<string>("");
+    const handleOnSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSelectdValue(e.target.value);
+
+    }
     //Toggle a profle menu
     const handleDropDownToggle = () => {
         setOpenProfileMenu((prev) => !prev);
@@ -57,5 +62,5 @@ export default function useGeneralHook() {
         setIsPasswordVisible(prev => !prev);
     }
 
-    return { isPasswordVisible, handleTogglePassword, handleCloseSideBarMenu, handleToggleOPenMenu, handleDropDownToggle, elementRef, isOpen, openProfileMenu };
+    return { isPasswordVisible, handleTogglePassword, handleOnSelect, selectedValue, handleCloseSideBarMenu, handleToggleOPenMenu, handleDropDownToggle, elementRef, isOpen, openProfileMenu };
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import useRegister from "./useRegisterForm";
+import useRegister from "./authentication/useRegisterForm";
 type PlanFeatures = {
   id: number;
   value: string;

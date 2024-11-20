@@ -5,14 +5,19 @@ import Input from "@/src/components/ui/forms/Input";
 import SelectInput from "@/src/components/ui/forms/SelectInput";
 import { TogglePassword } from "@/src/components/utils/PasswordToggle";
 import useGeneralHook from "@/src/hooks/useGeneralHook";
-import useRegister from "@/src/hooks/useRegisterForm";
+import useRegister from "@/src/hooks/authentication/useRegisterForm";
 import FormFooterPart from "./FormFooterPart";
-import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 
 function RegisterForm() {
   const { isPasswordVisible, handleTogglePassword } = useGeneralHook();
-  const { registerField, errors, handleSubmit, value, onSelect, isSubmitting } =
-    useRegister();
+  const {
+    registerField,
+    errors,
+    handleSubmit,
+    value,
+    handleOnSelect,
+    isSubmitting
+  } = useRegister();
   const onSubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     handleSubmit(e);
@@ -24,7 +29,7 @@ function RegisterForm() {
           <SelectInput
             key={field.name}
             options={UserType}
-            onChange={onSelect}
+            onChange={handleOnSelect}
             value={value}
             id={field.name}
           />

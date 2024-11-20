@@ -1,24 +1,23 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { formValidation, } from "../helper/formValidation";
-import { ChangeEvent, useState } from "react";
-import { RegisterFieldTypes } from "@/app/lib/types";
-import { useRegisterUser } from "@/app/lib/hooks";
+import { formValidation, } from "../../helper/formValidation";
+import { RegisterApiRequest, RegisterFieldTypes } from "@/app/lib/types";
+import { useApiPost } from "../serviceHook";
+import useGeneralHook from "../useGeneralHook";
 
 function useRegister() {
     const {
         register,
+        reset,
         handleSubmit,
-        formState: { isSubmitting, errors }
+        formState: { errors }
     } = useForm<RegisterFieldTypes>();
-    //Get a value from a select a option
-    const [value, setValue] = useState<string>("");
-    const onSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-        setValue(e.target.value);
+    const { handleOnSelect, selectedValue } = useGeneralHook()
 
-    }
-    const { createUser } = useRegisterUser()
-    //Pre-register the inputs
+    const apiEndpoint = 'auth/register'
+    const { mutate, isPending } = useApiPost<RegisterApiRequest, RegisterApiRequest>(apiEndpoint)
+
+    //Register the inputs fields are validate them 
     const registerField: Record<keyof RegisterFieldTypes, ReturnType<typeof register>> = {
         email: register("email", formValidation.email),
         password: register("password", formValidation.password),
@@ -27,6 +26,8 @@ function useRegister() {
         checkBox: register("checkBox", formValidation.checkBox)
 
     };
+
+    // A function to submit the form
     const onSubmitForm = async (data: RegisterFieldTypes) => {
 
         const userData = {
@@ -34,18 +35,23 @@ function useRegister() {
             password: data.password,
             email: data.email,
             phone: data.phoneNumber,
-            user_type: value,
+            user_type: selectedValue,
             gender: 'not_specify'
         }
-        createUser.mutate(userData)
-
-
+        if (userData) {
+            mutate(userData, {
+                onSuccess: () => {
+                    //Reset the input fields after the user was registerd successfully
+                    reset()
+                }
+            })
+        }
     };
     return {
         errors,
-        onSelect,
-        value,
-        isSubmitting,
+        handleOnSelect,
+        value: selectedValue,
+        isSubmitting: isPending,
         registerField,
         handleSubmit: handleSubmit(onSubmitForm)
     };
