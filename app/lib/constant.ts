@@ -128,4 +128,59 @@ export const SUBSCRIPTION_PLAN_TYPES: SubscriptionPlanType[] = [
         key: "Premium"
     }
 ];
+export const REFUND_DAYS_OPTION = [
+    { label: "7 Days", value: 7 },
+    { label: "30 Days", value: 30 }
+];
+export const PLAN_DURATION_OPTIONS = [
+    { label: "1 year", value: 1 },
+    { label: "30 Days", value: 30 }
+];
+export const PLAN_TYPE_OPTIONS = [
+    { label: "Basic", value: "basic" },
+    { label: "Standard", value: "standdard" },
+    { label: "Premium", value: "premium" }
+];
+export const IS_REFUND_SELECT_OPTIONS = [
+    { label: "Please select a choice", value: "" },
+    { label: "No", value: "no" },
+    { label: "Yes", value: "yes" }
+];
+
+export const SUBSCRIPTION_PLAN_INPUTS_FIELD: FormFields[] = [
+    {
+        name: "planName",
+        placeHolder: "Plan name",
+        label: "Plan Name",
+        type: "text"
+    },
+    {
+        name: 'planAmount',
+        placeHolder: "Plan amount",
+        label: "Plan Amount",
+        type: "number"
+    },
+    {
+        name: 'discountPercentage',
+        placeHolder: "Discount percentage",
+        label: "Discount Percentage",
+        type: "number"
+    },
+
+
+]
+export const SUBSCRIPTION_PLAN_SELECT_FIELDS: FormFields[] = [
+    {
+        name: "planType",
+        placeHolder: "",
+        label: "Choose Plan type",
+        type: "text"
+    },
+    {
+        name: "refundAnswer",
+        placeHolder: "",
+        label: "Choose Plan type",
+        type: "text"
+    },
+]
 

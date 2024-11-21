@@ -5,6 +5,7 @@ interface SelectProps {
   id: string;
   value?: string;
   label?: string;
+  name?: string;
   onChange?: ChangeEventHandler<HTMLSelectElement>;
   options: {
     value: string | number;
@@ -12,13 +13,23 @@ interface SelectProps {
   }[];
 }
 
-function SelectInput({ value, onChange, options }: SelectProps) {
+function SelectInput({
+  value,
+  id,
+  label,
+  name,
+  onChange,
+  options
+}: SelectProps) {
   return (
     <>
-      {/* <label htmlFor={id}>{label}</label> */}
+      <label className="label" htmlFor={id}>
+        {label}
+      </label>
       <select
         className={`${baseInputStyles} px-3 bg-transparent appearance-none cursor-pointer`}
         value={value}
+        name={name}
         onChange={onChange}
       >
         {options.map((option) => (

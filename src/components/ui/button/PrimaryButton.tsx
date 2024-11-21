@@ -6,6 +6,7 @@ export interface ButtonInterface {
   backgroud: boolean;
   color?: string;
   isSubmitting?: boolean;
+  type?: "reset" | "button" | "submit" | undefined;
   // Additional props if needed
   onClick?: () => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -13,6 +14,7 @@ export interface ButtonInterface {
 export default function PrimaryButton({
   children,
   color,
+  type,
   isSubmitting,
   onClick,
   backgroud
@@ -27,7 +29,7 @@ export default function PrimaryButton({
   return (
     <button
       onClick={onClick}
-      type="submit"
+      type={type}
       className={` font-medium shadow-shadow1 w-full ${color} ${
         isSubmitting ? "cursor-not-allowed" : " cursor-pointer"
       } ${isBackGround} ${backgroudHover} text-base md:text-[18px] transition-all ease-linear duration-200 h-10 md:h-12 rounded-md`}

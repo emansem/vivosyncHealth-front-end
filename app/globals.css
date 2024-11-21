@@ -87,5 +87,5 @@ td {
         peer-checked:after:opacity-100;
 }
 .label {
-  @apply text-base text-stone-700 font-medium;
+  @apply text-lg text-text_color2 font-medium select-none;
 }
