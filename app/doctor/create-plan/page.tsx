@@ -13,7 +13,8 @@ function CreatePlanPage() {
     planfeatures,
     handleOnchangePlanFeature,
     handleOnselectOPtion,
-    errorMessage,
+    isPending,
+    handleSubmitPlanForm,
     handleOnchangePlanInputsField,
     isRefundEnabled
   } = usePricingPlan();
@@ -28,7 +29,6 @@ function CreatePlanPage() {
           <form>
             {/* Subscription plan inputs field */}
             <PlanInputsField
-              errorMessage={errorMessage}
               handleOnchangePlanInputsField={handleOnchangePlanInputsField}
             />
 
@@ -46,8 +46,14 @@ function CreatePlanPage() {
             />
             <div>
               <div className="pt-4">
-                <PrimaryButton type="submit" backgroud color="text-white">
-                  Add now
+                <PrimaryButton
+                  isSubmitting={isPending}
+                  onClick={handleSubmitPlanForm}
+                  type="button"
+                  backgroud
+                  color="text-white"
+                >
+                  {isPending ? "Please wait.." : "Add Now"}
                 </PrimaryButton>
               </div>
             </div>

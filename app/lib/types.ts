@@ -2,6 +2,7 @@ import { UseFormRegisterReturn } from "react-hook-form";
 import { DoctorOnboardingForm } from "./redux/features/form/multipleStepFormSlice";
 import { SubscriptionPlan } from "@/src/types/general";
 import { LucideIcon } from "lucide-react";
+import { PlanFeatures } from "@/src/hooks/usePricingPlan";
 
 export interface TokenType {
     token?: string
@@ -149,4 +150,15 @@ export interface SubscriptionData {
 
 export interface SubscriptionTableProps {
     subscriptions: SubscriptionData[];
+}
+export interface SubscriptionPlanDataType {
+    planName: string,
+    planAmount: number,
+    discountPercentage: number,
+    planType: string,
+    planDuration: string,
+    isRefundEnabled: "yes" | "no" | "",
+    refundDays: string,
+    planFeatures: PlanFeatures[]
+
 }

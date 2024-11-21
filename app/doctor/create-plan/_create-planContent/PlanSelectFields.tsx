@@ -45,7 +45,8 @@ const PlanSelectFields = ({
       <SelectInput
         label="Plan Duration"
         onChange={handleOnselectOPtion}
-        id="duration"
+        id="planDuration"
+        name="planDuration"
         options={PLAN_DURATION_OPTIONS}
       />
     </div>

@@ -27,6 +27,7 @@ export const useVerifyEmail = (token: TokenType) => {
     }, [error]);
 
     const user_type = user?.user_type;
+    const isEmailVerified = user?.isEmailVerified
 
     //handle email verification
     useEffect(() => {
@@ -58,5 +59,5 @@ export const useVerifyEmail = (token: TokenType) => {
     }, [mutate, user, isUserEmailVerified, hasTokenExpired]);
 
 
-    return { isLoading, user_type, hasTokenExpired, noUser, isUserEmailVerified };
+    return { isLoading, user_type, hasTokenExpired, isEmailVerified, noUser, isUserEmailVerified };
 };

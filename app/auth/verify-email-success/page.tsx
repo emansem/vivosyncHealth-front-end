@@ -18,7 +18,7 @@ function VerifiedEmailSuccess() {
   };
 
   //custom hook to verify user email
-  const { isLoading, hasTokenExpired, user_type, noUser } =
+  const { isLoading, isEmailVerified, hasTokenExpired, user_type, noUser } =
     useVerifyEmail(data);
 
   //Check the user type if the user is a patient redirect to dashboard or ask the user to complet his profile
@@ -34,7 +34,7 @@ function VerifiedEmailSuccess() {
   }
 
   //If email verification token has expired, redirect to get a new token
-  if (hasTokenExpired) {
+  if (hasTokenExpired && !isEmailVerified) {
     window.location.href = "http://localhost:3000/auth/verify/failed";
     return;
   }

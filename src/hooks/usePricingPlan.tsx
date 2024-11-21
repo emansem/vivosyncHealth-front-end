@@ -1,8 +1,8 @@
 "use client";
-import { SUBSCRIPTION_PLAN_INPUTS_FIELD } from "@/app/lib/constant";
+import { SubscriptionPlanDataType } from "@/app/lib/types";
 import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
-
+import { useApiPost } from "./serviceHook";
 export type PlanFeatures = {
   id: number;
   value: string;
@@ -15,6 +15,7 @@ const INITIAL_FEATURE = {
 interface SelectedValuesType {
   refundDays: string;
   refundAnswer: "yes" | "no" | "";
+  planDuration: "";
   planType: string; // Consider camelCase for consistency
 }
 interface PlanInputsField {
@@ -30,7 +31,11 @@ function usePricingPlan() {
     planAmount: 0,
     discountPercentage: 0
   });
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const { mutate, isPending } = useApiPost<
+    SubscriptionPlanDataType,
+    SubscriptionPlanDataType
+  >("/doctors/create-plan");
 
   //Subscription plan features
   const [planfeatures, setPlanFeatures] = useState<PlanFeatures[]>([
@@ -41,7 +46,8 @@ function usePricingPlan() {
   const [selectedValues, setSelectedValues] = useState<SelectedValuesType>({
     planType: "",
     refundDays: "",
-    refundAnswer: ""
+    refundAnswer: "",
+    planDuration: ""
   });
 
   //Add new plan feature input
@@ -61,7 +67,6 @@ function usePricingPlan() {
       )
     );
   };
-  console.log(planfeatures);
 
   //Get the subscription plan selected option value
   const handleOnselectOPtion = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -75,18 +80,46 @@ function usePricingPlan() {
     setPlanInputsValue((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmitPlanForm = () => {
+    const planData: SubscriptionPlanDataType = {
+      planAmount: planInputsValue.planAmount,
+      planName: planInputsValue.planName,
+      discountPercentage: planInputsValue.discountPercentage,
+      planType: selectedValues.planType,
+      planDuration: selectedValues.planDuration,
+      isRefundEnabled: selectedValues.refundAnswer,
+      refundDays: selectedValues.refundDays,
+      planFeatures: planfeatures
+    };
+
+    if (!planData.planName) {
+      toast.error("Plan name is required");
+      return;
+    } else if (planData.planAmount <= 0) {
+      toast.error("Plan amount must be greater than 0");
+    } else if (planData.planFeatures.some((value) => value.value === "")) {
+      toast.error("Plan feature cannot be empty");
+      return;
+    } else if (!planData.isRefundEnabled) {
+      toast.error("Please select if you want to allow refund");
+      return;
+    }
+
+    mutate(planData);
+  };
   //Check if the doctor allow refund
   const refundAnswer = selectedValues.refundAnswer;
   const isRefundEnabled = refundAnswer === "yes";
 
   return {
     handleAddNewFeacture,
+    handleSubmitPlanForm,
     planfeatures,
     handleOnchangePlanFeature,
     handleOnselectOPtion,
     isRefundEnabled,
+    isPending,
     selectedValues,
-    errorMessage,
     handleOnchangePlanInputsField
   };
 }

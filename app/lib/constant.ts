@@ -138,7 +138,7 @@ export const PLAN_DURATION_OPTIONS = [
 ];
 export const PLAN_TYPE_OPTIONS = [
     { label: "Basic", value: "basic" },
-    { label: "Standard", value: "standdard" },
+    { label: "Standard", value: "standard" },
     { label: "Premium", value: "premium" }
 ];
 export const IS_REFUND_SELECT_OPTIONS = [
