@@ -5,9 +5,8 @@ import { CardLayout, PageHeading } from "@/src/components/ui/layout/CardLayout";
 import Input from "@/src/components/ui/forms/Input";
 import React from "react";
 import { useSearchParams } from "next/navigation";
-
 import { PASSWORD_REST_FIELDS } from "@/app/lib/constant";
-import { useResetPassword } from "@/app/lib/hooks";
+import { useResetPassword } from "@/src/hooks/authentication/useResetPassword";
 
 function PasswordResentPage() {
   const searchParams = useSearchParams();

@@ -22,9 +22,12 @@ function VerifiedEmailSuccess() {
     useVerifyEmail(data);
 
   //Check the user type if the user is a patient redirect to dashboard or ask the user to complet his profile
-  const userType = user_type === "doctor" && (
-    <Link href="/onboard/doctor"> Complete your profile</Link>
-  );
+  const userType =
+    user_type === "doctor" ? (
+      <Link href="/onboard/doctor"> Complete your profile</Link>
+    ) : (
+      "Go to dashboard"
+    );
 
   if (isLoading) {
     return <div>Verifying email...</div>;

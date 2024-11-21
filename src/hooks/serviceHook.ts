@@ -2,7 +2,6 @@ import { api } from "@/app/lib/service/fetchData"
 import { ApiResponse } from "@/app/lib/types";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
 import axios from "axios";
-import { useState } from "react";
 import toast from "react-hot-toast";
 export interface User {
     isEmailVerified: boolean,
@@ -75,33 +74,3 @@ export const useGetUser = (): UseQueryResult<User, Error> => {
     });
 };
 
-
-export const useVerifyPasswordRestToken = () => {
-    const [hasTokenExpired, setHasTokenExpired] = useState(false);
-    const verifyToken = useMutation({
-        mutationFn: (token: string) => {
-            console.log('updated data', token)
-            return api.post("/auth/verify-password-token", { token });
-        },
-        onSuccess: (data) => {
-            if (data) {
-                console.log("success verifying email", data.data);
-            }
-
-        },
-        onError: (error) => {
-
-            if (axios.isAxiosError(error)) {
-                const errorMessage = error.response?.data.message as string
-                toast.error(errorMessage);
-                console.log('error', error.response?.data)
-
-                if (errorMessage.includes('Token has expired')) {
-                    setHasTokenExpired(true)
-                }
-
-            }
-        }
-    })
-    return { verifyToken, hasTokenExpired }
-}

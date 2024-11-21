@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useGetUser, useUpdateData } from "../serviceHook";
 import toast from "react-hot-toast";
+import { TokenType } from "@/app/lib/types";
 
-export const useResendLink = () => {
+
+export const useResendLink = (subject?: string) => {
 
     const apiEndpoint = '/auth/resend-link'
     const { mutate } = useUpdateData(apiEndpoint,)
@@ -14,8 +16,9 @@ export const useResendLink = () => {
     const handleResendEmail = () => {
         const email = data?.email as string
         if (!email) return toast.error("User account not found, please create an account")
-        const token = {
-            email: email
+        const token: TokenType = {
+            email: email,
+            subject: subject
         }
         // Disable the button
         setIsDisabled(true);

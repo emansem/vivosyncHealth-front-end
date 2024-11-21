@@ -2,26 +2,16 @@
 // import { useState } from "react"
 "use client"
 import { useDispatch, useSelector } from 'react-redux'
-import toast from 'react-hot-toast'
 import type { RootState, AppDispatch } from '../lib/redux/store'
 import { ChangeEvent, useState } from 'react'
-import { LoginFormValue, WithdrawalAccountData } from './types'
+import { WithdrawalAccountData } from './types'
 import { useForm } from 'react-hook-form'
 import { withdrawalAccountFormValidation } from '@/src/helper/formValidation'
-import { useMutation } from '@tanstack/react-query'
-import { api } from './service/fetchData'
-import axios from 'axios'
-
 
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
 export const useAppSelector = useSelector.withTypes<RootState>()
-
-
-
-
-
 
 //Handle doctor withdrawal account
 export const useWithdrawalAccount = () => {
@@ -55,7 +45,6 @@ export const useOpenAndClose = () => {
     return { handleClose, handle0pen, open }
 }
 
-
 // Handle upload image, preview and get the image files
 export const useUPloadImage = () => {
     const [previewImage, setPreviewImage] = useState<string>("");
@@ -72,114 +61,6 @@ export const useUPloadImage = () => {
         }
     };
     return { previewImage, handlePhotoChange }
-}
-
-
-
-//login user
-export const useLoginUser = () => {
-    const loginUser = useMutation({
-        mutationFn: (loginData: LoginFormValue) => {
-            return api.post('/auth/login', loginData)
-
-        },
-        onSuccess: (data) => {
-            console.log('Login succesfull', data.data);
-            toast.success(data.data.message);
-
-
-        },
-        onError: (error) => {
-            if (axios.isAxiosError(error)) {
-                // console.log("error logging user", error)
-                const errorMessage = error.response?.data.message
-
-                toast.error(errorMessage)
-            }
-
-
-        }
-
-    })
-    return { loginUser }
-}
-
-//Handle forgot password
-export const useForgotPassword = () => {
-    const forgotPassword = useMutation({
-        mutationFn: (email: string) => {
-            return api.post('/auth/forgot-password', { email })
-
-        },
-        onSuccess: (data) => {
-            console.log(' succesfull', data.data);
-            toast.success(data.data.message);
-
-
-        },
-        onError: (error) => {
-            if (axios.isAxiosError(error)) {
-                console.log("error sending user email", error)
-                const errorMessage = error.response?.data.message
-
-                toast.error(errorMessage)
-            }
-
-
-        }
-
-    })
-    return { forgotPassword }
-}
-
-interface ChangePassword {
-    password: string,
-    confirm_password: string
-}
-export const useResetPassword = (token: string) => {
-    const passwordMinLength = 6
-    const [passwordValues, setPasswordValues] = useState<ChangePassword>({
-        password: "",
-        confirm_password: ''
-    })
-    const changePassword = useMutation({
-        mutationFn: (passwordValues: ChangePassword) => {
-            return api.put(`/auth//reset-password/?token=${token}`, passwordValues)
-        },
-        onError: (error) => {
-            if (axios.isAxiosError(error)) {
-                toast.error(error.response?.data.message)
-            }
-        },
-        onSuccess: (data) => {
-            toast.success(data.data.message);
-            setTimeout(() => {
-                window.location.href = "http://localhost:3000/auth/login"
-            }, 500);
-        }
-    })
-
-    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { value, name } = e.target;
-        setPasswordValues(prev =>
-            ({ ...prev, [name]: value })
-        )
-
-    }
-    const handleSubmit = () => {
-        if (passwordValues.password !== passwordValues.confirm_password) {
-            return toast.error("Password donot match");
-        } else if (!passwordValues.password || !passwordValues.confirm_password) {
-            return toast.error("Please fill all the fields");
-        } else if (passwordValues.password.length < passwordMinLength || passwordValues.confirm_password.length < passwordMinLength) {
-            return toast.error("Password must be more than 6 characters");
-        }
-        if (!token) return
-        changePassword.mutate(passwordValues)
-
-    }
-
-    return { handleOnChange, handleSubmit, isPending: changePassword.isPending }
 }
 
 

@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { formValidation } from "../helper/formValidation";
 import { LoginFormValue } from "@/app/lib/types";
-import { useLoginUser } from "@/app/lib/hooks";
+import { useApiPost } from "./serviceHook";
 
 function useLoginForm() {
   const {
@@ -11,10 +11,11 @@ function useLoginForm() {
     reset,
     formState: { errors }
   } = useForm<LoginFormValue>();
-  const { loginUser } = useLoginUser();
-  const isPending = loginUser.isPending;
+  const apiEndpoint = "/auth/login";
+  const { mutate, isPending } = useApiPost<LoginFormValue, LoginFormValue>(
+    apiEndpoint
+  );
 
-  //Pre-register the inputs
   const registerField: Record<
     keyof LoginFormValue,
     ReturnType<typeof register>
@@ -23,7 +24,7 @@ function useLoginForm() {
     password: register("password", formValidation.password)
   };
   const onSubmitForm = async (data: LoginFormValue) => {
-    loginUser.mutate(data, {
+    mutate(data, {
       onSuccess: () => {
         reset();
       }

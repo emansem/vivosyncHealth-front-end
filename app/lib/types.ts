@@ -4,8 +4,9 @@ import { SubscriptionPlan } from "@/src/types/general";
 import { LucideIcon } from "lucide-react";
 
 export interface TokenType {
-    token: string
+    token?: string
     email?: string,
+    subject?: string,
 }
 export interface ReferralLinkProps {
     referralLink: string;
