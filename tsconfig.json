@@ -24,6 +24,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "data/demoChartUsers.TS", "app/auth/forgot-password/page.tsX"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "data/demoChartUsers.TS", "app/(auth)/forgot-password/page.tsX"],
   "exclude": ["node_modules"]
 }

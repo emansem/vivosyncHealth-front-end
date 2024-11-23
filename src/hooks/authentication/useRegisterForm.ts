@@ -4,6 +4,7 @@ import { formValidation, } from "../../helper/formValidation";
 import { RegisterApiRequest, RegisterFieldTypes } from "@/app/lib/types";
 import { useApiPost } from "../serviceHook";
 import useGeneralHook from "../useGeneralHook";
+import { encodeValue } from "@/src/helper/decordAndEncord";
 
 function useRegister() {
     const {
@@ -40,13 +41,15 @@ function useRegister() {
         }
         if (userData) {
             mutate(userData, {
-                onSuccess: () => {
-                    // const { token } = data.data
+                onSuccess: (data) => {
+
                     //Reset the input fields after the user was registerd successfully
+                    localStorage.setItem('jwt', JSON.stringify(data.data.jwt))
+                    localStorage.setItem('email_verify_failed', encodeValue(data.data.email as string));
                     reset()
                     setTimeout(() => {
-                        window.location.href = `http://localhost:3000/auth/verify-email`
-                    }, 1000);
+                        window.location.href = `/verify-email`
+                    }, 500);
                 }
             })
         }

@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 export interface User {
     isEmailVerified: boolean,
+
     user_type: string,
     isProfileCompleted: boolean,
     TokenExpireTime: number
@@ -24,7 +25,7 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
             console.log('Succesfull sent data to the server:', result.data);
             toast.success(message);
             if (jwt) {
-                localStorage.setItem('jwt', jwt);
+                localStorage.setItem('jwt', JSON.stringify(jwt));
             }
         },
         onError: (error) => {
@@ -32,7 +33,7 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
                 console.log("error saving user details", error)
                 const errorMessage = error.response?.data.message
 
-                toast.error(errorMessage)
+                toast.error(errorMessage || "Something went wrong,please try again")
             }
 
 
@@ -55,7 +56,7 @@ export const useUpdateData = <TData, TVariables>(apiEndpoint: string) => {
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
-                toast.error(error.response?.data.message);
+                toast.error(error.response?.data.message || "Something went wrong,please try again");
 
             }
         }

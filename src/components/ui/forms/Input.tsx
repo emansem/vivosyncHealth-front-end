@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { ChangeEvent, forwardRef } from "react";
+import { ChangeEvent, forwardRef, KeyboardEventHandler } from "react";
 import { baseInputStyles } from "../../utils/css/basicInputsStyles";
 
 interface InputType {
@@ -8,6 +8,7 @@ interface InputType {
   inputPlaceholder?: string;
   error?: string;
   label?: string;
+  onKeyEvent?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   name?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   value?: string;
@@ -24,6 +25,7 @@ const Input = forwardRef<HTMLInputElement, InputType>(
       error,
       onChange,
       name,
+      onKeyEvent,
       value,
       inputType,
       ...props
@@ -41,6 +43,7 @@ const Input = forwardRef<HTMLInputElement, InputType>(
           type={inputType}
           ref={ref}
           id={id}
+          onKeyDown={onKeyEvent}
           value={value}
           onChange={onChange}
           name={name}

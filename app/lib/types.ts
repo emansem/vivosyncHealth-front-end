@@ -19,8 +19,12 @@ export interface ReferralTableProps {
 export interface ApiResponse<T> {
     message: string,
     status: string,
+    email_subject: string,
     token?: string,
+    user_type: string,
     jwt?: string,
+    email?: string,
+
     data?: T
 }
 export interface AlertProps {

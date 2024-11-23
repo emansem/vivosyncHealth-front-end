@@ -184,3 +184,32 @@ export const SUBSCRIPTION_PLAN_SELECT_FIELDS: FormFields[] = [
     },
 ]
 
+export const EMAIL_SUBJECT = {
+    RESET_PASSWORD: 'RESET_PASSWORD',
+    VERIFY_EMAIL: 'EMAIL_VERIFICATION',
+}
+
+export const USER_TYPES = {
+    ADMIN: 'admin',
+    PATIENT: 'patient',
+    DOCTOR: 'doctor'
+} as const;
+
+export const EMAIL_VERIFICATION_MESSAGES = {
+    standard:
+        "Please enter the 5-digit code sent to your email address to verify your account.",
+
+    detailed:
+        "A verification code has been sent to your email address. Enter the 5-digit code below to verify your account. Codes expire after 10 minutes.",
+
+    friendly:
+        "We've sent a 5-digit code to your email. Type it below to confirm it's really you! 📧",
+
+    formal:
+        "For security purposes, please enter the 5-digit verification code that was sent to your registered email address.",
+
+    withHelp:
+        "Enter the 5-digit verification code from your email. Haven't received it? Check your spam folder or click 'Resend Code' below.",
+
+    concise: "Enter 5-digit code sent to your email"
+} as const

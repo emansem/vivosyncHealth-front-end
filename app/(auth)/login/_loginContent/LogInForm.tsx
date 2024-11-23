@@ -2,7 +2,7 @@ import Input from "@/src/components/ui/forms/Input";
 import useLoginForm from "@/src/hooks/useLoginForm";
 import { TogglePassword } from "@/src/components/utils/PasswordToggle";
 import useGeneralHook from "@/src/hooks/useGeneralHook";
-import LoginFormFooterSection from "../_loginContent/LoginFormFooterSection";
+import LoginFormFooterSection from "./LoginFormFooterSection";
 import { LOGIN_INPUTS_FIELD } from "@/data/loginFormInputsField";
 import { LoginFormValue } from "@/app/lib/types";
 

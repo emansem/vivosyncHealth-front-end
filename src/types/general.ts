@@ -2,6 +2,7 @@ import React from "react";
 
 export interface VerifyEmailProps {
     message: string;
+    email_subject?: string;
     buttonText?: string | React.ReactNode
 }
 
