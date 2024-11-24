@@ -41,7 +41,7 @@ export const filterTag = [
 ];
 
 //Desktop view subscription plans data 
-export const DOCTOR_SUBSCRIPTION_PLAN_FIELD = ["Name", "Price", "Coupon %", "Status", ""];
+export const DOCTOR_SUBSCRIPTION_PLAN_FIELD = ["Plan Type", "Price", "Discount %", "Duration", "Status", ""];
 
 export const MobileSubscriptionPlansField: SubscriptionPlanMobileTypes[] = [
     {
@@ -51,6 +51,10 @@ export const MobileSubscriptionPlansField: SubscriptionPlanMobileTypes[] = [
     {
         label: "Price",
         key: "price"
+    },
+    {
+        label: "Duration",
+        key: "plan_duration"
     },
 
     {

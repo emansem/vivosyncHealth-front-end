@@ -19,44 +19,44 @@ export const subscriptionPlans: SubscriptionPlan[] = [
             "Patient History Access"
         ]
     },
-    {
-        id: 2,
-        name: "Professional",
-        plan_type: "Standard",
-        price: 4000,
-        status: "active",
-        discountPercentage: 25,
-        duration: "Monthly",
-        maxPatients: 100,
-        features: [
-            "All Basic Features",
-            "Up to 100 Patient Records",
-            "Advanced Scheduling",
-            "SMS Notifications",
-            "Video Consultations",
-            "Custom Reports",
-            "Priority Support"
-        ]
-    },
-    {
-        id: 3,
-        name: "Premium",
-        price: 6000,
-        status: "active",
-        discountPercentage: 30,
-        plan_type: 'Premium',
-        duration: "Monthly",
-        maxPatients: 200,
-        features: [
-            "All Professional Features",
-            "Unlimited Patient Records",
-            "Advanced Analytics",
-            "Custom Branding",
-            "API Access",
-            "Multi-device Support",
-            "24/7 Priority Support",
-            "Staff Management"
-        ]
-    },
+    // {
+    //     id: 2,
+    //     name: "Professional",
+    //     plan_type: "Standard",
+    //     price: 4000,
+    //     status: "active",
+    //     discountPercentage: 25,
+    //     duration: "Monthly",
+    //     maxPatients: 100,
+    //     features: [
+    //         "All Basic Features",
+    //         "Up to 100 Patient Records",
+    //         "Advanced Scheduling",
+    //         "SMS Notifications",
+    //         "Video Consultations",
+    //         "Custom Reports",
+    //         "Priority Support"
+    //     ]
+    // },
+    // {
+    //     id: 3,
+    //     name: "Premium",
+    //     price: 6000,
+    //     status: "active",
+    //     discountPercentage: 30,
+    //     plan_type: 'Premium',
+    //     duration: "Monthly",
+    //     maxPatients: 200,
+    //     features: [
+    //         "All Professional Features",
+    //         "Unlimited Patient Records",
+    //         "Advanced Analytics",
+    //         "Custom Branding",
+    //         "API Access",
+    //         "Multi-device Support",
+    //         "24/7 Priority Support",
+    //         "Staff Management"
+    //     ]
+    // },
 
 ];

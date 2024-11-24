@@ -45,11 +45,12 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
 export const useUpdateData = <TData, TVariables>(apiEndpoint: string) => {
     return useMutation({
         mutationFn: (data: TVariables) => {
-            console.log('updated data',)
+
             return api.put<ApiResponse<TData>>(apiEndpoint, data);
         },
         onSuccess: (result) => {
             if (result) {
+                console.log("Updated data", result.data)
                 toast.success(result.data.message)
             }
 
@@ -74,4 +75,18 @@ export const useGetUser = (): UseQueryResult<User, Error> => {
         },
     });
 };
+
+export const useGetData = <TData>(apiEndpoint: string, queryKeyType: string): UseQueryResult<TData, Error> => {
+    return useQuery({
+        queryKey: [queryKeyType],
+        queryFn: async () => {
+            const { data } = await api.get<TData>(apiEndpoint);
+            return data;
+        },
+
+    });
+};
+
+
+
 

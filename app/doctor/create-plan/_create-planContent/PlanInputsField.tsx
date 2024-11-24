@@ -4,10 +4,12 @@ import { ChangeEvent } from "react";
 interface PlanInputsFieldProps {
   handleOnchangePlanInputsField: (e: ChangeEvent<HTMLInputElement>) => void;
   errorMessage?: string;
+  value?: string;
 }
 function PlanInputsField({
   handleOnchangePlanInputsField,
-  errorMessage
+  errorMessage,
+  value
 }: PlanInputsFieldProps) {
   return (
     <div>
@@ -17,6 +19,7 @@ function PlanInputsField({
           label={field.label}
           inputType={field.type}
           error={errorMessage}
+          value={value}
           onChange={handleOnchangePlanInputsField}
           name={field.name}
           inputPlaceholder={field.placeHolder}

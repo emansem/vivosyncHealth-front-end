@@ -149,19 +149,19 @@ export const IS_REFUND_SELECT_OPTIONS = [
 
 export const SUBSCRIPTION_PLAN_INPUTS_FIELD: FormFields[] = [
     {
-        name: "planName",
+        name: "name",
         placeHolder: "Plan name",
         label: "Plan Name",
         type: "text"
     },
     {
-        name: 'planAmount',
+        name: 'amount',
         placeHolder: "Plan amount",
         label: "Plan Amount",
         type: "number"
     },
     {
-        name: 'discountPercentage',
+        name: 'discount_percentage',
         placeHolder: "Discount percentage",
         label: "Discount Percentage",
         type: "number"
@@ -171,7 +171,7 @@ export const SUBSCRIPTION_PLAN_INPUTS_FIELD: FormFields[] = [
 ]
 export const SUBSCRIPTION_PLAN_SELECT_FIELDS: FormFields[] = [
     {
-        name: "planType",
+        name: "plan_type",
         placeHolder: "",
         label: "Choose Plan type",
         type: "text"
@@ -182,6 +182,17 @@ export const SUBSCRIPTION_PLAN_SELECT_FIELDS: FormFields[] = [
         label: "Choose Plan type",
         type: "text"
     },
+    {
+        name: "plan_status",
+        placeHolder: "",
+        label: "Active",
+        type: "text"
+    },
+]
+export const PLAN_STATUS_OPTIONS = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+
 ]
 
 export const EMAIL_SUBJECT = {
@@ -212,4 +223,11 @@ export const EMAIL_VERIFICATION_MESSAGES = {
         "Enter the 5-digit verification code from your email. Haven't received it? Check your spam folder or click 'Resend Code' below.",
 
     concise: "Enter 5-digit code sent to your email"
+} as const
+
+export const DOCTOR_API_END_POINTS = {
+    SUBSCRIPTION_PLAN: {
+        getPlan: "/doctors/plan",
+        updatePlan: "/doctors/plan"
+    }
 } as const

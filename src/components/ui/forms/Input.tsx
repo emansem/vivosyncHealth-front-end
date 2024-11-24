@@ -13,6 +13,7 @@ interface InputType {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   value?: string;
   inputType: string;
+  isReadOnly?: boolean;
 }
 
 // eslint-disable-next-line react/display-name
@@ -22,6 +23,7 @@ const Input = forwardRef<HTMLInputElement, InputType>(
       id,
       inputPlaceholder,
       label,
+      isReadOnly = false,
       error,
       onChange,
       name,
@@ -39,10 +41,13 @@ const Input = forwardRef<HTMLInputElement, InputType>(
         </label>
         <input
           className={`${baseInputStyles} px-3 my-2
-            ${error ? "border-red-500" : "border-border_color"}`}
+            ${error ? "border-red-500" : "border-border_color"} ${
+            isReadOnly && "bg-stone-700/10"
+          }`}
           type={inputType}
           ref={ref}
           id={id}
+          readOnly={isReadOnly}
           onKeyDown={onKeyEvent}
           value={value}
           onChange={onChange}
