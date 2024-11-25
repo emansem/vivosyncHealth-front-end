@@ -1,10 +1,10 @@
 "use client";
 import Input from "@/src/components/ui/forms/Input";
 import { CardLayout, PageHeading } from "@/src/components/ui/layout/CardLayout";
-import { useUpdateSubscriptionPlan } from "@/src/hooks/usePricingPlan";
 import PlanSelectFields from "../../create-plan/_create-planContent/PlanSelectFields";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { useParams } from "next/navigation";
+import { useUpdateSubscriptionPlan } from "@/src/hooks/pricingPlan/useUpdatePlan";
 
 function UpdateSubscriptionPlan() {
   const params = useParams();

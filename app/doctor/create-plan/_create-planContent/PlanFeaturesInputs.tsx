@@ -1,6 +1,6 @@
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import Input from "@/src/components/ui/forms/Input";
-import { PlanFeatures } from "@/src/hooks/usePricingPlan";
+import { PlanFeatures } from "@/src/hooks/pricingPlan/useUtileHook";
 import React, { ChangeEvent } from "react";
 interface PlanFeaturesProps {
   handleAddNewFeacture: () => void;

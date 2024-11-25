@@ -4,10 +4,7 @@ import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import MobileTable from "@/src/components/utils/table/MobileTable";
 
 import PlanDeskTopTable from "./_pricingContents/PlanDeskTopTable";
-import {
-  useDeleteSubscriptionPlan,
-  useGetAllSubscriptionPlansData
-} from "@/src/hooks/usePricingPlan";
+
 import { GlobalWarningAlert } from "@/src/components/ui/alert/WarningAlert";
 import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 
@@ -18,6 +15,10 @@ import {
 } from "@/app/lib/redux/features/subscriptionPlanSlice/subscriptionPlanSlice";
 import Link from "next/link";
 import { SubscriptionPlanDataType } from "@/app/lib/types";
+import {
+  useDeleteSubscriptionPlan,
+  useGetAllSubscriptionPlansData
+} from "@/src/hooks/pricingPlan/useRetreivePlanData";
 
 function PricingPage() {
   const dispatch = useAppDispatch();
@@ -32,8 +33,7 @@ function PricingPage() {
     dispatch(getPlanId(id));
     dispatch(openModal());
   };
-  const { planId, handleSubmitDeletePlan, isPending } =
-    useDeleteSubscriptionPlan();
+  const { handleSubmitDeletePlan, isPending } = useDeleteSubscriptionPlan();
 
   if (isLoading) return <div>Loading.....</div>;
   return (

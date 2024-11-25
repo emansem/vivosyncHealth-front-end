@@ -1,11 +1,11 @@
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { useAppDispatch } from "@/app/lib/hooks";
 import {
   getPlanId,
   openModal
 } from "@/app/lib/redux/features/subscriptionPlanSlice/subscriptionPlanSlice";
 import Link from "next/link";
-import { useGetAllSubscriptionPlansData } from "@/src/hooks/usePricingPlan";
 import { getStatusColor } from "@/src/components/utils/getStatusColor";
+import { useGetAllSubscriptionPlansData } from "@/src/hooks/pricingPlan/useRetreivePlanData";
 
 const getPlanType = (plantype: string) => {
   return plantype.charAt(0).toUpperCase() + plantype.slice(1);

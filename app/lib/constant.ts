@@ -230,7 +230,8 @@ export const DOCTOR_API_END_POINTS = {
         getPlan: "/doctors/plan",
         updatePlan: "/doctors/plan",
         getAllPlan: "/doctors/plans",
-        deletePlan: '/doctors/plan'
+        deletePlan: '/doctors/plan',
+        create: "/doctors/create-plan"
     }
 } as const
 

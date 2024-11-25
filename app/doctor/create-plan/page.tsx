@@ -1,11 +1,11 @@
 "use client";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { CardLayout, PageHeading } from "@/src/components/ui/layout/CardLayout";
-import usePricingPlan from "@/src/hooks/usePricingPlan";
 import React from "react";
 import PlanSelectFields from "./_create-planContent/PlanSelectFields";
 import PlanInputsField from "./_create-planContent/PlanInputsField";
 import PlanFeaturesInputs from "./_create-planContent/PlanFeaturesInputs";
+import useCreateSubscriptionPlan from "@/src/hooks/pricingPlan/useCreateSubscriptionPlan";
 
 function CreatePlanPage() {
   const {
@@ -17,7 +17,7 @@ function CreatePlanPage() {
     handleSubmitPlanForm,
     handleOnchangePlanInputsField,
     isRefundEnabled
-  } = usePricingPlan();
+  } = useCreateSubscriptionPlan();
   return (
     <div>
       <div>
