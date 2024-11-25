@@ -2,13 +2,13 @@ import { FormFields } from "@/app/lib/types";
 
 export const DOCTOR_UPDATE_PROFILE_FIELDS: FormFields[] = [
     {
-        name: "full_name",
+        name: "name",
         placeHolder: "Dr. John Doe",
         label: "Full Name",
         type: "text"
     },
     {
-        name: "specialization",
+        name: "speciality",
         placeHolder: "Cardiologist",
         type: "text",
         label: "Specialization"

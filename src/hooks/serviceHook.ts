@@ -5,14 +5,30 @@ import { ApiResponse } from "@/app/lib/types";
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query"
 import axios from "axios";
 import toast from "react-hot-toast";
+export interface UserType {
+    // Personal & Professional Info
+    name: string;
+    email: string;
+    phone_number: string;
+    about: string;
+    medical_license: string;
+    profile_photo: string;
+    years_of_experience: string;
+    languages: string;
+    speciality: string;
+    // Location/Practice Info
+    hospital_name: string;
+    hospital_address: string;
+    country: string;
+    state: string;
+    city: string;
+    zip_code: string;
+    working_days: string;
+}
 export interface User {
-    isEmailVerified: boolean,
-
-    user_type: string,
-    isProfileCompleted: boolean,
-    TokenExpireTime: number
-    email: string,
-
+    data: {
+        user: UserType
+    }
 }
 //A reusable custom hook to post data to the server
 export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {

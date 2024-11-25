@@ -5,20 +5,17 @@ import { useAppSelector } from "@/app/lib/hooks";
 import { StepFormLayout } from "./_doctorOnboardingContents/StepFormLayout";
 import { useGetUser } from "@/src/hooks/serviceHook";
 
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useEffect } from "react";
 import { SuccessWrapperAlert } from "@/src/components/ui/alert/SuccessAlert";
 function Page() {
   const { data, isLoading, error } = useGetUser();
   const isProfileCompleted = data?.isProfileCompleted;
 
-  useEffect(() => {
-    if (error && axios.isAxiosError(error)) {
-      toast.error(error.response?.data.message);
-      window.location.href = `${window.location.protocol}//${window.location.hostname}/auth/register`;
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error && axios.isAxiosError(error)) {
+  //     toast.error(error.response?.data.message);
+  //     window.location.href = `${window.location.protocol}//${window.location.hostname}/auth/register`;
+  //   }
+  // }, [error]);
 
   if (isLoading) return <div>loading..</div>;
 

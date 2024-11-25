@@ -1,15 +1,24 @@
 import Image from "next/image";
 import { Camera } from "lucide-react";
 import { useUPloadImage } from "@/app/lib/hooks";
+import { useEffect, useState } from "react";
 
-function UpdateProfilePicture() {
+function UpdateProfilePicture({ profile_photo }: { profile_photo: string }) {
+  const [photo, setPhoto] = useState("");
+  useEffect(() => {
+    if (profile_photo) {
+      setPhoto(profile_photo);
+    }
+    [profile_photo];
+  });
   const { handlePhotoChange, previewImage } = useUPloadImage();
+  if (!photo) return;
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary_color">
           <Image
-            src={previewImage || "/api/placeholder/150/150"}
+            src={previewImage || `${photo}`}
             alt="Profile"
             width={128}
             height={128}

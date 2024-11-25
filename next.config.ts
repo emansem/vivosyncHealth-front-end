@@ -21,18 +21,18 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'cloudinary.com',
+        hostname: 'res.cloudinary.com',
         pathname: '/**',
       }
     ],
   },
-  webpack: (config) => {
-    config.experiments = { ...config.experiments, topLevelAwait: true }
-    return config
-  },
-  // Add Fast Refresh options
-  reactStrictMode: true,
-  fastRefresh: true
+  // webpack: (config) => {
+  //   config.experiments = { ...config.experiments, topLevelAwait: true }
+  //   return config
+  // },
+  // // Add Fast Refresh options
+  // reactStrictMode: true,
+  // fastRefresh: true
 
 
 };
