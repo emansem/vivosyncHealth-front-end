@@ -1,6 +1,8 @@
+import { useAppDispatch } from "@/app/lib/hooks";
+import { closeModal } from "@/app/lib/redux/features/subscriptionPlanSlice/subscriptionPlanSlice";
 import { api } from "@/app/lib/service/fetchData"
 import { ApiResponse } from "@/app/lib/types";
-import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query"
 import axios from "axios";
 import toast from "react-hot-toast";
 export interface User {
@@ -76,16 +78,45 @@ export const useGetUser = (): UseQueryResult<User, Error> => {
     });
 };
 
-export const useGetData = <TData>(apiEndpoint: string, queryKeyType: string): UseQueryResult<TData, Error> => {
+export const useGetData = <TData>(apiEndpoint: string, queryKeyType: string):
+    UseQueryResult<TData, Error> => {
+    const queryClient = useQueryClient();
+
     return useQuery({
         queryKey: [queryKeyType],
         queryFn: async () => {
             const { data } = await api.get<TData>(apiEndpoint);
             return data;
         },
-
     });
 };
+
+// useDeleteData.ts
+export const useDeleteData = <TData>(apiEndpoint: string, queryKey: string) => {
+    const queryClient = useQueryClient();
+    const disPatch = useAppDispatch();
+
+    return useMutation({
+        mutationFn: (id: number) => {
+            return api.delete<ApiResponse<TData>>(`${apiEndpoint}/${id}`);
+        },
+
+        onSuccess: (result) => {
+            if (result) {
+                toast.success(result.data.message);
+            }
+            queryClient.invalidateQueries({ queryKey: [queryKey] })
+            disPatch(closeModal());
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data.message || "Something went wrong");
+            }
+        }
+    });
+};
+
+
 
 
 

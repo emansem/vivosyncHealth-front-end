@@ -2,9 +2,16 @@
 import { SubscriptionPlanDataType } from "@/app/lib/types";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useApiPost, useGetData, useUpdateData } from "./serviceHook";
-import { DOCTOR_API_END_POINTS } from "@/app/lib/constant";
+import {
+  useApiPost,
+  useDeleteData,
+  useGetData,
+  useUpdateData
+} from "./serviceHook";
+import { DOCTOR_API_END_POINTS, GET_ALL_PLANS_KEY } from "@/app/lib/constant";
 import axios from "axios";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import { closeModal } from "@/app/lib/redux/features/subscriptionPlanSlice/subscriptionPlanSlice";
 
 export type PlanFeatures = {
   id: number;
@@ -14,9 +21,9 @@ export type PlanFeatures = {
 interface SelectedValuesType {
   refundDays: string;
   refundAnswer: "yes" | "no" | "";
-  planDuration: "";
+  planDuration: "30" | "1";
   plan_status: "active" | "inactive";
-  planType: string; // Consider camelCase for consistency
+  planType: "basic" | "standard" | "premium" | undefined;
 }
 export interface PlanInputsFieldTypes {
   name: string;
@@ -98,21 +105,17 @@ const usePlanFeatures = () => {
     planfeatures
   };
 };
-interface ApiResponse {
-  data: {
-    plan: SubscriptionPlanDataType;
-  };
-}
+
 /**
  * Custom hook to manage plan selection options
  * Handles plan type, refund settings, and duration
  */
 const useSelectPlanInputs = () => {
   const [selectedValues, setSelectedValues] = useState<SelectedValuesType>({
-    planType: "",
+    planType: "basic",
     refundDays: "",
     refundAnswer: "",
-    planDuration: "",
+    planDuration: "30",
     plan_status: "active"
   });
 
@@ -161,16 +164,10 @@ function usePricingPlan() {
     SubscriptionPlanDataType
   >("/doctors/create-plan");
 
-  //Rest the form inputs value after successfull response from the api
-  const resetForm = () => {
-    setSelectedValues({
-      planType: "",
-      refundDays: "",
-      refundAnswer: "",
-      planDuration: "",
-      plan_status: "active"
-    });
-  };
+  // //Rest the form inputs value after successfull response from the api
+  // const resetForm = () => {
+
+  // };
 
   // Handle form submission and validation
   const handleSubmitPlanForm = () => {
@@ -191,16 +188,13 @@ function usePricingPlan() {
     if (!planData.name) {
       toast.error("Plan name is required");
       return;
-    }
-    if (planData.amount <= 0) {
+    } else if (planData.amount <= 0) {
       toast.error("Plan amount must be greater than 0");
       return;
-    }
-    if (planData.plan_features.some((value) => !value.value)) {
+    } else if (planData.plan_features.some((value) => !value.value)) {
       toast.error("Plan feature cannot be empty");
       return;
-    }
-    if (!planData.isRefundEnabled) {
+    } else if (!planData.isRefundEnabled) {
       toast.error("Please select if you want to allow refund");
       return;
     }
@@ -208,7 +202,6 @@ function usePricingPlan() {
     // Submit if validation passes
     mutate(planData, {
       onSuccess: () => {
-        resetForm();
         window.location.reload();
         reset();
       }
@@ -228,12 +221,17 @@ function usePricingPlan() {
   };
 }
 
-//A custom hook to get the doctor plan by id
+//A custom hook to get the doctor subscription plan by id
+interface GetPlanApiResponse {
+  data: {
+    plan: SubscriptionPlanDataType;
+  };
+}
 export const useGetSubscriptionPlanData = () => {
   const apiEndpoint = `${DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.getPlan}/42`;
   const queryKey = "plan";
   const { data, isLoading, isError, error, isSuccess } =
-    useGetData<ApiResponse>(apiEndpoint, queryKey);
+    useGetData<GetPlanApiResponse>(apiEndpoint, queryKey);
   if (axios.isAxiosError(error)) {
     toast.error(
       error.response?.data.message || "Something went wrong, please try gain"
@@ -241,9 +239,9 @@ export const useGetSubscriptionPlanData = () => {
   }
   return { data, isError, isLoading };
 };
-
 export default usePricingPlan;
 
+//A custom hook to update the doctor subscription plan
 export const useUpdateSubscriptionPlan = () => {
   const { handleOnselectOPtion, selectedValues, isRefundEnabled } =
     useSelectPlanInputs();
@@ -297,7 +295,7 @@ export const useUpdateSubscriptionPlan = () => {
     amount: planInputsValue.amount,
     discount_percentage: planInputsValue.discount_percentage,
     plan_features: planfeatures,
-    plan_type: data?.data.plan.plan_type as string,
+    plan_type: data?.data.plan.plan_type,
     refund_period: selectedValues.refundDays,
     isRefundEnabled: selectedValues.refundAnswer,
     plan_status: selectedValues.plan_status,
@@ -326,4 +324,34 @@ export const useUpdateSubscriptionPlan = () => {
     handleOnchangePlanFeature,
     handleOnchangePlanInputsField
   };
+};
+
+//A custom hook to get all doctor's subscription plan
+interface GetPlansApiResponse {
+  data: {
+    plans: SubscriptionPlanDataType[];
+  };
+}
+export const useGetAllSubscriptionPlansData = () => {
+  const apiEndpoint = `${DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.getAllPlan}`;
+  console.log(apiEndpoint);
+  const { data, isLoading } = useGetData<GetPlansApiResponse>(
+    apiEndpoint,
+    GET_ALL_PLANS_KEY
+  );
+
+  console.log("All plan data", data);
+  return { isLoading, data };
+};
+
+export const useDeleteSubscriptionPlan = () => {
+ 
+  const { planId } = useAppSelector((state) => state.subscriptionPlan);
+  const apiEndpoint = DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.deletePlan;
+  const { mutate, isPending } = useDeleteData(apiEndpoint, GET_ALL_PLANS_KEY);
+  const handleSubmitDeletePlan = () => {
+    if (!planId) return;
+    mutate(planId);
+  };
+  return { planId, handleSubmitDeletePlan, isPending };
 };

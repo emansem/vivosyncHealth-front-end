@@ -228,6 +228,11 @@ export const EMAIL_VERIFICATION_MESSAGES = {
 export const DOCTOR_API_END_POINTS = {
     SUBSCRIPTION_PLAN: {
         getPlan: "/doctors/plan",
-        updatePlan: "/doctors/plan"
+        updatePlan: "/doctors/plan",
+        getAllPlan: "/doctors/plans",
+        deletePlan: '/doctors/plan'
     }
 } as const
+
+//All query keys to fetch data from the server
+export const GET_ALL_PLANS_KEY = "plans";

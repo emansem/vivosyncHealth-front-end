@@ -158,9 +158,10 @@ export interface SubscriptionTableProps {
 export interface SubscriptionPlanDataType {
     name: string,
     amount: number,
+    id?: number,
     discount_percentage: number,
-    plan_type: string,
-    plan_duration: string,
+    plan_type: "basic" | "standard" | "premium" | undefined
+    plan_duration: "30" | "1",
     isRefundEnabled: "yes" | "no" | "",
     refund_period: string,
     plan_status: "active" | "inactive",

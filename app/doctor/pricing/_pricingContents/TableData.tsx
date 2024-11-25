@@ -1,4 +1,10 @@
-import { subscriptionPlans } from "@/data/demoPlansData";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
+import {
+  getPlanId,
+  openModal
+} from "@/app/lib/redux/features/subscriptionPlanSlice/subscriptionPlanSlice";
+
+import { useGetAllSubscriptionPlansData } from "@/src/hooks/usePricingPlan";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -11,23 +17,36 @@ const getStatusColor = (status: string) => {
       break;
   }
 };
+const getPlanType = (plantype: string) => {
+  return plantype.charAt(0).toUpperCase() + plantype.slice(1);
+};
 
 function TableData() {
+  const { data } = useGetAllSubscriptionPlansData();
+  // const { handleDeletePlan } = useContext(SubscriptionContext);
+  const dispatch = useAppDispatch();
+
+  const handleGetPlanIdAndOpen = (id: number) => {
+    console.log("Subscription plan id", id);
+    dispatch(getPlanId(id));
+    dispatch(openModal());
+  };
+
   return (
     <tbody>
-      {subscriptionPlans.map((plan, index) => (
+      {data?.data.plans.map((plan, index) => (
         <tr className="hover:bg-green-50" key={index}>
-          <td>{plan.plan_type}</td>
-          <td>{plan.price}</td>
-          <td>{plan.discountPercentage}</td>
-          <td>{plan.duration}</td>
+          <td>{getPlanType(plan.plan_type as string)}</td>
+          <td>{plan.amount}</td>
+          <td>{plan.discount_percentage}</td>
+          <td>{plan.plan_duration}</td>
           <td>
             <span
               className={`${getStatusColor(
-                plan.status
+                plan.plan_status
               )} rounded-full py-1 px-4`}
             >
-              {plan.status}
+              {plan.plan_status}
             </span>
           </td>
           <td className="flex relative justify-end">
@@ -35,7 +54,10 @@ function TableData() {
               <EllipsisVertical />
             </span> */}
             <div className="4 flex  gap-4">
-              <span className="bg-red-600/10 text-red-500 cursor-pointer text-base py-2 px-4 rounded-md">
+              <span
+                onClick={() => handleGetPlanIdAndOpen(plan.id as number)}
+                className="bg-red-600/10 text-red-500 cursor-pointer text-base py-2 px-4 rounded-md"
+              >
                 Delete
               </span>
               <span className="bg-primary_color/10 text-primary_color cursor-pointer text-base py-2 px-4 rounded-md">
