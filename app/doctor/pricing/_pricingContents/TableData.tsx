@@ -3,20 +3,10 @@ import {
   getPlanId,
   openModal
 } from "@/app/lib/redux/features/subscriptionPlanSlice/subscriptionPlanSlice";
-
+import Link from "next/link";
 import { useGetAllSubscriptionPlansData } from "@/src/hooks/usePricingPlan";
+import { getStatusColor } from "@/src/components/utils/getStatusColor";
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "active":
-      return "bg-secondary_color/10 text-primary_color";
-    case "inactive":
-      return "bg-red-600/10 text-red-500";
-
-    default:
-      break;
-  }
-};
 const getPlanType = (plantype: string) => {
   return plantype.charAt(0).toUpperCase() + plantype.slice(1);
 };
@@ -27,7 +17,6 @@ function TableData() {
   const dispatch = useAppDispatch();
 
   const handleGetPlanIdAndOpen = (id: number) => {
-    console.log("Subscription plan id", id);
     dispatch(getPlanId(id));
     dispatch(openModal());
   };
@@ -53,16 +42,18 @@ function TableData() {
             {/* <span className="cursor-pointer">
               <EllipsisVertical />
             </span> */}
-            <div className="4 flex  gap-4">
+            <div className="4 flex items-center  gap-4">
               <span
                 onClick={() => handleGetPlanIdAndOpen(plan.id as number)}
                 className="bg-red-600/10 text-red-500 cursor-pointer text-base py-2 px-4 rounded-md"
               >
                 Delete
               </span>
-              <span className="bg-primary_color/10 text-primary_color cursor-pointer text-base py-2 px-4 rounded-md">
-                Update
-              </span>
+              <Link href={`/doctor/pricing/${plan.id}`}>
+                <span className="bg-primary_color/10 text-primary_color cursor-pointer text-base py-2 px-4 rounded-md">
+                  Update
+                </span>
+              </Link>
             </div>
           </td>
         </tr>

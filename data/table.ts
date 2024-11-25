@@ -45,12 +45,12 @@ export const DOCTOR_SUBSCRIPTION_PLAN_FIELD = ["Plan Type", "Price", "Discount %
 
 export const MobileSubscriptionPlansField: SubscriptionPlanMobileTypes[] = [
     {
-        label: "Name",
-        key: "name"
+        label: "Plan Type",
+        key: "plan_type"
     },
     {
         label: "Price",
-        key: "price"
+        key: "amount"
     },
     {
         label: "Duration",
@@ -59,12 +59,12 @@ export const MobileSubscriptionPlansField: SubscriptionPlanMobileTypes[] = [
 
     {
         label: "Discount Percentage",
-        key: "discountPercentage"
+        key: "discount_percentage"
     },
 
     {
         label: "Status",
-        key: "status"
+        key: "plan_status"
     },
 ]
 

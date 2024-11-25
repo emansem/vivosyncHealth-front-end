@@ -227,8 +227,8 @@ interface GetPlanApiResponse {
     plan: SubscriptionPlanDataType;
   };
 }
-export const useGetSubscriptionPlanData = () => {
-  const apiEndpoint = `${DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.getPlan}/42`;
+export const useGetSubscriptionPlanData = (id: string) => {
+  const apiEndpoint = `${DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.getPlan}/${id}`;
   const queryKey = "plan";
   const { data, isLoading, isError, error, isSuccess } =
     useGetData<GetPlanApiResponse>(apiEndpoint, queryKey);
@@ -242,7 +242,8 @@ export const useGetSubscriptionPlanData = () => {
 export default usePricingPlan;
 
 //A custom hook to update the doctor subscription plan
-export const useUpdateSubscriptionPlan = () => {
+export const useUpdateSubscriptionPlan = (id: string) => {
+  console.log(id);
   const { handleOnselectOPtion, selectedValues, isRefundEnabled } =
     useSelectPlanInputs();
 
@@ -252,12 +253,12 @@ export const useUpdateSubscriptionPlan = () => {
     amount: 0,
     discount_percentage: 0
   });
-  const updatePlanEndPoint = `${DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.updatePlan}/41`;
+  const updatePlanEndPoint = `${DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.updatePlan}/${id}`;
   const { mutate, isPending } = useUpdateData(updatePlanEndPoint);
 
   const { handleOnchangePlanInputsField, planInputsValue } =
     usePlanInputsField(formData);
-  const { data, isLoading } = useGetSubscriptionPlanData();
+  const { data, isLoading } = useGetSubscriptionPlanData(id);
   const { planfeatures, setPlanFeatures, handleOnchangePlanFeature } =
     usePlanFeatures();
 
@@ -345,7 +346,6 @@ export const useGetAllSubscriptionPlansData = () => {
 };
 
 export const useDeleteSubscriptionPlan = () => {
- 
   const { planId } = useAppSelector((state) => state.subscriptionPlan);
   const apiEndpoint = DOCTOR_API_END_POINTS.SUBSCRIPTION_PLAN.deletePlan;
   const { mutate, isPending } = useDeleteData(apiEndpoint, GET_ALL_PLANS_KEY);

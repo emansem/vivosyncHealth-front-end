@@ -1,3 +1,4 @@
+import { SubscriptionPlanDataType } from "@/app/lib/types";
 import React from "react";
 
 export interface VerifyEmailProps {
@@ -60,7 +61,7 @@ export type SubscriptionPlan = {
 
 export type SubscriptionPlanMobileTypes = {
     label: string;
-    key: keyof SubscriptionPlan
+    key: keyof SubscriptionPlanDataType
 }
 
 export type PatientReviewsTypes = {

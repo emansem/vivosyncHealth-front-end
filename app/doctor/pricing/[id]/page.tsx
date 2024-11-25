@@ -4,8 +4,12 @@ import { CardLayout, PageHeading } from "@/src/components/ui/layout/CardLayout";
 import { useUpdateSubscriptionPlan } from "@/src/hooks/usePricingPlan";
 import PlanSelectFields from "../../create-plan/_create-planContent/PlanSelectFields";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
+import { useParams } from "next/navigation";
 
 function UpdateSubscriptionPlan() {
+  const params = useParams();
+  const id = params.id as string;
+  console.log(id);
   const {
     handleOnselectOPtion,
     handleOnchangePlanInputsField,
@@ -17,7 +21,7 @@ function UpdateSubscriptionPlan() {
     planType,
     handleSubmitPlanUpdateData,
     handleOnchangePlanFeature
-  } = useUpdateSubscriptionPlan();
+  } = useUpdateSubscriptionPlan(id);
 
   if (isLoading) return <div>loading.....</div>;
 
