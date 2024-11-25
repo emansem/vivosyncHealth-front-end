@@ -1,9 +1,17 @@
 import Image from "next/image";
 import { Camera } from "lucide-react";
-import { useUPloadImage } from "@/app/lib/hooks";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+interface UpdateProfilePictureProps {
+  profile_photo: string;
+  previewImage: string;
+  handlePhotoOnchange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
 
-function UpdateProfilePicture({ profile_photo }: { profile_photo: string }) {
+function UpdateProfilePicture({
+  profile_photo,
+  previewImage,
+  handlePhotoOnchange
+}: UpdateProfilePictureProps) {
   const [photo, setPhoto] = useState("");
   useEffect(() => {
     if (profile_photo) {
@@ -11,7 +19,7 @@ function UpdateProfilePicture({ profile_photo }: { profile_photo: string }) {
     }
     [profile_photo];
   });
-  const { handlePhotoChange, previewImage } = useUPloadImage();
+
   if (!photo) return;
   return (
     <div className="flex flex-col items-center gap-4">
@@ -31,7 +39,7 @@ function UpdateProfilePicture({ profile_photo }: { profile_photo: string }) {
             type="file"
             hidden
             accept="image/*"
-            onChange={handlePhotoChange}
+            onChange={handlePhotoOnchange}
           />
         </label>
       </div>

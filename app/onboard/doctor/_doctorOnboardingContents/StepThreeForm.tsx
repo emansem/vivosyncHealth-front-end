@@ -1,5 +1,5 @@
 import { primary_color } from "@/app/lib/constant";
-import { useAppDispatch } from "@/app/lib/hooks";
+import { useAppDispatch, useUPloadImage } from "@/app/lib/hooks";
 import { useOnchangeDoctorOnboarding } from "@/src/hooks/authentication/useDoctorOnboard";
 import {
   updateFormData,
@@ -46,46 +46,14 @@ export const StepThreeForm = () => {
 
 const UploadProfilePicture = () => {
   const dispatch = useAppDispatch();
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>("");
-  console.log(preview);
-  // Handle file preview when file changes
-  useEffect(() => {
-    if (!file) {
-      setPreview("");
-      return;
-    }
+  const { handlePhotoChange, image, previewImage } = useUPloadImage();
 
-    const reader = new FileReader();
-    reader.onload = async (event: ProgressEvent<FileReader>) => {
-      if (event.target && typeof event.target.result === "string") {
-        setPreview(event.target.result);
-        const profileImage = await uploadImage(file);
-        console.log(file);
-        console.log(profileImage);
-        // Dispatch after preview is ready
-        dispatch(
-          updateFormData({
-            field: "profile_photo" as keyof DoctorOnboardingForm,
-            value: profileImage
-          })
-        );
-      }
-    };
-    reader.readAsDataURL(file);
-
-    // Cleanup
-    return () => {
-      reader.abort();
-    };
-  }, [file, dispatch]);
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files[0]) {
-      setFile(files[0]);
-    }
-  };
+  dispatch(
+    updateFormData({
+      field: "profile_photo" as keyof DoctorOnboardingForm,
+      value: image
+    })
+  );
 
   return (
     <div>
@@ -104,7 +72,7 @@ const UploadProfilePicture = () => {
         <input
           required
           name="profile_photo"
-          onChange={handleFile}
+          onChange={handlePhotoChange}
           accept="image/*"
           hidden
           multiple={false}
@@ -112,10 +80,10 @@ const UploadProfilePicture = () => {
           type="file"
         />
       </div>
-      {preview && (
+      {previewImage && (
         <div className="relative cursor-pointer h-[200px] md:h-[250px] w-full md:w-[300px] mt-2 rounded-md overflow-hidden">
           <Image
-            src={preview}
+            src={previewImage}
             alt="Profile preview"
             fill
             sizes="70px"

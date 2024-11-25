@@ -232,8 +232,13 @@ export const DOCTOR_API_END_POINTS = {
         getAllPlan: "/doctors/plans",
         deletePlan: '/doctors/plan',
         create: "/doctors/create-plan"
+    },
+    PROFILE: {
+        updateProfile: "/doctors/update-profile"
     }
+
 } as const
 
 //All query keys to fetch data from the server
 export const GET_ALL_PLANS_KEY = "plans";
+export const GET_USER_QUERY_KEY = 'user'

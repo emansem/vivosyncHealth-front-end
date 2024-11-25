@@ -7,6 +7,7 @@ import { ChangeEvent, useState } from 'react'
 import { WithdrawalAccountData } from './types'
 import { useForm } from 'react-hook-form'
 import { withdrawalAccountFormValidation } from '@/src/helper/formValidation'
+import { uploadImage } from './service/uploadImage'
 
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -48,8 +49,10 @@ export const useOpenAndClose = () => {
 // Handle upload image, preview and get the image files
 export const useUPloadImage = () => {
     const [previewImage, setPreviewImage] = useState<string>("");
-    const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const [image, setImage] = useState("")
+    const handlePhotoChange = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -59,8 +62,10 @@ export const useUPloadImage = () => {
             };
             reader.readAsDataURL(file);
         }
+        const imageFile = await uploadImage(file as File)
+        setImage(imageFile)
     };
-    return { previewImage, handlePhotoChange }
+    return { previewImage, image, handlePhotoChange }
 }
 
 

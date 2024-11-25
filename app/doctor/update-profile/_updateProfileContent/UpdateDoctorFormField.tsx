@@ -1,12 +1,22 @@
 import { DOCTOR_UPDATE_PROFILE_FIELDS } from "@/data/doctorUpdateProfileFields";
 import Input from "@/src/components/ui/forms/Input";
 import TextArea from "@/src/components/ui/forms/TextArea";
-import { useUpdateDoctorProfile } from "@/src/hooks/useDoctorProfile";
-import React from "react";
+import {
+  DoctorProfileTypes,
+  useUpdateDoctorProfile
+} from "@/src/hooks/useDoctorProfile";
+import React, { ChangeEvent } from "react";
+interface UpdateProfileFields {
+  profileData: Partial<DoctorProfileTypes>;
+  updateProfileField: (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+}
 
-function UpdateDoctorFormField() {
-  const { profileData, updateProfileField } = useUpdateDoctorProfile();
-
+function UpdateDoctorFormField({
+  updateProfileField,
+  profileData
+}: UpdateProfileFields) {
   return (
     <>
       <div className="grid  md:gap-3">
@@ -14,6 +24,7 @@ function UpdateDoctorFormField() {
           field.type === "textArea" ? (
             <TextArea
               key={field.name}
+              name={field.name}
               id={field.name}
               value={profileData[field.name]}
               onChange={updateProfileField}

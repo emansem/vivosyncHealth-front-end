@@ -60,7 +60,9 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
 }
 
 //A reusable custom hook to update data on the server
-export const useUpdateData = <TData, TVariables>(apiEndpoint: string) => {
+export const useUpdateData = <TData, TVariables>(apiEndpoint: string, queryKey?: string) => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (data: TVariables) => {
 
@@ -71,6 +73,7 @@ export const useUpdateData = <TData, TVariables>(apiEndpoint: string) => {
                 console.log("Updated data", result.data)
                 toast.success(result.data.message)
             }
+            queryClient.invalidateQueries({ queryKey: [queryKey] })
 
         },
         onError: (error) => {

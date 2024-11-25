@@ -8,7 +8,13 @@ interface textAreaTypes {
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-function TextArea({ value, textAreaLabel, name, onChange, id }: textAreaTypes) {
+function TextArea({
+  value = "",
+  textAreaLabel,
+  name,
+  onChange,
+  id
+}: textAreaTypes) {
   return (
     <div className="w-full">
       <label className="label" htmlFor={id}>
@@ -18,7 +24,7 @@ function TextArea({ value, textAreaLabel, name, onChange, id }: textAreaTypes) {
         required
         onChange={onChange}
         name={name}
-        value={value}
+        value={value || ""}
         className="w-full h-28 shadow-shadow1 text-text_color2 text-base border px-4 py-3 rounded-lg resize-none appearance-none my-2 outline-none overflow-hidden"
         id={id}
       ></textarea>

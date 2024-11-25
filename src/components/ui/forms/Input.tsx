@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputType>(
       onChange,
       name,
       onKeyEvent,
-      value,
+      value = "",
       inputType,
       ...props
     },
@@ -49,7 +49,7 @@ const Input = forwardRef<HTMLInputElement, InputType>(
           id={id}
           readOnly={isReadOnly}
           onKeyDown={onKeyEvent}
-          value={value}
+          value={value || ""}
           onChange={onChange}
           name={name}
           placeholder={inputPlaceholder}
