@@ -31,7 +31,8 @@ export interface User {
     }
 }
 //A reusable custom hook to post data to the server
-export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
+export const useApiPost = <TData, TVariables>(apiEndpoint: string, queryKey?: string) => {
+    const queryClient = useQueryClient();
     return useMutation({
 
         mutationFn: (data: TVariables) => {
@@ -45,6 +46,8 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string) => {
             if (jwt) {
                 localStorage.setItem('jwt', JSON.stringify(jwt));
             }
+
+            queryClient.invalidateQueries({ queryKey: [queryKey] })
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
@@ -99,7 +102,7 @@ export const useGetUser = (): UseQueryResult<User, Error> => {
 
 export const useGetData = <TData>(apiEndpoint: string, queryKeyType: string):
     UseQueryResult<TData, Error> => {
-    const queryClient = useQueryClient();
+    ;
 
     return useQuery({
         queryKey: [queryKeyType],
@@ -110,9 +113,12 @@ export const useGetData = <TData>(apiEndpoint: string, queryKeyType: string):
     });
 };
 
+
+
 // useDeleteData.ts
 export const useDeleteData = <TData>(apiEndpoint: string, queryKey: string) => {
     const queryClient = useQueryClient();
+    queryClient.invalidateQueries({ queryKey: [queryKey] })
     const disPatch = useAppDispatch();
 
     return useMutation({

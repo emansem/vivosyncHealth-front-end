@@ -1,9 +1,12 @@
 "use client";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
+import { useWithdrawalAccountData } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
 import { Landmark } from "lucide-react";
 import React from "react";
 
 function WithdrawalAccount() {
+  const { data } = useWithdrawalAccountData();
+  console.log(data);
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
@@ -13,8 +16,10 @@ function WithdrawalAccount() {
       <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
         <Landmark className="w-6 h-6 text-gray-600" />
         <div>
-          <p className="font-medium">Access Bank</p>
-          <p className="text-sm text-gray-600">**** **** **** 1234</p>
+          <p className="font-medium">{data?.data.account.bank_name}</p>
+          <p className="text-sm text-gray-600">
+            {data?.data.account.account_number.toString().slice(0, 4)} **** ****
+          </p>
         </div>
       </div>
     </div>

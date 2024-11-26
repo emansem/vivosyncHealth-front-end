@@ -8,10 +8,12 @@ import RecentWithdrawalSection from "./_withdrawalContent/RecentWithdrawalSectio
 import { useOpenAndClose } from "@/app/lib/hooks";
 import { NoWithdrawalAccount } from "./_withdrawalContent/WithdrawalAccount";
 import AddWithdrawalAccount from "./_withdrawalContent/AddWithdrawalAccount";
+import { useWithdrawalAccountData } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
 
 const WithdrawalPage = () => {
   const { handle0pen, open, handleClose } = useOpenAndClose();
-
+  const { isLoading, noAccount } = useWithdrawalAccountData();
+  if (isLoading) return <div>Loading....</div>;
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">
       {/* Balance Cards */}
@@ -34,12 +36,18 @@ const WithdrawalPage = () => {
       </div>
 
       {/* Withdrawal Form and Bank Info */}
+      <div className="flex justify-center">
+        {/* When there's NO account */}
+        {noAccount && (
+          <>
+            {open && <AddWithdrawalAccount handleClose={handleClose} />}
+            <NoWithdrawalAccount handleOPen={handle0pen} />
+          </>
+        )}
+      </div>
       <div className="grid md:grid-cols-2 gap-6">
-        {/* {open && <AddWithdrawalAccount handleClose={handleClose} />} */}
-
-        {/* <NoWithdrawalAccount handleOPen={handle0pen} /> */}
-
-        <WithdrawalSection />
+        {/* When there IS an account */}
+        {!noAccount && <WithdrawalSection />}
       </div>
     </div>
   );

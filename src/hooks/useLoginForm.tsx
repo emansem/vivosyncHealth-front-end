@@ -25,7 +25,8 @@ function useLoginForm() {
   };
   const onSubmitForm = async (data: LoginFormValue) => {
     mutate(data, {
-      onSuccess: () => {
+      onSuccess: (result) => {
+        localStorage.setItem("jwt", JSON.stringify(result.data.jwt));
         reset();
       }
     });

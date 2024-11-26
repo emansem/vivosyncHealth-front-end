@@ -235,10 +235,15 @@ export const DOCTOR_API_END_POINTS = {
     },
     PROFILE: {
         updateProfile: "/doctors/update-profile"
+    },
+    WITHDRAWAL_ACCOUNT: {
+        GET_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account",
+        CREATE_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account/create",
     }
 
 } as const
 
 //All query keys to fetch data from the server
 export const GET_ALL_PLANS_KEY = "plans";
-export const GET_USER_QUERY_KEY = 'user'
+export const GET_USER_QUERY_KEY = 'user';
+export const GET_WITHDRAWAL_ACCOUNT_QUERY_KEY = "withdrawalAccount"
