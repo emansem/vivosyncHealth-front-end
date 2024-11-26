@@ -239,6 +239,7 @@ export const DOCTOR_API_END_POINTS = {
     WITHDRAWAL_ACCOUNT: {
         GET_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account",
         CREATE_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account/create",
+        UPDATE_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account/update"
     }
 
 } as const
@@ -247,3 +248,27 @@ export const DOCTOR_API_END_POINTS = {
 export const GET_ALL_PLANS_KEY = "plans";
 export const GET_USER_QUERY_KEY = 'user';
 export const GET_WITHDRAWAL_ACCOUNT_QUERY_KEY = "withdrawalAccount"
+
+
+export const UPDATE_WITHDRAWAL_ACCOUNT_FIELDS = [
+    {
+        name: "account_name",
+        label: "Account Name",
+        type: "text",
+        placeHolder: "Enter account name"
+    },
+    {
+        name: "bank_name",
+        label: "Bank Name",
+        type: "text",
+        placeHolder: "Enter bank name"
+    },
+    {
+        name: "account_number",
+        label: "Account Number",
+        type: "number",
+        placeHolder: "Enter account number"
+    },
+
+
+]

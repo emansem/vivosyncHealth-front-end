@@ -8,11 +8,11 @@ import RecentWithdrawalSection from "./_withdrawalContent/RecentWithdrawalSectio
 import { useOpenAndClose } from "@/app/lib/hooks";
 import { NoWithdrawalAccount } from "./_withdrawalContent/WithdrawalAccount";
 import AddWithdrawalAccount from "./_withdrawalContent/AddWithdrawalAccount";
-import { useWithdrawalAccountData } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
+import { useGetWwithdrawalAccount } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
 
 const WithdrawalPage = () => {
   const { handle0pen, open, handleClose } = useOpenAndClose();
-  const { isLoading, noAccount } = useWithdrawalAccountData();
+  const { isLoading, noAccount } = useGetWwithdrawalAccount();
   if (isLoading) return <div>Loading....</div>;
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useApiPost, useGetData } from "../serviceHook"
+import { ChangeEvent, useEffect, useState } from "react";
+import { useApiPost, useGetData, useUpdateData } from "../serviceHook"
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { withdrawalAccountFormValidation } from "@/src/helper/formValidation";
@@ -11,7 +11,7 @@ interface WithdrawalAccountApiRespone {
         account: WithdrawalAccountData
     }
 }
-export const useWithdrawalAccountData = () => {
+export const useGetWwithdrawalAccount = () => {
 
     const [noAccount, setNoaccount] = useState(false)
     const [isPending, setIspending] = useState(true)
@@ -56,4 +56,33 @@ export const useAddWithdrawalAccount = () => {
 
     return { registerFields, handleSubmit: handleSubmit(onSubmit), isPending, errors, isSubmitting }
 
+}
+
+export const useUpdateWithdrawalAccount = () => {
+    const { data } = useGetWwithdrawalAccount()
+    const [accountData, setAccountData] = useState<Partial<WithdrawalAccountData>>({
+        bank_name: "",
+        account_name: "",
+        account_number: 0,
+        withdrawal_password: ''
+    })
+    const { mutate, isPending } = useUpdateData<WithdrawalAccountData, WithdrawalAccountData>(DOCTOR_API_END_POINTS.WITHDRAWAL_ACCOUNT.UPDATE_WITHDRAWAL_ACCOUNT, GET_WITHDRAWAL_ACCOUNT_QUERY_KEY)
+
+    useEffect(() => {
+        setAccountData(data?.data.account as WithdrawalAccountData)
+    }, [data])
+
+    const handleUpdateAccountInputs = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setAccountData((prev) => ({ ...prev, [name]: value }))
+    }
+
+    const handleSubmit = () => {
+        if (accountData) {
+            mutate(accountData as WithdrawalAccountData)
+        }
+    }
+
+
+    return { accountData, isPending, handleSubmit, handleUpdateAccountInputs }
 }
