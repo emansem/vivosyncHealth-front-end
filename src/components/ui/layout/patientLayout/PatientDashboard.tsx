@@ -1,11 +1,14 @@
 "use client";
 
-// import React, { useEffect, useMemo } from "react";
-import SideBar from "./doctorPatial/SideBar";
-import Header from "./doctorPatial/Header";
 import useGeneralHook from "@/src/hooks/useGeneralHook";
+import Header from "./Header";
+import SideBar from "./SideBar";
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function PatientDashboard({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   const { handleToggleOPenMenu, isOpen, elementRef, handleCloseSideBarMenu } =
     useGeneralHook();
 
@@ -21,7 +24,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       />
 
       {/* Main content */}
-      <main className="pt-24 md:ml-[320px] px-3  md:pl-4 md:pr-8">
+      <main className="pt-16 md:ml-[320px] px-3  md:pl-4 md:pr-8">
         {children}
       </main>
       <footer className=" md:ml-[320px] mt-10 max-w-7xl flex justify-center  text-base text-text_color2 font-medium ">
