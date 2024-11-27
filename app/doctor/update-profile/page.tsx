@@ -15,6 +15,7 @@ const DoctorUpdateProfile = () => {
     updateProfileField
   } = useUpdateDoctorProfile();
   const profilePicture = profileData.profile_photo as string;
+  console.log(profileData.about);
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-6">
       <h1 className="text-2xl font-bold">Update Profile</h1>

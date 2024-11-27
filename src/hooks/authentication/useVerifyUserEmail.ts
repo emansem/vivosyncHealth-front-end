@@ -3,7 +3,7 @@
 import { TokenType } from "@/app/lib/types";
 import { useState, useEffect, ChangeEvent } from "react";
 import toast from "react-hot-toast";
-import { useGetUser, useUpdateData } from "../serviceHook";
+import { useUpdateData } from "../serviceHook";
 import { EMAIL_SUBJECT, USER_TYPES } from "@/app/lib/constant";
 import axios from "axios";
 import { encodeValue } from "@/src/helper/decordAndEncord";
@@ -37,7 +37,7 @@ export const useVerifyEmail = (subject: string) => {
         e: ChangeEvent<HTMLInputElement>,
         targetIndex: number
     ) => {
-        let value = e.target.value.replace(/[^0-9]/g, "").slice(0, 1);
+        const value = e.target.value.replace(/[^0-9]/g, "").slice(0, 1);
         setCodes((prev) =>
             prev.map((code, index) => (index === targetIndex ? value : code))
         );
@@ -82,7 +82,7 @@ export const useVerifyEmail = (subject: string) => {
             mutate(verificationCode, {
                 onSuccess: (response) => {
                     console.log(response.data)
-                    const { jwt, user_type, email_subject, token } = response.data;
+                    const { jwt, user_type, email_subject } = response.data;
                     localStorage.setItem('jwt', JSON.stringify(jwt));
                     setJwt(JSON.stringify(jwt));
                     if (email_subject === EMAIL_SUBJECT.VERIFY_EMAIL && USER_TYPES.DOCTOR === user_type) {
@@ -91,7 +91,13 @@ export const useVerifyEmail = (subject: string) => {
                         localStorage.removeItem('email_verify_failed')
                         setTimeout(() => window.location.href = "/onboard/doctor", 400);
                         return
-                    } else if (EMAIL_SUBJECT.RESET_PASSWORD === email_subject) {
+                    } else if (email_subject === EMAIL_SUBJECT.VERIFY_EMAIL && USER_TYPES.PATIENT === user_type) {
+                        setTimeout(() => window.location.href = "/patient/find-doctor", 400);
+                        localStorage.removeItem('nextResendTime');
+                        localStorage.removeItem('remember_token')
+                        localStorage.removeItem('email_verify_failed')
+                    }
+                    else if (EMAIL_SUBJECT.RESET_PASSWORD === email_subject) {
 
                         setTimeout(() => window.location.href = "/reset-password", 400);
                     }
@@ -99,7 +105,7 @@ export const useVerifyEmail = (subject: string) => {
                 onError: (error) => {
                     if (axios.isAxiosError(error)) {
                         const { email } = error.response?.data
-                        email ? localStorage.setItem('email_verify_failed', encodeValue(email)) : ''
+                        localStorage.setItem('email_verify_failed', encodeValue(email))
 
                     }
                 }

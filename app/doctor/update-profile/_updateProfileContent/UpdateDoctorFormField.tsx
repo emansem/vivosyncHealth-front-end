@@ -1,10 +1,7 @@
 import { DOCTOR_UPDATE_PROFILE_FIELDS } from "@/data/doctorUpdateProfileFields";
 import Input from "@/src/components/ui/forms/Input";
 import TextArea from "@/src/components/ui/forms/TextArea";
-import {
-  DoctorProfileTypes,
-  useUpdateDoctorProfile
-} from "@/src/hooks/useDoctorProfile";
+import { DoctorProfileTypes } from "@/src/hooks/useDoctorProfile";
 import React, { ChangeEvent } from "react";
 interface UpdateProfileFields {
   profileData: Partial<DoctorProfileTypes>;
@@ -17,6 +14,7 @@ function UpdateDoctorFormField({
   updateProfileField,
   profileData
 }: UpdateProfileFields) {
+  console.log(profileData);
   return (
     <>
       <div className="grid  md:gap-3">

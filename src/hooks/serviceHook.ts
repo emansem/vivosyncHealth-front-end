@@ -16,6 +16,9 @@ export interface UserType {
     years_of_experience: string;
     languages: string;
     speciality: string;
+    rating: number,
+    num_reviews: number,
+    user_id: string,
     // Location/Practice Info
     hospital_name: string;
     hospital_address: string;

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { formValidation } from "../helper/formValidation";
 import { LoginFormValue } from "@/app/lib/types";
 import { useApiPost } from "./serviceHook";
+import { USER_TYPES } from "@/app/lib/constant";
 
 function useLoginForm() {
   const {
@@ -28,6 +29,15 @@ function useLoginForm() {
       onSuccess: (result) => {
         localStorage.setItem("jwt", JSON.stringify(result.data.jwt));
         reset();
+
+        if (USER_TYPES.DOCTOR === result.data.user_type) {
+          setTimeout(() => (window.location.href = "/doctor/dashboard"), 400);
+        } else if (USER_TYPES.PATIENT === result.data.user_type) {
+          setTimeout(
+            () => (window.location.href = "/patient/find-doctor"),
+            400
+          );
+        }
       }
     });
   };

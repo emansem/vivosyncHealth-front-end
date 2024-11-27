@@ -234,7 +234,8 @@ export const DOCTOR_API_END_POINTS = {
         create: "/doctors/create-plan"
     },
     PROFILE: {
-        updateProfile: "/doctors/update-profile"
+        updateProfile: "/doctors/update-profile",
+        getDetails: "doctors/details"
     },
     WITHDRAWAL_ACCOUNT: {
         GET_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account",
@@ -248,6 +249,7 @@ export const DOCTOR_API_END_POINTS = {
 export const GET_ALL_PLANS_KEY = "plans";
 export const GET_USER_QUERY_KEY = 'user';
 export const GET_WITHDRAWAL_ACCOUNT_QUERY_KEY = "withdrawalAccount"
+export const GET_DOCTOR_DETAILS = 'doctor'
 
 
 export const UPDATE_WITHDRAWAL_ACCOUNT_FIELDS = [
@@ -272,3 +274,12 @@ export const UPDATE_WITHDRAWAL_ACCOUNT_FIELDS = [
 
 
 ]
+
+export const PATIENT_API_ENDPOINTS = {
+    DOCTOR: {
+        getAllDoctors: "/patients/find-doctor?page=1&limit=10"
+    }
+} as const
+export const PATIENT_QUERY_KEYS = {
+    GET_ALL_DOCTORS: 'getAllDoctors',
+}

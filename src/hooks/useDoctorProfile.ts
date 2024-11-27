@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useGetUser, useUpdateData } from './serviceHook';
+import { useGetData, useUpdateData } from './serviceHook';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useUPloadImage } from '@/app/lib/hooks';
-import { DOCTOR_API_END_POINTS, GET_USER_QUERY_KEY } from '@/app/lib/constant';
+import { DOCTOR_API_END_POINTS, GET_DOCTOR_DETAILS, } from '@/app/lib/constant';
 
 export interface DoctorProfileTypes {
     // Personal & Professional Info
@@ -25,16 +25,20 @@ export interface DoctorProfileTypes {
     zip_code: string;
     working_days: string;
 }
-
+interface DoctorApiResponse {
+    data: {
+        doctor: DoctorProfileTypes
+    }
+}
 /**
  * Custom hook for managing doctor profile data */
 export const useUpdateDoctorProfile = () => {
-    const { data, error } = useGetUser()
+    const { data, error } = useGetData<DoctorApiResponse>(DOCTOR_API_END_POINTS.PROFILE.getDetails, GET_DOCTOR_DETAILS)
     const [profileData, setProfileData] = useState<Partial<DoctorProfileTypes>>({});
     const { handlePhotoChange, image, previewImage } = useUPloadImage();
     const apiEndpoint = DOCTOR_API_END_POINTS.PROFILE.updateProfile
 
-    const { mutate, isPending } = useUpdateData<DoctorProfileTypes, DoctorProfileTypes>(apiEndpoint, GET_USER_QUERY_KEY)
+    const { mutate, isPending } = useUpdateData<DoctorProfileTypes, DoctorProfileTypes>(apiEndpoint, GET_DOCTOR_DETAILS)
 
     const updateProfileField = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
@@ -45,10 +49,13 @@ export const useUpdateDoctorProfile = () => {
     };
 
     useEffect(() => {
-        const user = data?.data.user
-        if (user)
-            setProfileData(user)
-    }, [])
+
+        if (data?.data?.doctor) {
+
+            setProfileData(data.data.doctor);
+        }
+    }, [data]);
+
     if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message)
         console.log(error.response?.data)
@@ -62,6 +69,7 @@ export const useUpdateDoctorProfile = () => {
             mutate(doctorUpdatedData as DoctorProfileTypes)
         }
     }
+    console.log(data, profileData)
 
     return {
         profileData,
