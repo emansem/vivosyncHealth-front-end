@@ -10,7 +10,7 @@ function ImageComponent({ imageStyle, imageUrl, altAttribute }: ImageProps) {
   return (
     <div className={`${imageStyles} ${imageStyle}`}>
       <Image
-        src="https://i.postimg.cc/026P6nxK/image.jpg"
+        src={`${imageUrl || "https://i.postimg.cc/026P6nxK/image.jpg"}`}
         alt={altAttribute}
         fill
         sizes="100px"

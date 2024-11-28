@@ -1,10 +1,22 @@
 import { PATIENT_API_ENDPOINTS, PATIENT_QUERY_KEYS } from "@/app/lib/constant";
 import { useGetData, UserType } from "../serviceHook";
 import axios from "axios";
+import { SubscriptionPlanDataType } from "@/app/lib/types";
 
 interface DoctorsApiResponse {
   data: {
     doctors: UserType[];
+  };
+}
+interface DoctorApiResponse {
+  data: {
+    doctor: UserType;
+  };
+}
+
+interface DoctorPlansApiResponse {
+  data: {
+    plans: SubscriptionPlanDataType[];
   };
 }
 
@@ -22,5 +34,28 @@ export const useGetAllDoctors = () => {
     doctors: data?.data.doctors || [],
     isLoading,
     error
+  };
+};
+
+export const useGetDoctorData = (doctorId: string) => {
+  const getDctorAccountDetails = `${PATIENT_API_ENDPOINTS.DOCTOR.getDoctor}/${doctorId}`;
+  const getDoctorPlanDetails = `${PATIENT_API_ENDPOINTS.DOCTOR.getDoctorPlan}/${doctorId}`;
+  const { data, error, isLoading } = useGetData<DoctorApiResponse>(
+    getDctorAccountDetails,
+    "doctor"
+  );
+  const { data: planDetails } = useGetData<DoctorPlansApiResponse>(
+    getDoctorPlanDetails,
+    "plan"
+  );
+
+  if (error && axios.isAxiosError(error)) {
+    console.log("Error fetching doctor profile details", error.response?.data);
+  }
+
+  return {
+    doctor: data?.data?.doctor,
+    planDetails: planDetails?.data?.plans,
+    isLoading
   };
 };

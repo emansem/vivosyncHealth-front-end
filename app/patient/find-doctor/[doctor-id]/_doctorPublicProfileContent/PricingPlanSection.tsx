@@ -1,113 +1,82 @@
-import { SUBSCRIPTION_PLAN_TYPES } from "@/app/lib/constant";
-import { SubscriptionPlanHeaderType } from "@/app/lib/types";
-import { subscriptionPlans } from "@/data/demoPlansData";
+import React, { useState } from "react";
+import { THEME } from "../page";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
-import { useSubscriptionPlan } from "@/src/hooks/useSubscriptionPlan";
-import { SubscriptionPlan } from "@/src/types/general";
-import { CircleCheck } from "lucide-react";
-
-const SubscriptionSectionPlanHeader = ({
-  getPlanType,
-  plan_type
-}: SubscriptionPlanHeaderType) => {
+import { AnimatePresence, motion } from "framer-motion";
+import { Check } from "lucide-react";
+import { SubscriptionPlanDataType } from "@/app/lib/types";
+interface PricingPlanSectionProps {
+  plans: SubscriptionPlanDataType[];
+}
+function PricingPlanSection({ plans }: PricingPlanSectionProps) {
+  const [selectedPlan, setSelectedPlan] = useState(plans[0].id);
   return (
-    <div className="bg-primary_color flex justify-between   w-full ">
-      {SUBSCRIPTION_PLAN_TYPES.map((planType, index) => (
-        <span
-          onClick={() => getPlanType(planType.key)}
-          key={index}
-          className={`cursor-pointer py-3 px-6 text-white text-xl font-medium ${
-            plan_type === planType.key && "bg-secondary_color "
-          }`}
-        >
-          {planType.label}
-        </span>
-      ))}
-    </div>
-  );
-};
-const SubscriptionPlanSectionBody = ({
-  subscriptionPlan
-}: {
-  subscriptionPlan: SubscriptionPlan[];
-}) => {
-  if (subscriptionPlan.length < 0) return;
-
-  return (
-    <>
-      <div className="py-3 px-6 flex justify-between items-center">
-        <span className="text-base md:text-xl font-medium text-stone-700">
-          Starter
-        </span>
-        <li className="flex items-center text-stone-800 gap-2">
-          <p className="flex items-center gap-1">
-            <span className="text-secondary_color text-base">save up to</span>
-            <span className="text-text_color2 font-medium text-base">
-              {subscriptionPlan[0].discountPercentage}%
-            </span>
-          </p>
-          <p>
-            <span className="text-2xl font-semibold">
-              ${subscriptionPlan[0].price}
-            </span>
-            <span className="text-sm text-text_color2">/month</span>
-          </p>
-        </li>
-      </div>
-      <div className="bg-green-100 px-6  py-3">
-        <p className="text-base md:text-[18px] italic text-secondary_color font-medium">
-          30 days money back gaurantee
-        </p>
-      </div>
-    </>
-  );
-};
-const SubscriptionPlanSectionFooter = ({
-  subscriptionPlan
-}: {
-  subscriptionPlan: SubscriptionPlan[];
-}) => {
-  return (
-    <>
-      <div className="px-6 py-3 mb-2">
-        <div>
-          <h1 className="text-xl md:text-2xl   font-medium text-stone-700 my-3">
-            What&apos;s Included
-          </h1>
-        </div>
-        <ul className="flex flex-col gap-2">
-          {subscriptionPlan[0].features?.map((feature, index) => (
-            <li key={index} className="flex gap-2 items-center">
-              <CircleCheck size={30} fill="#198754" color="#fff" />
-              <span className="text-base text-text_color2">{feature}</span>
-            </li>
+    <div className="lg:w-[400px] mt-6 lg:mt-0">
+      <div className="bg-white rounded-xl p-6 shadow-sm sticky top-8">
+        <div className="flex gap-2 p-1 bg-gray-100 rounded-lg mb-6">
+          {plans.map((plan) => (
+            <button
+              key={plan.id}
+              onClick={() => setSelectedPlan(plan.id)}
+              className={`flex-1 capitalize py-2 px-4 rounded-lg text-sm font-medium transition-all
+                    ${
+                      selectedPlan === plan.id
+                        ? "bg-white text-primary shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+            >
+              {plan.plan_type}
+            </button>
           ))}
-        </ul>
-      </div>
-      <div className="pt-5 px-6  pb-3">
-        <PrimaryButton backgroud color="text-white">
-          Subscribe
-        </PrimaryButton>
-      </div>
-    </>
-  );
-};
+        </div>
 
-export const SubscriptionPlanSection = () => {
-  const { planType, getPlanType } = useSubscriptionPlan();
+        <AnimatePresence mode="wait">
+          {plans.map(
+            (plan) =>
+              plan.id === selectedPlan && (
+                <motion.div
+                  key={plan.id}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-6"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-2xl font-semibold capitalize">
+                        {plan.name}
+                      </h3>
+                      <p className="text-green-600">
+                        save up to {plan.discount_percentage}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold">${plan.amount}</div>
+                      <div className="text-gray-500">
+                        /{plan.plan_duration === "1" ? "Year" : "month"}
+                      </div>
+                    </div>
+                  </div>
 
-  if (subscriptionPlans.length < 0) return;
-  const subscriptionPlan = subscriptionPlans?.filter(
-    (plan) => plan.plan_type === planType
-  );
-  return (
-    <div className=" sticky overflow-hidden  rounded-xl shadow-shadow2 bg-white w-full md:w-[500px] ">
-      <SubscriptionSectionPlanHeader
-        plan_type={planType}
-        getPlanType={getPlanType}
-      />
-      <SubscriptionPlanSectionBody subscriptionPlan={subscriptionPlan} />
-      <SubscriptionPlanSectionFooter subscriptionPlan={subscriptionPlan} />
+                  <div className="space-y-4">
+                    {plan.plan_features.map((feature) => (
+                      <div key={feature.id} className="flex items-start gap-3">
+                        <Check
+                          className="w-5 h-5 shrink-0"
+                          style={{ color: THEME.colors.success }}
+                        />
+                        <span className="text-gray-600">{feature.value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <PrimaryButton backgroud color="text-white">
+                    Subscribe Now
+                  </PrimaryButton>
+                </motion.div>
+              )
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
-};
+}
+
+export default PricingPlanSection;
