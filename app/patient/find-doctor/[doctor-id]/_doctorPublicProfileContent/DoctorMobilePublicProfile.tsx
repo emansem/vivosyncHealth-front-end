@@ -14,7 +14,7 @@ import React, {
 } from "react";
 import { FaBookMedical } from "react-icons/fa";
 import { ReviewSection } from "./ReviewSection";
-import { useSubscriptionPlan } from "@/src/hooks/useSubscriptionPlan";
+import { useSubscriptionPlan } from "@/src/hooks/useSubscription";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { useOpenAndClose } from "@/app/lib/hooks";
 import { SubscriptionPlanSection } from "./PricingPlanSection";

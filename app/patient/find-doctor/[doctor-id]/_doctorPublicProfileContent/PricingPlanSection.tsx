@@ -66,10 +66,11 @@ function PricingPlanSection({ plans }: PricingPlanSectionProps) {
                       </div>
                     ))}
                   </div>
-
-                  <PrimaryButton backgroud color="text-white">
-                    Subscribe Now
-                  </PrimaryButton>
+                  <a className="block" href={`/patient/checkout/${plan.id}`}>
+                    <PrimaryButton backgroud color="text-white">
+                      Subscribe Now
+                    </PrimaryButton>
+                  </a>
                 </motion.div>
               )
           )}

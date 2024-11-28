@@ -54,7 +54,7 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string, queryKey?: st
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
-                console.log("error saving user details", error)
+                console.log("error saving user details", error.response?.data)
                 const errorMessage = error.response?.data.message
 
                 toast.error(errorMessage || "Something went wrong,please try again")

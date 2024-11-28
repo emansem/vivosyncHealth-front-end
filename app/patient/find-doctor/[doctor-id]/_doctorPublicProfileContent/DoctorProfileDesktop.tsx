@@ -1,4 +1,4 @@
-import { useSubscriptionPlan } from "@/src/hooks/useSubscriptionPlan";
+import { useSubscriptionPlan } from "@/src/hooks/useSubscription";
 import { AboutSection } from "./AboutSection";
 import { SubscriptionPlanSection } from "./PricingPlanSection";
 import { ReviewSection } from "./ReviewSection";

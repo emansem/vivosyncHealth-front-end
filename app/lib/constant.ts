@@ -279,7 +279,13 @@ export const PATIENT_API_ENDPOINTS = {
     DOCTOR: {
         getAllDoctors: "/patients/find-doctor?page=1&limit=10",
         getDoctor: "/patients/find-doctor",
-        getDoctorPlan: "/patients/plans"
+        getDoctorPlan: "/patients/doctor/plans"
+    },
+    PLAN: {
+        getDoctorPlan: "/patients/subscription/plan"
+    },
+    PAYMENT: {
+        collect: "/payment/collect"
     }
 } as const
 export const PATIENT_QUERY_KEYS = {
