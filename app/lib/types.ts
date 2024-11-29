@@ -163,15 +163,16 @@ export interface StatsCardProps {
 
 // Structure for subscription data
 export interface SubscriptionData {
-    id: string;
-    doctorName: string;
-    doctorId: string;
-    plan: "basic" | "premium" | "enterprise";
-    startDate: string;
-    endDate: string;
-    status: "active" | "expired" | "cancelled";
+    id: number;
+    doctor_name?: string;
+    doctor_id: string;
+    plan_type: "basic" | "premium" | "enterprise";
+    created_at: string;
+    expire_date: string;
+    subscription_status: "active" | "expired" | "cancelled";
     amount: number;
-    autoRenew: boolean;
+
+    auto_renew?: boolean;
 }
 
 // Props for subscription table

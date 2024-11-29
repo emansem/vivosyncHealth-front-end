@@ -1,5 +1,6 @@
 import { getStatusColor } from "../getStatusColor";
 import Link from "next/link";
+// Update the MobileTableProps interface to include align
 interface MobileTableProps<TData> {
   isActionEnabled?: boolean;
   handleDeletButton?: (id: number) => void;
@@ -9,6 +10,7 @@ interface MobileTableProps<TData> {
     label: string;
   }[];
 }
+
 function MobileTable<TData extends { id?: number }>({
   data,
   fields,

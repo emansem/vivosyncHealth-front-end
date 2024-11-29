@@ -1,16 +1,23 @@
-import { FormFields, OnboardingFormFields, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
+import { FormFields, OnboardingFormFields, SubscriptionData, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
 
+// Application-wide theme color
 export const primary_color = "#269c65";
+
+// Total number of steps in the onboarding form
 export const TOTAL_FORM_STEPS = 3;
+
+// Constants for form field names used in medical professional registration
 export const FORM_FIELDS = {
     MEDICAL_LICENSE: 'medical_license',
     HOSPITAL_NAME: 'hospital_name',
     YEARS_OF_EXPERIENCE: 'years_of_experience',
     HOSPITAL_ADDRESS: "hospital_address"
 } as const;
+
+// Base API URL for backend services
 export const APIURL = "http://localhost:5740/api";
 
-
+// Fields required for setting up withdrawal account information
 export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccountInputs[] = [
     {
         name: "bank_name",
@@ -31,9 +38,10 @@ export const WITHDRAWAL_ACCOUNT_FIELDS: WithdrawalAccountInputs[] = [
         name: "withdrawal_password",
         placehoder: "Enter your withdrawal password",
         type: "password"
-    },
-]
+    }
+];
 
+// Step 1 of onboarding form: Professional Information
 export const STEP_ONE_FORM_FIELDS: OnboardingFormFields[] = [
     {
         name: 'medical_license',
@@ -62,6 +70,7 @@ export const STEP_ONE_FORM_FIELDS: OnboardingFormFields[] = [
     }
 ];
 
+// Step 2 of onboarding form: Location and Availability
 export const STEP_TWO_FORM_FIELDS: OnboardingFormFields[] = [
     {
         name: "country",
@@ -90,30 +99,30 @@ export const STEP_TWO_FORM_FIELDS: OnboardingFormFields[] = [
     }
 ];
 
-
+// Financial constants
 export const accountBalance = 250000;
 export const minWithdrawal = 10000;
 
-export const PASSWORD_RESET_MESSAGE = "To reset your password, we've sent a verification link to your email address."
+// Password reset related constants
+export const PASSWORD_RESET_MESSAGE = "To reset your password, we've sent a verification link to your email address.";
 
+// Fields for password reset form
 export const PASSWORD_REST_FIELDS: FormFields[] = [
     {
         name: "password",
         type: "password",
         placeHolder: "Enter new password",
         label: "New Password",
-
     },
     {
         name: "confirm_password",
         type: "password",
         placeHolder: "Confirm new password",
         label: "Confrim New Password",
-
     }
+];
 
-]
-
+// Subscription plan types and related constants
 export const SUBSCRIPTION_PLAN_TYPES: SubscriptionPlanType[] = [
     {
         label: "Basic",
@@ -128,25 +137,34 @@ export const SUBSCRIPTION_PLAN_TYPES: SubscriptionPlanType[] = [
         key: "Premium"
     }
 ];
+
+// Options for refund period selection
 export const REFUND_DAYS_OPTION = [
     { label: "7 Days", value: 7 },
     { label: "30 Days", value: 30 }
 ];
+
+// Plan duration options
 export const PLAN_DURATION_OPTIONS = [
     { label: "1 year", value: 1 },
     { label: "30 Days", value: 30 }
 ];
+
+// Plan type selection options
 export const PLAN_TYPE_OPTIONS = [
     { label: "Basic", value: "basic" },
     { label: "Standard", value: "standard" },
     { label: "Premium", value: "premium" }
 ];
+
+// Refund selection options
 export const IS_REFUND_SELECT_OPTIONS = [
     { label: "Please select a choice", value: "" },
     { label: "No", value: "no" },
     { label: "Yes", value: "yes" }
 ];
 
+// Fields for subscription plan input form
 export const SUBSCRIPTION_PLAN_INPUTS_FIELD: FormFields[] = [
     {
         name: "name",
@@ -165,10 +183,10 @@ export const SUBSCRIPTION_PLAN_INPUTS_FIELD: FormFields[] = [
         placeHolder: "Discount percentage",
         label: "Discount Percentage",
         type: "number"
-    },
+    }
+];
 
-
-]
+// Selection fields for subscription plan configuration
 export const SUBSCRIPTION_PLAN_SELECT_FIELDS: FormFields[] = [
     {
         name: "plan_type",
@@ -187,44 +205,39 @@ export const SUBSCRIPTION_PLAN_SELECT_FIELDS: FormFields[] = [
         placeHolder: "",
         label: "Active",
         type: "text"
-    },
-]
+    }
+];
+
+// Plan status options
 export const PLAN_STATUS_OPTIONS = [
     { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
+    { label: "Inactive", value: "inactive" }
+];
 
-]
-
+// Email subject types
 export const EMAIL_SUBJECT = {
     RESET_PASSWORD: 'RESET_PASSWORD',
-    VERIFY_EMAIL: 'EMAIL_VERIFICATION',
-}
+    VERIFY_EMAIL: 'EMAIL_VERIFICATION'
+} as const;
 
+// User role types
 export const USER_TYPES = {
     ADMIN: 'admin',
     PATIENT: 'patient',
     DOCTOR: 'doctor'
 } as const;
 
+// Various email verification messages for different contexts
 export const EMAIL_VERIFICATION_MESSAGES = {
-    standard:
-        "Please enter the 5-digit code sent to your email address to verify your account.",
-
-    detailed:
-        "A verification code has been sent to your email address. Enter the 5-digit code below to verify your account. Codes expire after 10 minutes.",
-
-    friendly:
-        "We've sent a 5-digit code to your email. Type it below to confirm it's really you! 📧",
-
-    formal:
-        "For security purposes, please enter the 5-digit verification code that was sent to your registered email address.",
-
-    withHelp:
-        "Enter the 5-digit verification code from your email. Haven't received it? Check your spam folder or click 'Resend Code' below.",
-
+    standard: "Please enter the 5-digit code sent to your email address to verify your account.",
+    detailed: "A verification code has been sent to your email address. Enter the 5-digit code below to verify your account. Codes expire after 10 minutes.",
+    friendly: "We've sent a 5-digit code to your email. Type it below to confirm it's really you! 📧",
+    formal: "For security purposes, please enter the 5-digit verification code that was sent to your registered email address.",
+    withHelp: "Enter the 5-digit verification code from your email. Haven't received it? Check your spam folder or click 'Resend Code' below.",
     concise: "Enter 5-digit code sent to your email"
-} as const
+} as const;
 
+// API endpoints for doctor-related operations
 export const DOCTOR_API_END_POINTS = {
     SUBSCRIPTION_PLAN: {
         getPlan: "/doctors/plan",
@@ -242,16 +255,15 @@ export const DOCTOR_API_END_POINTS = {
         CREATE_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account/create",
         UPDATE_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account/update"
     }
+} as const;
 
-} as const
-
-//All query keys to fetch data from the server
+// Query keys for data fetching
 export const GET_ALL_PLANS_KEY = "plans";
 export const GET_USER_QUERY_KEY = 'user';
-export const GET_WITHDRAWAL_ACCOUNT_QUERY_KEY = "withdrawalAccount"
-export const GET_DOCTOR_DETAILS = 'doctor'
+export const GET_WITHDRAWAL_ACCOUNT_QUERY_KEY = "withdrawalAccount";
+export const GET_DOCTOR_DETAILS = 'doctor';
 
-
+// Fields for updating withdrawal account information
 export const UPDATE_WITHDRAWAL_ACCOUNT_FIELDS = [
     {
         name: "account_name",
@@ -270,11 +282,10 @@ export const UPDATE_WITHDRAWAL_ACCOUNT_FIELDS = [
         label: "Account Number",
         type: "number",
         placeHolder: "Enter account number"
-    },
+    }
+];
 
-
-]
-
+// API endpoints for patient-related operations
 export const PATIENT_API_ENDPOINTS = {
     DOCTOR: {
         getAllDoctors: "/patients/find-doctor?page=1&limit=10",
@@ -286,8 +297,35 @@ export const PATIENT_API_ENDPOINTS = {
     },
     PAYMENT: {
         collect: "/payment/collect"
+    },
+    SUBSCRIPTION: {
+        getAllSubscription: "/patients/subscription/patient"
     }
-} as const
+} as const;
+
+// Query keys for patient operations
 export const PATIENT_QUERY_KEYS = {
-    GET_ALL_DOCTORS: 'getAllDoctors',
-}
+    GET_ALL_DOCTORS: 'getAllDoctors'
+};
+
+// Headers for subscription table
+export const subscriptionTableHeaders = [
+    { key: "doctor_name", label: "Doctor Name", align: "left" },
+    { key: "doctor_id", label: "Doctor ID", align: "left" },
+    { key: "plan", label: "Plan", align: "left" },
+    { key: "start_date", label: "Start Date", align: "left" },
+    { key: "end_date", label: "End Date", align: "left" },
+    { key: "status", label: "Status", align: "left" },
+    { key: "amount", label: "Amount", align: "right" },
+    { key: "action", label: "Action", align: "center" }
+];
+
+export const MOBILE_SUBSCRIPTION_TABLE_HEADER: { key: keyof SubscriptionData; label: string; }[] = [
+    { key: "doctor_name", label: "Doctor Name" },
+    { key: "doctor_id", label: "Doctor ID" },
+    { key: "plan_type", label: "Plan" },
+    { key: "created_at", label: "Start Date" },
+    { key: "expire_date", label: "End Date" },
+    { key: "subscription_status", label: "Status" },
+    { key: "amount", label: "Amount" }
+];

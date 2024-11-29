@@ -1,19 +1,25 @@
 "use client";
 import { Users, CheckCircle, AlertCircle } from "lucide-react";
 import { StatsCard } from "@/src/components/utils/StateCard";
-import { subscriptionData } from "@/data/demoData";
 import { SubscriptionTable } from "./_subscriptionContent/SubscriptionTable";
+import MobileTable from "@/src/components/utils/table/MobileTable";
+import {
+  MOBILE_SUBSCRIPTION_TABLE_HEADER,
+  subscriptionTableHeaders
+} from "@/app/lib/constant";
+import { SubscriptionData } from "@/app/lib/types";
+import { useGetSubscriptionData } from "@/src/hooks/useSubscription";
+import MobileSubscriptionTableLyaout from "./_subscriptionContent/MobileSubscriptionTableLyaout";
+const stats = {
+  totalSubscriptions: 150,
+  activeSubscriptions: 120,
+  expiredSubscriptions: 30
+};
 
 const SubscriptionPage = () => {
-  // In a real app, this would come from an API
-  const stats = {
-    totalSubscriptions: 150,
-    activeSubscriptions: 120,
-    expiredSubscriptions: 30
-  };
-
+  const { subscriptionDetails } = useGetSubscriptionData();
   // Sample subscription data
-
+  const subscriptionData = subscriptionDetails as SubscriptionData[];
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -36,8 +42,13 @@ const SubscriptionPage = () => {
           />
         </div>
 
-        {/* Subscription Table */}
-        <SubscriptionTable subscriptions={subscriptionData} />
+        <div className="hidden md:block">
+          <SubscriptionTable subscriptions={subscriptionData} />
+        </div>
+        <MobileSubscriptionTableLyaout
+          fields={MOBILE_SUBSCRIPTION_TABLE_HEADER}
+          data={subscriptionData}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+
 import { BadgeJapaneseYen, CreditCard, Lock, Wallet } from "lucide-react";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { PaymentForm } from "./_planidContent/PaymentForm";
@@ -8,26 +9,20 @@ import { useSubscription } from "@/src/hooks/useSubscription";
 import { SubscriptionPlanDataType } from "@/app/lib/types";
 import { useState } from "react";
 
-// Types for our checkout components
+// Interface definitions for payment and order types
 export interface PaymentMethod {
   id: string;
   name: string;
   icon: React.ElementType;
 }
 
-export interface OrderSummaryItem {
-  name: string;
-  duration: string;
-  price: number;
-}
-
-// Main Checkout Page
 const CheckoutPage = () => {
+  // State and hooks initialization
   const [selectedMethod, setSelectedMethod] = useState("mtn");
-
   const param = useParams();
   const planId = param["planId"];
 
+  // Custom hook for subscription management
   const {
     planDetails,
     phoneNumber,
@@ -36,14 +31,17 @@ const CheckoutPage = () => {
     isPending
   } = useSubscription(planId as string, selectedMethod);
 
+  // Available payment methods configuration
   const paymentMethods: PaymentMethod[] = [
     { id: "credit-card", name: "Credit Card", icon: CreditCard },
     { id: "mtn", name: "Mobile Money", icon: BadgeJapaneseYen },
     { id: "orange", name: "Orange Money", icon: Wallet }
   ];
+
   return (
-    <div className=" bg-white shadow-shadow3 py-12">
+    <div className="bg-white shadow-shadow3 py-12">
       <div className="max-w-7xl mx-auto px-4">
+        {/* Header section */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Checkout</h1>
           <div className="flex items-center text-gray-600">
@@ -52,8 +50,9 @@ const CheckoutPage = () => {
           </div>
         </div>
 
+        {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Left side - Payment Form */}
+          {/* Payment form section */}
           <div>
             <PaymentForm
               value={phoneNumber}
@@ -62,6 +61,8 @@ const CheckoutPage = () => {
               paymentMethods={paymentMethods}
               selectedMethod={selectedMethod}
             />
+
+            {/* Payment button */}
             <div className="mt-4">
               <PrimaryButton
                 isSubmitting={isPending}
@@ -78,12 +79,13 @@ const CheckoutPage = () => {
               </PrimaryButton>
             </div>
 
+            {/* Security message */}
             <p className="mt-4 text-center text-sm text-gray-600">
               Your payment info is securely encrypted
             </p>
           </div>
 
-          {/* Right side - Order Summary */}
+          {/* Order summary section */}
           <div>
             <OrderSummary
               selectedPlan={planDetails as SubscriptionPlanDataType}

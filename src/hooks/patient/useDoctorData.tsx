@@ -3,11 +3,13 @@ import { useGetData, UserType } from "../serviceHook";
 import axios from "axios";
 import { SubscriptionPlanDataType } from "@/app/lib/types";
 
+// API Response types
 interface DoctorsApiResponse {
   data: {
     doctors: UserType[];
   };
 }
+
 interface DoctorApiResponse {
   data: {
     doctor: UserType;
@@ -20,6 +22,7 @@ interface DoctorPlansApiResponse {
   };
 }
 
+// Hook to fetch all doctors
 export const useGetAllDoctors = () => {
   const { data, error, isLoading } = useGetData<DoctorsApiResponse>(
     PATIENT_API_ENDPOINTS.DOCTOR.getAllDoctors,
@@ -37,13 +40,16 @@ export const useGetAllDoctors = () => {
   };
 };
 
+// Hook to fetch specific doctor's data and their plans
 export const useGetDoctorData = (doctorId: string) => {
   const getDctorAccountDetails = `${PATIENT_API_ENDPOINTS.DOCTOR.getDoctor}/${doctorId}`;
   const getDoctorPlanDetails = `${PATIENT_API_ENDPOINTS.DOCTOR.getDoctorPlan}/${doctorId}`;
+
   const { data, error, isLoading } = useGetData<DoctorApiResponse>(
     getDctorAccountDetails,
     "doctor"
   );
+
   const { data: planDetails } = useGetData<DoctorPlansApiResponse>(
     getDoctorPlanDetails,
     "plan"
