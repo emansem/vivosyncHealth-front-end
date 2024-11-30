@@ -3,13 +3,19 @@ import React, { ChangeEvent } from "react";
 interface PaymentFormProsp {
   handleGetPhoneNumber: (e: ChangeEvent<HTMLInputElement>) => void;
   selectedMethod: string;
+  amountValue?: string;
+  phoneNumberValue?: string;
   value: string | undefined;
+  amountInput?: boolean;
 }
 
 function SelectedMethodForm({
   handleGetPhoneNumber,
   selectedMethod,
-  value
+  value,
+  amountValue,
+  phoneNumberValue,
+  amountInput = false
 }: PaymentFormProsp) {
   return (
     <>
@@ -58,6 +64,16 @@ function SelectedMethodForm({
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary_color focus:outline-none"
             />
           </div>
+          {amountInput && (
+            <Input
+              value={value || ""}
+              onChange={handleGetPhoneNumber}
+              label="Enter Recharge Amount"
+              name="amount"
+              inputType="text"
+              id="amount"
+            />
+          )}
         </div>
       )}
 
@@ -65,13 +81,23 @@ function SelectedMethodForm({
       {selectedMethod === "orange" && (
         <div className="w-full">
           <Input
-            value={value || ""}
+            value={value || phoneNumberValue || ""}
             onChange={handleGetPhoneNumber}
             label="Orange Money Number"
-            name="orange-money"
+            name="phone_number"
             inputType="text"
             id="orange-money"
           />
+          {amountInput && (
+            <Input
+              value={value || amountValue || ""}
+              onChange={handleGetPhoneNumber}
+              label="Enter Recharge Amount"
+              name="amount"
+              inputType="text"
+              id="amount"
+            />
+          )}
         </div>
       )}
 
@@ -79,13 +105,23 @@ function SelectedMethodForm({
       {selectedMethod === "mtn" && (
         <div className="w-full">
           <Input
-            value={value || ""}
+            value={value || phoneNumberValue || ""}
             onChange={handleGetPhoneNumber}
             label="Mobile Money Number"
-            name="mtn-money"
+            name="phone_number"
             inputType="text"
             id="mtn-money"
           />
+          {amountInput && (
+            <Input
+              value={value || amountValue || ""}
+              onChange={handleGetPhoneNumber}
+              label="Enter Recharge Amount"
+              name="amount"
+              inputType="text"
+              id="amount"
+            />
+          )}
         </div>
       )}
     </>

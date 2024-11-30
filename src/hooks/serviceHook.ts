@@ -18,6 +18,7 @@ export interface UserType {
     speciality: string;
     rating: number,
     num_reviews: number,
+    balance?: number,
     user_id: string,
     // Location/Practice Info
     hospital_name: string;

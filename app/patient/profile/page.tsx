@@ -1,13 +1,22 @@
-import React from "react";
-import { Plus, Settings, ArrowDown, ArrowUp, Share2 } from "lucide-react";
+"use client";
+import React, { useState } from "react";
+import { Plus, Settings, ArrowDown, ArrowUp, Share2, X } from "lucide-react";
+import { CardLayout } from "@/src/components/ui/layout/CardLayout";
+import { PaymentForm } from "../checkout/[planId]/_planidContent/PaymentForm";
+import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
+import { paymentMethods, primary_color } from "@/app/lib/constant";
+import { useOpenAndClose } from "@/app/lib/hooks";
+import { useGetUser } from "@/src/hooks/serviceHook";
+import ImageComponent from "@/src/components/utils/Image";
+import { useAddAccountBalance } from "@/src/hooks/useAccountBalance";
 
 const ProfileHeader = () => (
   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 bg-white rounded-3xl">
     <div className="flex items-center gap-4">
-      <img
-        src="/api/placeholder/80/80"
-        alt="Profile"
-        className="w-20 h-20 rounded-2xl object-cover"
+      <ImageComponent
+        imageStyle="w-20 h-20 min-h-20 min-w-20"
+        altAttribute="patienName"
+        imageUrl=""
       />
       <div>
         <h1 className="text-2xl font-bold">John Doe</h1>
@@ -23,24 +32,78 @@ const ProfileHeader = () => (
     </div>
   </div>
 );
+interface RechargeAccountFormpProps {
+  handleClose: () => void;
+}
+const RechargeAccountForm = ({ handleClose }: RechargeAccountFormpProps) => {
+  const [selectedMethod, setSelectedMethod] = useState("mtn");
+  const { handelOnChangeFormData, handleAddBalance, isPending, formData } =
+    useAddAccountBalance(selectedMethod);
 
-const BalanceSection = () => (
-  <div className="bg-gradient-to-br from-[#269c65] to-[#1a724a] rounded-3xl p-8">
-    <div className="flex flex-col md:flex-row justify-between gap-6">
-      <div>
-        <p className="text-green-100 text-sm font-medium">Available Balance</p>
-        <div className="flex items-baseline gap-3 mt-1">
-          <h2 className="text-4xl font-bold text-white">$2,450.85</h2>
-          <span className="text-green-100">USD</span>
+  return (
+    <div className="fixed inset-0 flex justify-center item-center transperentBg">
+      <CardLayout>
+        <div className="flex  mb-4 items-center justify-between">
+          <h1 className="text-xl font-medium text-stone-700">
+            Add Money to your account
+          </h1>
+          <p onClick={handleClose} className="cursor-pointer">
+            <X color={primary_color} size={30} />
+          </p>
         </div>
-      </div>
-      <button className="bg-white text-[#269c65] px-6 py-3 rounded-xl font-medium flex items-center gap-2">
-        <Plus className="w-4 h-4" />
-        Add Balance
-      </button>
+
+        <PaymentForm
+          handleGetPhoneNumber={handelOnChangeFormData}
+          amountInput
+          amountValue={formData.amount}
+          phoneNumberValue={formData.phone_number}
+          paymentMethods={paymentMethods}
+          selectedMethod={selectedMethod}
+          setSelectedMethod={setSelectedMethod}
+        />
+        <div className="py-3">
+          <PrimaryButton
+            isSubmitting={isPending}
+            onClick={handleAddBalance}
+            backgroud
+            color="text-white"
+          >
+            {isPending ? "Processing..." : "Add Balance"}
+          </PrimaryButton>
+        </div>
+      </CardLayout>
     </div>
-  </div>
-);
+  );
+};
+
+const BalanceSection = ({ balance }: { balance: number }) => {
+  const { open, handle0pen, handleClose } = useOpenAndClose();
+  return (
+    <div className="bg-gradient-to-br from-[#269c65] to-[#1a724a] rounded-3xl p-8">
+      <div className="flex flex-col md:flex-row justify-between gap-6">
+        <div>
+          <p className="text-green-100 text-sm font-medium">
+            Available Balance
+          </p>
+          <div className="flex items-baseline gap-3 mt-1">
+            <h2 className="text-4xl font-bold text-white">
+              ${balance.toFixed(2)}
+            </h2>
+            <span className="text-green-100">USD</span>
+          </div>
+        </div>
+        <button
+          onClick={handle0pen}
+          className="bg-white text-[#269c65] px-6 py-3 rounded-xl font-medium flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          Add Balance
+        </button>
+      </div>
+      {open && <RechargeAccountForm handleClose={handleClose} />}
+    </div>
+  );
+};
 
 const InviteSection = () => (
   <div className="bg-white rounded-3xl p-6">
@@ -132,87 +195,96 @@ const SubscriptionItem = ({ title, features, price, nextPayment, image }) => (
   </div>
 );
 
-const PatientDashboard = () => (
-  <div className="min-h-screen bg-gray-50/50">
-    <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
-      <ProfileHeader />
+const PatientDashboard = () => {
+  const { data, isLoading } = useGetUser();
+  if (isLoading) return <div>Loading....</div>;
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
-          <BalanceSection />
-          <InviteSection />
+  return (
+    <div className="min-h-screen bg-gray-50/50">
+      <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+        <ProfileHeader />
 
-          <div className="bg-white rounded-3xl p-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-xl font-bold">Recent Transactions</h2>
-                <p className="text-gray-500 text-sm">Your latest activities</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <BalanceSection
+              balance={(data?.data.user.balance as number) || 0}
+            />
+            <InviteSection />
+
+            <div className="bg-white rounded-3xl p-6">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-xl font-bold">Recent Transactions</h2>
+                  <p className="text-gray-500 text-sm">
+                    Your latest activities
+                  </p>
+                </div>
+                <button className="text-[#269c65] font-medium">View All</button>
               </div>
-              <button className="text-[#269c65] font-medium">View All</button>
-            </div>
-            <div className="space-y-2">
-              {[
-                {
-                  title: "Video Consultation",
-                  type: "Service",
-                  amount: -80,
-                  date: "2 mins ago",
-                  status: "Processing"
-                },
-                {
-                  title: "Account Top Up",
-                  type: "Deposit",
-                  amount: 500,
-                  date: "2 hours ago",
-                  status: "Completed"
-                },
-                {
-                  title: "Chat Session",
-                  type: "Service",
-                  amount: -40,
-                  date: "Yesterday",
-                  status: "Completed"
-                }
-              ].map((tx, i) => (
-                <TransactionItem key={i} {...tx} />
-              ))}
+              <div className="space-y-2">
+                {[
+                  {
+                    title: "Video Consultation",
+                    type: "Service",
+                    amount: -80,
+                    date: "2 mins ago",
+                    status: "Processing"
+                  },
+                  {
+                    title: "Account Top Up",
+                    type: "Deposit",
+                    amount: 500,
+                    date: "2 hours ago",
+                    status: "Completed"
+                  },
+                  {
+                    title: "Chat Session",
+                    type: "Service",
+                    amount: -40,
+                    date: "Yesterday",
+                    status: "Completed"
+                  }
+                ].map((tx, i) => (
+                  <TransactionItem key={i} {...tx} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-xl font-bold">Active Subscriptions</h2>
-                <p className="text-gray-500 text-sm">Your current plans</p>
+          <div className="space-y-6">
+            <div className="bg-white rounded-3xl p-6">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-xl font-bold">Active Subscriptions</h2>
+                  <p className="text-gray-500 text-sm">Your current plans</p>
+                </div>
               </div>
-            </div>
-            <div className="space-y-4">
-              {[
-                {
-                  title: "Premium Health Plan",
-                  features: ["Unlimited Chat", "Video Calls", "24/7 Support"],
-                  price: 99.99,
-                  nextPayment: "Dec 01",
-                  image: "/api/placeholder/64/64"
-                },
-                {
-                  title: "Specialist Access",
-                  features: ["Expert Consultation", "Priority Support"],
-                  price: 49.99,
-                  nextPayment: "Dec 05",
-                  image: "/api/placeholder/64/64"
-                }
-              ].map((sub, i) => (
-                <SubscriptionItem key={i} {...sub} />
-              ))}
+              <div className="space-y-4">
+                {[
+                  {
+                    title: "Premium Health Plan",
+                    features: ["Unlimited Chat", "Video Calls", "24/7 Support"],
+                    price: 99.99,
+                    nextPayment: "Dec 01",
+                    image: "/api/placeholder/64/64"
+                  },
+                  {
+                    title: "Specialist Access",
+                    features: ["Expert Consultation", "Priority Support"],
+                    price: 49.99,
+                    nextPayment: "Dec 05",
+                    image: "/api/placeholder/64/64"
+                  }
+                ].map((sub, i) => (
+                  <SubscriptionItem key={i} {...sub} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default PatientDashboard;

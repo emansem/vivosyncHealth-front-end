@@ -7,7 +7,8 @@ import { OrderSummary } from "./_planidContent/OrderSummary";
 import { useParams } from "next/navigation";
 import { useSubscription } from "@/src/hooks/useSubscription";
 import { SubscriptionPlanDataType } from "@/app/lib/types";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import SelectInput from "@/src/components/ui/forms/SelectInput";
 
 // Interface definitions for payment and order types
 export interface PaymentMethod {
@@ -19,6 +20,7 @@ export interface PaymentMethod {
 const CheckoutPage = () => {
   // State and hooks initialization
   const [selectedMethod, setSelectedMethod] = useState("mtn");
+  const [paymentType, setPaymentType] = useState("");
   const param = useParams();
   const planId = param["planId"];
 
@@ -31,11 +33,30 @@ const CheckoutPage = () => {
     isPending
   } = useSubscription(planId as string, selectedMethod);
 
+  const handleSelectPaymentType = (e: ChangeEvent<HTMLSelectElement>) => {
+    setPaymentType(e.target.value);
+  };
+  console.log("Payment type", paymentType);
+
   // Available payment methods configuration
   const paymentMethods: PaymentMethod[] = [
     { id: "credit-card", name: "Credit Card", icon: CreditCard },
     { id: "mtn", name: "Mobile Money", icon: BadgeJapaneseYen },
     { id: "orange", name: "Orange Money", icon: Wallet }
+  ];
+  const PAYMENT_TYPE_OPTIONS = [
+    {
+      label: "Select",
+      value: ""
+    },
+    {
+      label: "Pay with balance: $600",
+      value: "payWithBalance"
+    },
+    {
+      label: "Direct checkout",
+      value: "directCheckout"
+    }
   ];
 
   return (
@@ -53,14 +74,26 @@ const CheckoutPage = () => {
         {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Payment form section */}
+
           <div>
-            <PaymentForm
-              value={phoneNumber}
-              handleGetPhoneNumber={handleGetPhoneNumber}
-              setSelectedMethod={setSelectedMethod}
-              paymentMethods={paymentMethods}
-              selectedMethod={selectedMethod}
-            />
+            <div>
+              <SelectInput
+                id="paymentType"
+                onChange={handleSelectPaymentType}
+                value={paymentType}
+                label="Select Payment Type"
+                options={PAYMENT_TYPE_OPTIONS}
+              />
+            </div>
+            {paymentType === "directCheckout" && (
+              <PaymentForm
+                value={phoneNumber}
+                handleGetPhoneNumber={handleGetPhoneNumber}
+                setSelectedMethod={setSelectedMethod}
+                paymentMethods={paymentMethods}
+                selectedMethod={selectedMethod}
+              />
+            )}
 
             {/* Payment button */}
             <div className="mt-4">

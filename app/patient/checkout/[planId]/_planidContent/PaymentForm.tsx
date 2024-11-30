@@ -4,9 +4,12 @@ import SelectedMethodForm from "./SelectedMethodForm";
 interface PaymentFormProps {
   handleGetPhoneNumber: (e: ChangeEvent<HTMLInputElement>) => void;
   selectedMethod: string;
-  value: string | undefined;
+  value?: string | undefined;
+  amountValue?: string;
+  phoneNumberValue?: string;
   paymentMethods: PaymentMethod[];
   setSelectedMethod: Dispatch<SetStateAction<string>>;
+  amountInput?: boolean;
 }
 
 // Payment form component
@@ -15,6 +18,9 @@ export const PaymentForm = ({
   paymentMethods,
   selectedMethod,
   value,
+  amountValue,
+  phoneNumberValue,
+  amountInput = false,
   setSelectedMethod
 }: PaymentFormProps) => {
   return (
@@ -53,6 +59,9 @@ export const PaymentForm = ({
 
       <SelectedMethodForm
         value={value}
+        amountValue={amountValue}
+        phoneNumberValue={phoneNumberValue}
+        amountInput={amountInput}
         handleGetPhoneNumber={handleGetPhoneNumber}
         selectedMethod={selectedMethod}
       />

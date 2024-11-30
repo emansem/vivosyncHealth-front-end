@@ -1,3 +1,5 @@
+import { CreditCard, BadgeJapaneseYen, Wallet } from "lucide-react";
+import { PaymentMethod } from "../patient/checkout/[planId]/page";
 import { FormFields, OnboardingFormFields, SubscriptionData, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
 
 // Application-wide theme color
@@ -296,7 +298,8 @@ export const PATIENT_API_ENDPOINTS = {
         getDoctorPlan: "/patients/subscription/plan"
     },
     PAYMENT: {
-        collect: "/payment/collect"
+        collect: "/payment/collect",
+        addAccountBalance: "/payment/add/balance"
     },
     SUBSCRIPTION: {
         getAllSubscription: "/patients/subscription/patient",
@@ -307,7 +310,7 @@ export const PATIENT_API_ENDPOINTS = {
 
 // Query keys for patient operations
 export const PATIENT_QUERY_KEYS = {
-    GET_ALL_DOCTORS: 'getAllDoctors'
+    GET_ALL_DOCTORS: 'getAllDoctors',
 };
 
 // Headers for subscription table
@@ -330,4 +333,10 @@ export const MOBILE_SUBSCRIPTION_TABLE_HEADER: { key: keyof SubscriptionData; la
     { key: "expire_date", label: "End Date" },
     { key: "subscription_status", label: "Status" },
     { key: "amount", label: "Amount" }
+];
+
+export const paymentMethods: PaymentMethod[] = [
+    { id: "credit-card", name: "Credit Card", icon: CreditCard },
+    { id: "mtn", name: "Mobile Money", icon: BadgeJapaneseYen },
+    { id: "orange", name: "Orange Money", icon: Wallet }
 ];

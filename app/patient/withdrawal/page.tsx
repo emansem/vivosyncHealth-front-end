@@ -1,364 +1,477 @@
 "use client";
-/**
- * DoctorProfile Component
- *
- * A comprehensive doctor profile page with pricing plans and reviews.
- * Features responsive design, seamless plan switching, and optimized UX.
- *
- * Key sections:
- * - Doctor information and stats
- * - Location and availability details
- * - Professional background
- * - Patient reviews
- * - Subscription plans with interactive switching
- */
-
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import {
-  Star,
-  Check,
-  MapPin,
-  Globe2,
-  Calendar,
-  Languages,
-  Stethoscope,
-  Building2,
-  GraduationCap,
-  Clock,
-  Award
+  Phone,
+  Video,
+  MoreVertical,
+  Send,
+  Paperclip,
+  Image,
+  Menu
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 
-// Design tokens
-const THEME = {
-  colors: {
-    primary: "#269c65",
-    secondary: "#1a4d8c",
-    accent: "#fbbf24",
-    success: "#22c55e",
-    background: "#f9fafb",
-    surfacePrimary: "#ffffff",
-    surfaceSecondary: "#f3f4f6",
-    textPrimary: "#111827",
-    textSecondary: "#4b5563"
-  },
-  spacing: {
-    base: "1rem",
-    tight: "0.5rem",
-    loose: "1.5rem",
-    wide: "2rem"
-  },
-  borderRadius: {
-    base: "0.75rem",
-    full: "9999px"
-  },
-  transitions: {
-    base: "all 0.3s ease"
-  }
-};
+// Types
+interface Doctor {
+  id: string;
+  name: string;
+  specialty: string;
+  avatar: string;
+  status: "online" | "offline" | "busy";
+  lastMessage: {
+    text: string;
+    timestamp: string;
+    isRead: boolean;
+  };
+}
 
-// Data structure for provider info
-const doctorInfo = {
-  personalInfo: {
-    name: "Dr. Eman sem",
-    tagline: "Making Clients Reimagine Their Online Presence",
-    rating: 5.0,
-    reviews: 123,
-    experience: 16
-  },
-  locationInfo: {
-    country: "Cameroon",
-    city: "Yaoundé",
-    specialty: "Integrative Medicine",
-    languages: ["English", "French", "German"],
-    availability: ["Mon", "Tue", "Wed", "Sat"]
-  },
-  background: `My expertise lies in integrative medicine, where I blend traditional medical practices with holistic approaches to ensure comprehensive care. Trained at Johns Hopkins, with further specialization in neurology and functional medicine at Harvard. I've seen first-hand the limitations of conventional treatments. This led me to explore and integrate alternative therapies like acupuncture, dietary therapy, and mindfulness, tailoring treatments to not only heal the body but also nurture the mind and spirit.`
-};
+interface Message {
+  id: string;
+  senderId: string;
+  text: string;
+  timestamp: string;
+  status: "sent" | "delivered" | "read";
+  attachments?: {
+    type: "image" | "file";
+    url: string;
+    name: string;
+  }[];
+}
 
-// Subscription plan configurations
-const subscriptionPlans = [
-  {
-    id: "basic",
-    name: "Basic",
-    price: 2000,
-    discount: "20%",
-    features: [
-      "24/7 Customer Support",
-      "Up to 50 Patient Records",
-      "Basic Appointment Scheduling",
-      "Email Notifications",
-      "Patient History Access"
-    ]
-  },
-  {
-    id: "standard",
-    name: "Standard",
-    price: 3000,
-    discount: "25%",
-    popular: true,
-    features: [
-      "All Basic features",
-      "Up to 200 Patient Records",
-      "Advanced Scheduling",
-      "Priority Support",
-      "Analytics Dashboard"
-    ]
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    price: 4000,
-    discount: "30%",
-    features: [
-      "All Standard features",
-      "Unlimited Records",
-      "Custom Integration",
-      "API Access",
-      "Dedicated Support"
-    ]
-  }
-];
+const DoctorChat = () => {
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | undefined>();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
 
-export default function DoctorProfile() {
-  // State management
-  const [selectedPlan, setSelectedPlan] = useState(subscriptionPlans[0].id);
-  const [isLoading, setIsLoading] = useState(false);
+  // Mock messages
+  const mockMessages: Message[] = [
+    {
+      id: "1",
+      senderId: "1", // doctor
+      text: "Good morning! I've reviewed your latest blood test results.",
+      timestamp: "9:30 AM",
+      status: "read"
+    },
+    {
+      id: "2",
+      senderId: "user",
+      text: "Good morning Dr. Wilson! Thank you for checking. How do they look?",
+      timestamp: "9:31 AM",
+      status: "read"
+    },
+    {
+      id: "3",
+      senderId: "1",
+      text: "Overall, they're looking good. Your cholesterol levels have improved since last time. I've attached the detailed report for your reference.",
+      timestamp: "9:32 AM",
+      status: "read",
+      attachments: [
+        {
+          type: "file",
+          url: "#",
+          name: "blood_test_results.pdf"
+        }
+      ]
+    },
+    {
+      id: "4",
+      senderId: "user",
+      text: "That's great news! The diet changes must be working.",
+      timestamp: "9:33 AM",
+      status: "read"
+    },
+    {
+      id: "5",
+      senderId: "1",
+      text: "Yes, the improvements are significant. I've prepared a graph showing your progress over the last 3 months.",
+      timestamp: "9:34 AM",
+      status: "read",
+      attachments: [
+        {
+          type: "image",
+          url: "/api/placeholder/400/300",
+          name: "cholesterol_progress.png"
+        }
+      ]
+    },
+    {
+      id: "6",
+      senderId: "1",
+      text: "Would you like to schedule a follow-up appointment to discuss this in detail?",
+      timestamp: "9:34 AM",
+      status: "delivered"
+    },
+    {
+      id: "7",
+      senderId: "user",
+      text: "Yes, that would be great. When are you available next week?",
+      timestamp: "9:35 AM",
+      status: "sent"
+    }
+  ];
 
-  // Handlers
-  const handleSubscribe = async () => {
-    setIsLoading(true);
-    // TODO: Implement subscription logic
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
+  // Mock doctors data
+  const mockDoctors: Doctor[] = [
+    {
+      id: "1",
+      name: "Dr. Sarah Wilson",
+      specialty: "Cardiologist",
+      avatar: "/api/placeholder/48/48",
+      status: "online",
+      lastMessage: {
+        text: "Your test results look promising...",
+        timestamp: "10:30 AM",
+        isRead: true
+      }
+    },
+    {
+      id: "2",
+      name: "Dr. Michael Chen",
+      specialty: "Neurologist",
+      avatar: "/api/placeholder/48/48",
+      status: "busy",
+      lastMessage: {
+        text: `'Let's discuss your MRI results`,
+        timestamp: "9:15 AM",
+        isRead: false
+      }
+    },
+    {
+      id: "3",
+      name: "Dr. Emily Brown",
+      specialty: "Pediatrician",
+      avatar: "/api/placeholder/48/48",
+      status: "offline",
+      lastMessage: {
+        text: "Remember to take the prescribed...",
+        timestamp: "Yesterday",
+        isRead: true
+      }
+    }
+  ];
+
+  const handleSendMessage = (e: FormEvent) => {
+    e.preventDefault();
+    if (message.trim()) {
+      const newMessage: Message = {
+        id: String(Date.now()),
+        senderId: "user",
+        text: message,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        }),
+        status: "sent"
+      };
+      setMessages([...messages, newMessage]);
+
+      // Simulate doctor's reply after 1 second
+      setTimeout(() => {
+        const doctorReply: Message = {
+          id: String(Date.now() + 1),
+          senderId: selectedDoctor?.id || "1",
+          text: "I'll check my schedule and get back to you with available slots.",
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          }),
+          status: "sent"
+        };
+        setMessages((prev) => [...prev, doctorReply]);
+      }, 1000);
+    }
   };
 
-  // Shared UI Components
-  const InfoItem = ({ icon: Icon, label, value }) => (
-    <div className="flex items-center gap-3">
-      <div className="p-2 rounded-lg bg-green-50">
-        <Icon className="w-5 h-5" style={{ color: THEME.colors.primary }} />
+  // Message status icon component
+  const MessageStatus = ({ status }: { status: Message["status"] }) => {
+    return (
+      <span className="text-xs text-gray-500">
+        {status === "sent" && "✓"}
+        {status === "delivered" && "✓✓"}
+        {status === "read" && <span className="text-blue-500">✓✓</span>}
+      </span>
+    );
+  };
+
+  // Doctors List Component
+  const DoctorsList = () => (
+    <div className="flex flex-col h-full bg-white">
+      <div className="p-4 border-b border-gray-100">
+        <h2 className="text-xl font-semibold text-gray-800">Doctors</h2>
+        <div className="mt-2 relative">
+          <input
+            type="search"
+            placeholder="Search doctors..."
+            className="w-full px-4 py-2 bg-gray-50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
       </div>
-      <div>
-        <p className="text-sm text-gray-500">{label}</p>
-        <p className="font-medium text-gray-900">{value}</p>
+
+      <div className="flex-1 overflow-y-auto">
+        {mockDoctors.map((doctor) => (
+          <div
+            key={doctor.id}
+            onClick={() => {
+              setSelectedDoctor(doctor);
+              setMessages(mockMessages); // Load mock messages when selecting a doctor
+              setIsMobileMenuOpen(false);
+            }}
+            className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors
+              ${selectedDoctor?.id === doctor.id ? "bg-blue-50" : ""}`}
+          >
+            <div className="flex items-start space-x-3">
+              <div className="relative">
+                <img
+                  src={doctor.avatar}
+                  alt={doctor.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <span
+                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
+                    ${
+                      doctor.status === "online"
+                        ? "bg-green-500"
+                        : doctor.status === "busy"
+                        ? "bg-red-500"
+                        : "bg-gray-500"
+                    }`}
+                />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start">
+                  <h3 className="font-medium text-gray-900">{doctor.name}</h3>
+                  <span className="text-xs text-gray-500">
+                    {doctor.lastMessage.timestamp}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 mt-0.5">
+                  {doctor.specialty}
+                </p>
+                <p className="text-sm text-gray-500 truncate mt-1">
+                  {doctor.lastMessage.text}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 
-  const ProfileSection = () => (
-    <div className="flex flex-col md:flex-row items-start gap-6">
-      <div className="relative w-24 h-24">
-        <img
-          src="/api/placeholder/96/96"
-          alt={doctorInfo.personalInfo.name}
-          className="rounded-full object-cover w-full h-full"
-        />
-        <div className="absolute -bottom-2 -right-2 bg-green-50 p-1.5 rounded-full">
-          <Award className="w-5 h-5" style={{ color: THEME.colors.primary }} />
-        </div>
-      </div>
-      <div className="flex-1">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          {doctorInfo.personalInfo.name}
-        </h1>
-        <p className="text-gray-600 mt-1">{doctorInfo.personalInfo.tagline}</p>
-        <div className="flex flex-wrap items-center gap-4 mt-3">
-          <div className="flex items-center">
-            <Star
-              className="w-5 h-5"
-              style={{ color: THEME.colors.accent }}
-              fill="currentColor"
+  // Chat Header Component
+  const ChatHeader = ({ doctor }: { doctor: Doctor }) => (
+    <div className="px-6 py-4 border-b border-gray-100 bg-white">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <img
+              src={doctor.avatar}
+              alt={doctor.name}
+              className="w-12 h-12 rounded-full object-cover"
             />
-            <span className="ml-2 font-medium">
-              {doctorInfo.personalInfo.rating}
-            </span>
-            <span className="text-gray-500 ml-1">
-              ({doctorInfo.personalInfo.reviews})
-            </span>
+            <span
+              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
+                ${
+                  doctor.status === "online"
+                    ? "bg-green-500"
+                    : doctor.status === "busy"
+                    ? "bg-red-500"
+                    : "bg-gray-500"
+                }`}
+            />
           </div>
-          <div className="flex items-center">
-            <Clock className="w-5 h-5 text-gray-400" />
-            <span className="ml-2 text-gray-600">
-              {doctorInfo.personalInfo.experience} Years Experience
-            </span>
+
+          <div>
+            <h3 className="font-semibold text-gray-900">{doctor.name}</h3>
+            <p className="text-sm text-gray-600">{doctor.specialty}</p>
           </div>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => console.log("Voice call")}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <Phone className="w-5 h-5 text-gray-600" />
+          </button>
+          <button
+            onClick={() => console.log("Video call")}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <Video className="w-5 h-5 text-gray-600" />
+          </button>
+          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <MoreVertical className="w-5 h-5 text-gray-600" />
+          </button>
         </div>
       </div>
     </div>
   );
 
-  const LocationGrid = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-      <InfoItem
-        icon={Globe2}
-        label="Country"
-        value={doctorInfo.locationInfo.country}
-      />
-      <InfoItem
-        icon={Building2}
-        label="City"
-        value={doctorInfo.locationInfo.city}
-      />
-      <InfoItem
-        icon={Stethoscope}
-        label="Specialty"
-        value={doctorInfo.locationInfo.specialty}
-      />
-      <InfoItem
-        icon={Languages}
-        label="Languages"
-        value={doctorInfo.locationInfo.languages.join(", ")}
-      />
-      <InfoItem
-        icon={Calendar}
-        label="Available"
-        value={doctorInfo.locationInfo.availability.join(", ")}
-      />
+  // Message Input Component
+  const MessageInput = () => (
+    <div className="px-6 py-4 border-t border-gray-100 bg-white">
+      <form onSubmit={handleSendMessage} className="flex items-end space-x-4">
+        <div className="flex-1 relative">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message..."
+            className="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+            rows={4}
+          />
+          <div className="absolute bottom-3 right-3 flex space-x-2">
+            <button
+              type="button"
+              onClick={() => console.log("Attach file")}
+              className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <Paperclip className="w-5 h-5 text-gray-500" />
+            </button>
+            <button
+              type="button"
+              onClick={() => console.log("Attach image")}
+              className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <Image className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
+        </div>
+        <button
+          type="submit"
+          disabled={!message.trim()}
+          className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Send className="w-5 h-5" />
+        </button>
+      </form>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Desktop Layout */}
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:flex gap-8">
-        {/* Main Content Column */}
-        <div className="flex-1 space-y-6">
-          {/* Profile Card */}
-          <section className="bg-white rounded-xl p-6 shadow-sm">
-            <ProfileSection />
-            <LocationGrid />
-          </section>
+    <div className="flex h-screen bg-gray-50">
+      {/* Mobile menu button */}
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        <Menu className="w-6 h-6" />
+      </button>
 
-          {/* About Section */}
-          <section className="bg-white rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">About</h2>
-            <p className="text-gray-600 leading-relaxed">
-              {doctorInfo.background}
-            </p>
-          </section>
+      {/* Doctors sidebar */}
+      <div
+        className={`w-96 bg-white border-r border-gray-100 flex-shrink-0
+          ${
+            isMobileMenuOpen ? "fixed inset-y-0 left-0 z-40" : "hidden md:block"
+          }`}
+      >
+        <DoctorsList />
+      </div>
 
-          {/* Reviews Section */}
-          <section className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold">Patient Reviews</h2>
-              <button className="text-primary font-medium hover:underline">
-                View all
-              </button>
-            </div>
-            <div className="space-y-6">
-              {/* TODO: Map through actual reviews */}
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
-                  <span
-                    className="font-medium"
-                    style={{ color: THEME.colors.primary }}
+      {/* Chat area */}
+      <div className="flex-1 flex flex-col">
+        {selectedDoctor ? (
+          <>
+            <ChatHeader doctor={selectedDoctor} />
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-6">
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${
+                      msg.senderId === "user" ? "justify-end" : "justify-start"
+                    }`}
                   >
-                    ES
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Eman sem</span>
-                    <span className="text-sm text-gray-500">Just now</span>
+                    <div
+                      className={`flex ${
+                        msg.senderId === "user"
+                          ? "flex-row-reverse"
+                          : "flex-row"
+                      } items-end space-x-2 max-w-[80%] ${
+                        msg.senderId === "user" ? "space-x-reverse" : ""
+                      }`}
+                    >
+                      {msg.senderId !== "user" && selectedDoctor && (
+                        <img
+                          src={selectedDoctor.avatar}
+                          alt={selectedDoctor.name}
+                          className="w-8 h-8 rounded-full mb-1"
+                        />
+                      )}
+                      <div
+                        className={`flex flex-col ${
+                          msg.senderId === "user" ? "items-end" : "items-start"
+                        }`}
+                      >
+                        <div
+                          className={`rounded-2xl px-4 py-2 ${
+                            msg.senderId === "user"
+                              ? "bg-blue-500 text-white rounded-br-none"
+                              : "bg-gray-100 text-gray-800 rounded-bl-none"
+                          }`}
+                        >
+                          <p className="text-sm">{msg.text}</p>
+                          {msg.attachments?.map((attachment, index) => (
+                            <div key={index} className="mt-2">
+                              {attachment.type === "image" ? (
+                                <div className="rounded-lg overflow-hidden">
+                                  <img
+                                    src={attachment.url}
+                                    alt={attachment.name}
+                                    className="w-full h-auto"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="flex items-center space-x-2 bg-white bg-opacity-10 rounded-lg p-2">
+                                  <Paperclip className="w-4 h-4" />
+                                  <span className="text-sm">
+                                    {attachment.name}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <span className="text-xs text-gray-500">
+                            {msg.timestamp}
+                          </span>
+                          {msg.senderId === "user" && (
+                            <MessageStatus status={msg.status} />
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center mt-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4"
-                        style={{ color: THEME.colors.accent }}
-                        fill="currentColor"
-                      />
-                    ))}
-                  </div>
-                  <p className="mt-2 text-gray-600">
-                    Dr. Anderson was incredibly thorough during my annual
-                    check-up. She took the time to explain all my test results
-                    in detail and answered every question...
-                  </p>
-                </div>
+                ))}
               </div>
             </div>
-          </section>
-        </div>
-
-        {/* Pricing Column */}
-        <div className="lg:w-[400px] mt-6 lg:mt-0">
-          <div className="bg-white rounded-xl p-6 shadow-sm sticky top-8">
-            <div className="flex gap-2 p-1 bg-gray-100 rounded-lg mb-6">
-              {subscriptionPlans.map((plan) => (
-                <button
-                  key={plan.id}
-                  onClick={() => setSelectedPlan(plan.id)}
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all
-                    ${
-                      selectedPlan === plan.id
-                        ? "bg-white text-primary shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                >
-                  {plan.name}
-                </button>
-              ))}
+            <MessageInput />
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <h3 className="text-xl font-medium text-gray-700">
+                Select a doctor to start chatting
+              </h3>
+              <p className="mt-2 text-gray-500">
+                Choose from your list of doctors on the left
+              </p>
             </div>
-
-            <AnimatePresence mode="wait">
-              {subscriptionPlans.map(
-                (plan) =>
-                  plan.id === selectedPlan && (
-                    <motion.div
-                      key={plan.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className="space-y-6"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="text-2xl font-semibold">
-                            {plan.name}
-                          </h3>
-                          <p className="text-green-600">
-                            save up to {plan.discount}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-3xl font-bold">
-                            ${plan.price}
-                          </div>
-                          <div className="text-gray-500">/month</div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        {plan.features.map((feature) => (
-                          <div key={feature} className="flex items-start gap-3">
-                            <Check
-                              className="w-5 h-5 shrink-0"
-                              style={{ color: THEME.colors.success }}
-                            />
-                            <span className="text-gray-600">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <PrimaryButton
-                        onClick={handleSubscribe}
-                        backgroud
-                        color="text-white"
-                      >
-                        Subscribe Now
-                      </PrimaryButton>
-                    </motion.div>
-                  )
-              )}
-            </AnimatePresence>
           </div>
-        </div>
+        )}
       </div>
+
+      {/* Mobile overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
     </div>
   );
-}
+};
+
+export default DoctorChat;
