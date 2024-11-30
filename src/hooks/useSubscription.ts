@@ -1,10 +1,10 @@
 import { PATIENT_API_ENDPOINTS } from "@/app/lib/constant"
-import { useApiPost, useGetData } from "./serviceHook"
+import { useApiPost, useGetData, useUpdateData } from "./serviceHook"
 import { GetPlanApiResponse } from "./pricingPlan/useUtileHook";
 import axios from "axios";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { SubscriptionData } from "@/app/lib/types";
+import { SubscriptionData, SubscriptionPlanDataType } from "@/app/lib/types";
 
 // Type definition for subscription payment data
 interface SubscriptionPayment {
@@ -14,6 +14,12 @@ interface SubscriptionPayment {
 interface SubscriptionDataApiResponse {
     data: {
         subscription: SubscriptionData[]
+    }
+}
+interface SubscriptionDataWithPlan {
+    data: {
+        current_subscription: SubscriptionData,
+        subscription_plans: SubscriptionPlanDataType[]
     }
 }
 
@@ -81,6 +87,58 @@ export const useGetSubscriptionData = () => {
         console.log("Error", error.response?.data)
     }
 
-
-    return { subscriptionDetails: data?.data?.subscription }
+    return { subscriptionDetails: data?.data?.subscription, isLoading }
 }
+
+export const useManageSubscriptionData = (subscriptionId: string) => {
+    // API endpoint construction
+    const getCurrentSubscriptionEndpoint =
+        `${PATIENT_API_ENDPOINTS.SUBSCRIPTION.getCurrentSubscription}/${subscriptionId}`;
+    const updateSubscriptionStatus =
+        `${PATIENT_API_ENDPOINTS.SUBSCRIPTION.updateSubscriptionStatus}/${subscriptionId}`;
+
+    // Hooks for data fetching and updating
+    const { mutate, isPending } = useUpdateData(updateSubscriptionStatus, 'subscription');
+    const {
+        data,
+        isLoading,
+        error
+    } = useGetData<SubscriptionDataWithPlan>(getCurrentSubscriptionEndpoint, 'subscription');
+
+    // Error handling for API calls
+    if (error && axios.isAxiosError(error)) {
+        console.log("Error fetching current subscription plan", error.response?.data);
+    }
+
+    // Extract required data from API response
+    const currentSubscriptionPlan = data?.data?.current_subscription;
+    const subscriptionPlans = data?.data?.subscription_plans;
+    const subscriptionStatus = data?.data?.current_subscription.subscription_status;
+
+    useEffect(() => {
+        if (currentSubscriptionPlan?.expire_date && subscriptionStatus !== "expired") {
+            const expireDate = new Date(currentSubscriptionPlan.expire_date);
+            const currentDate = new Date();
+
+            if (currentDate >= expireDate) {
+                mutate({ status: "expired" });
+            }
+        }
+    }, [currentSubscriptionPlan?.expire_date, mutate, subscriptionStatus]);
+
+    const handleCancelSubscription = () => {
+        if (currentSubscriptionPlan?.subscription_status && subscriptionStatus !== "cancelled") {
+            mutate({ status: "cancelled" }, {
+                onSuccess: () => toast.success("Plan successfully cancelled")
+            });
+
+        }
+    }
+    return {
+        isLoading,
+        isPending,
+        handleCancelSubscription,
+        subscriptionPlans,
+        currentSubscriptionPlan
+    };
+};

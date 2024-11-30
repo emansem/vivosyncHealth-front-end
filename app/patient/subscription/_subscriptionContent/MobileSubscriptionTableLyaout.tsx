@@ -1,6 +1,6 @@
 import { SubscriptionData } from "@/app/lib/types";
 import { capitalizeFirstLetter, formatDate } from "@/src/helper/helper";
-import Link from "next/link";
+// import Link from "next/link";
 import { getStatusColor, styles } from "./SubscriptionTable";
 // Update the MobileTableProps interface to include align
 interface MobileTableProps {

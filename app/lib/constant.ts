@@ -299,7 +299,9 @@ export const PATIENT_API_ENDPOINTS = {
         collect: "/payment/collect"
     },
     SUBSCRIPTION: {
-        getAllSubscription: "/patients/subscription/patient"
+        getAllSubscription: "/patients/subscription/patient",
+        getCurrentSubscription: "/patients/subscription/current/patient",
+        updateSubscriptionStatus: "patients/subscription/current/patient/update"
     }
 } as const;
 

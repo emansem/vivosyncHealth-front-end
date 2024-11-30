@@ -168,7 +168,8 @@ export interface SubscriptionData {
     doctor_id: string;
     plan_type: "basic" | "premium" | "enterprise";
     created_at: string;
-    expire_date: string;
+    expire_date: string | number;
+    plan_id?: number,
     subscription_status: "active" | "expired" | "cancelled";
     amount: number;
 

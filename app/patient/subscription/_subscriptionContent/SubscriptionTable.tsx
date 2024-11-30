@@ -2,9 +2,8 @@ import { subscriptionTableHeaders } from "@/app/lib/constant";
 import { SubscriptionTableProps } from "@/app/lib/types";
 import { formatDate, capitalizeFirstLetter } from "@/src/helper/helper";
 import {
-  ArrowRightCircle,
   ChevronRight,
-  CircleChevronRight
+ 
 } from "lucide-react";
 
 // Centralized styles object for the component
@@ -97,7 +96,7 @@ export const SubscriptionTable = ({
                 <td className={styles.cell.base}>
                   <a
                     className="flex justify-end"
-                    href={`/patient/subscription/${subscription.doctor_id}`}
+                    href={`/patient/subscription/${subscription.id}`}
                   >
                     <ChevronRight className={styles.icon} />
                   </a>

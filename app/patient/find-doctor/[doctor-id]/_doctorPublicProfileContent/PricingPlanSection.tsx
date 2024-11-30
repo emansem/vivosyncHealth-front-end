@@ -7,28 +7,37 @@ import { SubscriptionPlanDataType } from "@/app/lib/types";
 interface PricingPlanSectionProps {
   plans: SubscriptionPlanDataType[];
 }
+
 function PricingPlanSection({ plans }: PricingPlanSectionProps) {
-  const [selectedPlan, setSelectedPlan] = useState(plans[0].id);
+  // Initialize state with the first plan's ID
+  const [selectedPlan, setSelectedPlan] = useState(plans[0].id); // Safety check for empty plans array
+  if (!plans || plans.length === 0) {
+    return <div>No subscription plans available</div>;
+  }
   return (
     <div className="lg:w-[400px] mt-6 lg:mt-0">
       <div className="bg-white rounded-xl p-6 shadow-sm sticky top-8">
+        {/* Plan Type Selection Tabs */}
         <div className="flex gap-2 p-1 bg-gray-100 rounded-lg mb-6">
           {plans.map((plan) => (
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`flex-1 capitalize py-2 px-4 rounded-lg text-sm font-medium transition-all
-                    ${
-                      selectedPlan === plan.id
-                        ? "bg-white text-primary shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
+              className={`
+                flex-1 capitalize py-2 px-4 rounded-lg text-sm font-medium transition-all
+                ${
+                  selectedPlan === plan.id
+                    ? "bg-white text-primary shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }
+              `}
             >
               {plan.plan_type}
             </button>
           ))}
         </div>
 
+        {/* Plan Details Section with Animation */}
         <AnimatePresence mode="wait">
           {plans.map(
             (plan) =>
@@ -38,6 +47,7 @@ function PricingPlanSection({ plans }: PricingPlanSectionProps) {
                   transition={{ duration: 0.2 }}
                   className="space-y-6"
                 >
+                  {/* Plan Header - Name, Price, Duration */}
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-2xl font-semibold capitalize">
@@ -55,6 +65,7 @@ function PricingPlanSection({ plans }: PricingPlanSectionProps) {
                     </div>
                   </div>
 
+                  {/* Plan Features List */}
                   <div className="space-y-4">
                     {plan.plan_features.map((feature) => (
                       <div key={feature.id} className="flex items-start gap-3">
@@ -66,6 +77,8 @@ function PricingPlanSection({ plans }: PricingPlanSectionProps) {
                       </div>
                     ))}
                   </div>
+
+                  {/* Subscribe Button */}
                   <a className="block" href={`/patient/checkout/${plan.id}`}>
                     <PrimaryButton backgroud color="text-white">
                       Subscribe Now
@@ -79,5 +92,4 @@ function PricingPlanSection({ plans }: PricingPlanSectionProps) {
     </div>
   );
 }
-
 export default PricingPlanSection;
