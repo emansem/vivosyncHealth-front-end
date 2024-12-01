@@ -142,3 +142,20 @@ export const useManageSubscriptionData = (subscriptionId: string) => {
         currentSubscriptionPlan
     };
 };
+
+export const usePayWithAccountBalance = (planId: string) => {
+    const makePaymentApiEndpoint = `${PATIENT_API_ENDPOINTS.PAYMENT.payWithBalance}/${planId}`
+    const { mutate, isPending } = useApiPost(makePaymentApiEndpoint, "user")
+
+    const handlePayment = () => {
+        mutate({ payment_method: "Balance" }, {
+            onSuccess: () => {
+                setTimeout(() => {
+                    window.location.href = "http://localhost:3000/patient/subscription"
+                }, 1000);
+            }
+        })
+    }
+    return { isLoading: isPending, handlePayment }
+
+}

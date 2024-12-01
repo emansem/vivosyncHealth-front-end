@@ -299,7 +299,8 @@ export const PATIENT_API_ENDPOINTS = {
     },
     PAYMENT: {
         collect: "/payment/collect",
-        addAccountBalance: "/payment/add/balance"
+        addAccountBalance: "/payment/add/balance",
+        payWithBalance: "payment/collect/pay-with-balance"
     },
     SUBSCRIPTION: {
         getAllSubscription: "/patients/subscription/patient",
@@ -339,4 +340,19 @@ export const paymentMethods: PaymentMethod[] = [
     { id: "credit-card", name: "Credit Card", icon: CreditCard },
     { id: "mtn", name: "Mobile Money", icon: BadgeJapaneseYen },
     { id: "orange", name: "Orange Money", icon: Wallet }
+];
+
+export const PAYMENT_TYPE_OPTIONS = [
+    {
+        label: "Select",
+        value: ""
+    },
+    {
+        label: "Pay with balance",
+        value: "payWithBalance"
+    },
+    {
+        label: "Direct checkout",
+        value: "directCheckout"
+    }
 ];

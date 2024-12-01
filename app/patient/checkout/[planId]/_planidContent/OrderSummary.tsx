@@ -19,13 +19,13 @@ export const OrderSummary = ({
               {selectedPlan?.plan_duration === "30" ? "Monthly" : "Annually"}
             </p>
           </div>
-          <span className="font-medium">${selectedPlan?.amount}</span>
+          <span className="font-medium">${selectedPlan?.amount || 0}</span>
         </div>
 
         <div className="border-t pt-4">
           <div className="flex justify-between">
             <span className="text-gray-600">Subtotal</span>
-            <span>${selectedPlan?.amount}</span>
+            <span>${selectedPlan?.amount || 0}</span>
           </div>
           {/* <div className="flex justify-between mt-2">
             <span className="text-gray-600">Tax</span>
@@ -34,7 +34,9 @@ export const OrderSummary = ({
           <div className="flex justify-between mt-2">
             <span className="text-gray-600">Discount</span>
             <span>
-              ${(Number(selectedPlan?.discount_percentage) * 0.1).toFixed(2)}
+              $
+              {(Number(selectedPlan?.discount_percentage) * 0.1).toFixed(2) ||
+                0}
             </span>
           </div>
         </div>
@@ -47,7 +49,7 @@ export const OrderSummary = ({
               {(
                 selectedPlan?.amount -
                 Number(selectedPlan?.discount_percentage) * 0.1
-              ).toFixed(2)}
+              ).toFixed(2) || 0}
             </span>
           </div>
           <p className="text-sm text-gray-600 mt-2">
