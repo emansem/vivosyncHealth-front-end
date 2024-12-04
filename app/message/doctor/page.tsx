@@ -1,7 +1,7 @@
 "use client";
 import { useSendingMessage } from "@/src/hooks/chat/useChat";
-import ChatArea from "./_patientChatContent/ChatArea";
-import ChatSideBar from "./_patientChatContent/ChatSideBar";
+import ChatArea from "./_doctorChatContent/ChatArea";
+import ChatSideBar from "./_doctorChatContent/ChatSideBar";
 
 export default function ChatInterface() {
   const {

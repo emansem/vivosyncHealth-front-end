@@ -72,6 +72,31 @@ export type PatientReviewsTypes = {
     timeStamp: string | number
 }
 
+// Types
+export type Message = {
+    id: string;
+    content: string;
+    senderId: string;
+    timestamp: Date;
+    isRead: boolean;
+};
+
+export type User = {
+    id: string;
+    name: string;
+    avatar: string;
+    role: "doctor";
+    status: "online" | "offline";
+    specialty: string;
+    lastSeen?: Date;
+};
+
+export type Chat = {
+    id: string;
+    participants: User[];
+    lastMessage?: Message;
+    unreadCount: number;
+};
 
 
 

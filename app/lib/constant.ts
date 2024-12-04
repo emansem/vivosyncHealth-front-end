@@ -4,6 +4,10 @@ import { FormFields, OnboardingFormFields, SubscriptionData, SubscriptionPlanTyp
 
 // Application-wide theme color
 export const primary_color = "#269c65";
+// Colors
+export const PRIMARY_COLOR = `#269c65`;
+export const SECONDARY_COLOR = `#e8f5e9`;
+
 
 // Total number of steps in the onboarding form
 export const TOTAL_FORM_STEPS = 3;
