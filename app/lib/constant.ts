@@ -360,3 +360,9 @@ export const PAYMENT_TYPE_OPTIONS = [
         value: "directCheckout"
     }
 ];
+
+export const GENERAL_API_END_POINTS = {
+    GET_ACTIVE_SUBSCRIPTION: '/message/subscription/active',
+    GET_CHAT_ROOM_ID: '/message/chat-room/find',
+    SEND_MESSAGE: "/message/send-message"
+}

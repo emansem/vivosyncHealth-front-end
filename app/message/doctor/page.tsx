@@ -1,7 +1,8 @@
 "use client";
 import { useSendingMessage } from "@/src/hooks/chat/useChat";
 import ChatArea from "./_doctorChatContent/ChatArea";
-import ChatSideBar from "./_doctorChatContent/ChatSideBar";
+import { UserType } from "@/src/hooks/serviceHook";
+import ChatSideBar from "../patient/_patientChatContent/ChatSideBar";
 
 export default function ChatInterface() {
   const {
@@ -10,21 +11,23 @@ export default function ChatInterface() {
     message,
     textareaRef,
     demoChats,
+    activeUsers,
+    isLoading,
     handleSendMessage,
     selectedChat,
     showMobileChat,
     messageEndRef,
     setShowMobileChat,
-    setSelectedChat,
+    handleSetSelectChat,
     messages
   } = useSendingMessage();
+
   return (
     <div className="flex h-[calc(100vh-5rem)] bg-white rounded-lg shadow-sm">
       {/* Sidebar */}
       <ChatSideBar
-        demoChats={demoChats}
-        setSelectedChat={setSelectedChat}
-        setShowMobileChat={setShowMobileChat}
+        activeUsers={activeUsers as UserType[]}
+        handleSetSelectChat={handleSetSelectChat}
         selectedChat={selectedChat}
         showMobileChat={showMobileChat}
       />

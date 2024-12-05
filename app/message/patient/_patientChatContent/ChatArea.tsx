@@ -4,9 +4,10 @@ import React, { ChangeEvent, LegacyRef } from "react";
 import { PRIMARY_COLOR } from "@/app/lib/constant";
 import { formatDateIntl, formatTime } from "@/src/helper/helper";
 import { Paperclip, Smile, Send, Image } from "lucide-react";
+import { UserType } from "@/src/hooks/serviceHook";
 interface ChatAreaProps {
   setShowMobileChat: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedChat: Chat | null;
+  selectedChat: UserType | null;
   showMobileChat: boolean;
   messages: Message[];
   handleSendMessage: () => void;

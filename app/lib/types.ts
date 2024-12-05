@@ -25,6 +25,7 @@ export interface ReferralTableProps {
 export interface ApiResponse<T> {
     message: string,
     status: string,
+    chatRoomId?: number | string
     email_subject: string,
     token?: string,
     user_type: string,

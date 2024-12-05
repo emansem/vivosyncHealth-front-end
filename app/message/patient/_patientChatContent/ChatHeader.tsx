@@ -1,9 +1,9 @@
-import { Chat } from "@/src/types/general";
+import { UserType } from "@/src/hooks/serviceHook";
 import { X, Phone, Video, MoreVertical } from "lucide-react";
 
 interface ChatHeaderProps {
   setShowMobileChat: (isOpen: boolean) => void;
-  selectedChat: Chat | null;
+  selectedChat: UserType | null;
 }
 
 function ChatHeader({ selectedChat, setShowMobileChat }: ChatHeaderProps) {
@@ -15,26 +15,26 @@ function ChatHeader({ selectedChat, setShowMobileChat }: ChatHeaderProps) {
         </button>
         <div className="relative">
           <img
-            src={selectedChat?.participants[0].avatar}
-            alt={selectedChat?.participants[0].name}
+            src={selectedChat?.profile_photo}
+            alt={selectedChat?.name}
             className="w-12 h-12 rounded-full object-cover"
           />
-          <span
+          {/* <span
             className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
                       ${
                         selectedChat?.participants[0].status === "online"
                           ? "bg-green-500"
                           : "bg-gray-400"
                       }`}
-          />
+          /> */}
         </div>
         <div>
-          <h2 className="font-medium">{selectedChat?.participants[0].name}</h2>
+          <h2 className="font-medium">{selectedChat?.name}</h2>
           <p className="text-sm text-gray-500">
-            {selectedChat?.participants[0].specialty} •{" "}
+            {/* {selectedChat?.participants[0].specialty} •{" "}
             {selectedChat?.participants[0].status === "online"
               ? "Online"
-              : "Offline"}
+              : "Offline"} */}
           </p>
         </div>
       </div>

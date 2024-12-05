@@ -1,7 +1,11 @@
 "use client";
-import { useSendingMessage } from "@/src/hooks/chat/useChat";
+import {
+  useGetActiveSubscription,
+  useSendingMessage
+} from "@/src/hooks/chat/useChat";
 import ChatArea from "./_patientChatContent/ChatArea";
 import ChatSideBar from "./_patientChatContent/ChatSideBar";
+import { UserType } from "@/src/hooks/serviceHook";
 
 export default function ChatInterface() {
   const {
@@ -10,21 +14,23 @@ export default function ChatInterface() {
     message,
     textareaRef,
     demoChats,
+    activeUsers,
+    isLoading,
     handleSendMessage,
     selectedChat,
     showMobileChat,
+    handleSetSelectChat,
     messageEndRef,
     setShowMobileChat,
-    setSelectedChat,
     messages
   } = useSendingMessage();
+
   return (
     <div className="flex h-[calc(100vh-5rem)] bg-white rounded-lg shadow-sm">
       {/* Sidebar */}
       <ChatSideBar
-        demoChats={demoChats}
-        setSelectedChat={setSelectedChat}
-        setShowMobileChat={setShowMobileChat}
+        activeUsers={activeUsers as UserType[]}
+        handleSetSelectChat={handleSetSelectChat}
         selectedChat={selectedChat}
         showMobileChat={showMobileChat}
       />

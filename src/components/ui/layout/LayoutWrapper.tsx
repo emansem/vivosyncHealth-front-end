@@ -22,6 +22,8 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
     return <AuthLayout>{children}</AuthLayout>;
   } else if (pathName.startsWith("/message")) {
     return <MessageLayout>{children}</MessageLayout>;
+  } else {
+    return <AuthLayout>{children}</AuthLayout>;
   }
 }
 
