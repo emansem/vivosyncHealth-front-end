@@ -74,11 +74,12 @@ export type PatientReviewsTypes = {
 
 // Types
 export type Message = {
-    id: string;
+    id?: number;
     content: string;
-    senderId: string;
+    sender_id: string;
+    receiver_id: string,
     timestamp: Date;
-    isRead: boolean;
+    isRead?: boolean;
 };
 
 export type User = {

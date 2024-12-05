@@ -364,5 +364,6 @@ export const PAYMENT_TYPE_OPTIONS = [
 export const GENERAL_API_END_POINTS = {
     GET_ACTIVE_SUBSCRIPTION: '/message/subscription/active',
     GET_CHAT_ROOM_ID: '/message/chat-room/find',
-    SEND_MESSAGE: "/message/send-message"
+    SEND_MESSAGE: "/message/send-message",
+    GET_ALL_MESSAGES: '/message/all-messages'
 }
