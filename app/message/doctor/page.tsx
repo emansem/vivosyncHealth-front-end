@@ -2,7 +2,7 @@
 import { useSendingMessage } from "@/src/hooks/chat/useChat";
 import { useGetUser, UserType } from "@/src/hooks/serviceHook";
 import ChatSideBar from "../patient/_patientChatContent/ChatSideBar";
-import ChatArea from "../patient/_patientChatContent/ChatArea";
+import ChatArea from "../_messageContent/ChatContainer";
 
 export default function ChatInterface() {
   const { data } = useGetUser();

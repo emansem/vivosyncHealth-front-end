@@ -1,11 +1,8 @@
 "use client";
-import {
-  useGetActiveSubscription,
-  useSendingMessage
-} from "@/src/hooks/chat/useChat";
-import ChatArea from "./_patientChatContent/ChatArea";
+import { useSendingMessage } from "@/src/hooks/chat/useChat";
 import ChatSideBar from "./_patientChatContent/ChatSideBar";
 import { useGetUser, UserType } from "@/src/hooks/serviceHook";
+import ChatArea from "../_messageContent/ChatContainer";
 
 export default function ChatInterface() {
   const {
