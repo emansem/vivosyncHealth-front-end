@@ -11,17 +11,23 @@ export default function ChatInterface() {
     message,
     textareaRef,
     activeUsers,
-    isLoading,
+    // isLoading,
     handleSendMessage,
     selectedChat,
+    onEmojiClick,
     showMobileChat,
     handleSetSelectChat,
     messageEndRef,
     setShowMobileChat,
     messages
   } = useSendingMessage();
-  const { data } = useGetUser();
+  const { data, isLoading: userLoading } = useGetUser();
   const currentUser = data?.data.user.user_id;
+
+  // Add a loading state
+  if (userLoading || !currentUser) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex h-[calc(100vh-5rem)] bg-white rounded-lg shadow-sm">
@@ -38,6 +44,7 @@ export default function ChatInterface() {
         selectedChat={selectedChat}
         setMessage={setMessage}
         messages={messages}
+        onEmojiClick={onEmojiClick}
         messageEndRef={messageEndRef}
         message={message}
         adjustTextareaHeight={adjustTextareaHeight}

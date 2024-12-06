@@ -5,23 +5,30 @@ import ChatSideBar from "../patient/_patientChatContent/ChatSideBar";
 import ChatArea from "../_messageContent/ChatContainer";
 
 export default function ChatInterface() {
-  const { data } = useGetUser();
   const {
     adjustTextareaHeight,
     setMessage,
     message,
     textareaRef,
     activeUsers,
-    isLoading,
+    // isLoading,
     handleSendMessage,
     selectedChat,
     showMobileChat,
     messageEndRef,
+    onEmojiClick,
     setShowMobileChat,
     handleSetSelectChat,
     messages
   } = useSendingMessage();
+
+  const { data, isLoading: userLoading } = useGetUser();
   const currentUser = data?.data.user.user_id;
+
+  // Add a loading state
+  if (userLoading || !currentUser) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex h-[calc(100vh-5rem)] bg-white rounded-lg shadow-sm">
@@ -34,6 +41,7 @@ export default function ChatInterface() {
       />
       {/* Chat area */}
       <ChatArea
+        onEmojiClick={onEmojiClick}
         currentUser={currentUser as string}
         selectedChat={selectedChat}
         setMessage={setMessage}

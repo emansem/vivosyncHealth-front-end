@@ -1,11 +1,11 @@
 // Import statements and type definitions
-import { demoChats, generateDemoMessages } from "@/data/chatData";
-import { Chat, Message } from "@/src/types/general";
+import { Message } from "@/src/types/general";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useApiPost, useGetData, UserType } from "../serviceHook";
+import { useApiPost, useGetData, useGetUser, UserType } from "../serviceHook";
 import { GENERAL_API_END_POINTS } from "@/app/lib/constant";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
+import { EmojiClickData } from "emoji-picker-react";
 
 // Type definitions for API responses
 interface SubscriptionDataApiResponse {
@@ -19,8 +19,6 @@ interface MessagesApiResponse {
         messages: Message[];
     };
 }
-
-// Constants
 const SOCKET_SERVER = 'http://localhost:5740/';
 
 /**
@@ -55,6 +53,20 @@ export const useSendingMessage = () => {
     const { handleSendingMessage, joinChatRoom, messages, setMessages } = useSendMessages();
     const [showMobileChat, setShowMobileChat] = useState(false);
     const [chatRoomId, setChatRoomId] = useState(currentRoom)
+    const { data: userData } = useGetUser();
+
+    const currentUser = userData?.data.user.user_id;
+    // State for emoji
+    // const [emoji, setEmoji] = useState(""); // Corrected spelling of setEmoji
+
+    // Emoji click handler
+    const onEmojiClick = (emojiData: EmojiClickData) => {
+
+        setMessage(currentMessage => currentMessage + emojiData.emoji);
+        // setEmoji("");
+    };
+
+
 
     // Refs for DOM manipulation
     const messageEndRef = useRef<HTMLDivElement>(null);
@@ -117,17 +129,9 @@ export const useSendingMessage = () => {
 
     // Message sending handler
     const handleSendMessage = useCallback(() => {
-        if (!message.trim() || !receiverID || !currentRoom) return;
+        if (!message.trim() || !receiverID || !currentRoom || !currentUser) return;
 
-        const newMessage: Message = {
-            receiver_id: receiverID,
-            content: message.trim(),
-            sender_id: "current-user",
-            timestamp: new Date(),
-            isRead: false
-        };
-
-        setMessages(prev => [...prev, newMessage]);
+        // Only send the message, don't update state here
         handleSendingMessage(message, receiverID, currentRoom as string);
         setMessage("");
 
@@ -135,13 +139,14 @@ export const useSendingMessage = () => {
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto";
         }
-    }, [message, receiverID, currentRoom, handleSendingMessage]);
+    }, [message, receiverID, currentRoom, currentUser, handleSendingMessage]);
 
     return {
         adjustTextareaHeight,
         setMessage,
         message,
         textareaRef,
+        onEmojiClick,
         handleSendMessage,
         selectedChat,
         showMobileChat,
@@ -159,7 +164,7 @@ export const useSendingMessage = () => {
  * Handles room creation and socket connections
  */
 const useChatRoom = () => {
-    const { mutate, data } = useApiPost(GENERAL_API_END_POINTS.GET_CHAT_ROOM_ID);
+    const { mutate } = useApiPost(GENERAL_API_END_POINTS.GET_CHAT_ROOM_ID);
     const [socket, setSocket] = useState<Socket | null>(null);
     const [currentRoom, setCurrentRoom] = useState<number | string | null>(null);
 
@@ -193,50 +198,55 @@ const useChatRoom = () => {
  * Hook for managing message sending and receiving
  * Handles socket connections and message state
  */
-const useSendMessages = () => {
+export const useSendMessages = () => {
     const { mutate } = useApiPost(GENERAL_API_END_POINTS.SEND_MESSAGE, 'messages');
-    const [socket, setSocket] = useState<Socket | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
+    const { data: userData } = useGetUser();
+    const currentUser = userData?.data.user.user_id;
+    const socketRef = useRef<Socket | null>(null);
 
-    // Join chat room function
     const joinChatRoom = useCallback((roomId: string) => {
-        if (socket && roomId) {
+        if (socketRef.current && roomId) {
             console.log('Joining room:', roomId);
-            socket.emit('join_room', roomId);
+            socketRef.current.emit('join_room', roomId);
         }
-    }, [socket]);
+    }, []);
 
-    // Socket connection and message listener
     useEffect(() => {
         const newSocket = io(SOCKET_SERVER);
+        socketRef.current = newSocket;
 
         newSocket.on('connect', () => {
             console.log('Socket connected');
-            setSocket(newSocket);
         });
 
         newSocket.on('new_message', (data: Message) => {
-            console.log('Received new message:', data);
-            setMessages(prev => [...prev, data]);
+            if (data.sender_id !== currentUser) {
+                setMessages(prev => [...prev, data]);
+            }
         });
 
         return () => {
             newSocket.disconnect();
+            socketRef.current = null;
         };
-    }, []);
+    }, [currentUser]);
 
-    // Message sending handler
     const handleSendingMessage = async (message: string, receiver_id: string, chatRoomId: string) => {
-        if (!message.trim() || !receiver_id || !chatRoomId) return;
+        if (!message.trim() || !receiver_id || !chatRoomId || !currentUser) return;
 
         joinChatRoom(chatRoomId);
 
         const newMessage = {
             content: message.trim(),
             receiver_id,
+            sender_id: currentUser,
             chatRoomId,
-            timeStamp: new Date()
+            timestamp: new Date(),
+            isRead: false
         };
+
+        setMessages(prev => [...prev, newMessage]);
 
         mutate(newMessage, {
             onSuccess: (result) => {
@@ -244,6 +254,9 @@ const useSendMessages = () => {
             },
             onError: (error) => {
                 console.error('Error sending message:', error);
+                setMessages(prev => prev.filter(msg =>
+                    msg.timestamp !== newMessage.timestamp
+                ));
             }
         });
     };
@@ -256,11 +269,13 @@ const useSendMessages = () => {
  */
 const useGetAllMessages = (chatRoomId: string) => {
     const getAlMessagesEndPoint = `${GENERAL_API_END_POINTS.GET_ALL_MESSAGES}/${chatRoomId}`;
-    const { data, isLoading, error } = useGetData<MessagesApiResponse>(getAlMessagesEndPoint, 'messages');
+    const { data, error } = useGetData<MessagesApiResponse>(getAlMessagesEndPoint, 'messages');
     if (error && axios.isAxiosError(error)) {
         console.log("Error fecting messages", error.response?.data);
     }
-    console.log("Messages", data?.data.messages)
+    console.log("Messages", data?.data?.messages)
 
     return { data };
+
+
 };

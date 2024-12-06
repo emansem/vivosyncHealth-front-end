@@ -1,10 +1,11 @@
-import { Chat, Message } from "@/src/types/general";
+import { Message } from "@/src/types/general";
 import React, { ChangeEvent, LegacyRef } from "react";
 
-import { useGetUser, UserType } from "@/src/hooks/serviceHook";
+import { UserType } from "@/src/hooks/serviceHook";
 import { MessagesArea } from "./MessageContainer";
 import { SendMessageInput } from "./MessageInputBox";
 import ChatHeader from "./ChatHeader";
+import { EmojiClickData } from "emoji-picker-react";
 interface ChatAreaProps {
   setShowMobileChat: React.Dispatch<React.SetStateAction<boolean>>;
   selectedChat: UserType | null;
@@ -12,6 +13,8 @@ interface ChatAreaProps {
   currentUser: string;
   messages: Message[];
   handleSendMessage: () => void;
+  onEmojiClick: (emojiData: EmojiClickData) => void;
+
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   message: string;
   textareaRef: LegacyRef<HTMLTextAreaElement> | undefined;
@@ -27,6 +30,7 @@ function ChatArea({
   adjustTextareaHeight,
   handleSendMessage,
   message,
+  onEmojiClick,
   currentUser,
   setMessage,
   messageEndRef,
@@ -36,7 +40,7 @@ function ChatArea({
     setMessage(e.target.value);
     adjustTextareaHeight();
   };
-  const { data } = useGetUser();
+
   return (
     <div
       className={`flex-1 flex flex-col ${
@@ -60,6 +64,7 @@ function ChatArea({
 
           {/* Input area */}
           <SendMessageInput
+            onEmojiClick={onEmojiClick}
             setMessage={setMessage}
             handleOnChangeMessage={handleOnChangeMessage}
             handleSendMessage={handleSendMessage}

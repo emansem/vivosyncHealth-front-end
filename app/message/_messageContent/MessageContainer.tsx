@@ -20,7 +20,7 @@ export const MessagesArea = ({
       <div className="flex-1 overflow-y-auto p-4 space-y-4 overflow-x-hidden">
         {messages.map((msg, index) => {
           return (
-            <React.Fragment key={msg.id}>
+            <div key={index}>
               <div
                 className={`flex ${
                   msg.sender_id === currentUser
@@ -61,7 +61,7 @@ export const MessagesArea = ({
                   </div>
                 </div>
               </div>
-            </React.Fragment>
+            </div>
           );
         })}
         <div ref={messageEndRef} />
