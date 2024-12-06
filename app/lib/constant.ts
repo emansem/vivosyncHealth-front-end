@@ -2,6 +2,8 @@ import { CreditCard, BadgeJapaneseYen, Wallet } from "lucide-react";
 import { PaymentMethod } from "../patient/checkout/[planId]/page";
 import { FormFields, OnboardingFormFields, SubscriptionData, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
 
+export const SOCKET_SERVER = 'http://localhost:5740/';
+
 // Application-wide theme color
 export const primary_color = "#269c65";
 // Colors
@@ -365,5 +367,6 @@ export const GENERAL_API_END_POINTS = {
     GET_ACTIVE_SUBSCRIPTION: '/message/subscription/active',
     GET_CHAT_ROOM_ID: '/message/chat-room/find',
     SEND_MESSAGE: "/message/send-message",
-    GET_ALL_MESSAGES: '/message/all-messages'
+    GET_ALL_MESSAGES: '/message/all-messages',
+    GET_LAST_SENT_MESSAGE: "/message/chat-room/last-sent"
 }

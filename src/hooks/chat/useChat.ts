@@ -2,7 +2,7 @@
 import { Message } from "@/src/types/general";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useApiPost, useGetData, useGetUser, UserType } from "../serviceHook";
-import { GENERAL_API_END_POINTS } from "@/app/lib/constant";
+import { GENERAL_API_END_POINTS, SOCKET_SERVER } from "@/app/lib/constant";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import { EmojiClickData } from "emoji-picker-react";
@@ -19,7 +19,6 @@ interface MessagesApiResponse {
         messages: Message[];
     };
 }
-const SOCKET_SERVER = 'http://localhost:5740/';
 
 /**
  * Hook to fetch active subscriptions
@@ -50,7 +49,7 @@ export const useSendingMessage = () => {
     const [receiverID, setReceiverID] = useState("");
     const [message, setMessage] = useState("");
     const [selectedChat, setSelectedChat] = useState<UserType | null>(null);
-    const { handleSendingMessage, joinChatRoom, messages, setMessages } = useSendMessages();
+    const { handleSendingMessage, status, lastMessage, joinChatRoom, messages, setMessages } = useSendMessages(currentRoom as string);
     const [showMobileChat, setShowMobileChat] = useState(false);
     const [chatRoomId, setChatRoomId] = useState(currentRoom)
     const { data: userData } = useGetUser();
@@ -145,11 +144,13 @@ export const useSendingMessage = () => {
         adjustTextareaHeight,
         setMessage,
         message,
+        status,
         textareaRef,
         onEmojiClick,
         handleSendMessage,
         selectedChat,
         showMobileChat,
+        lastMessage,
         setShowMobileChat,
         handleSetSelectChat,
         activeUsers,
@@ -197,11 +198,27 @@ const useChatRoom = () => {
 /**
  * Hook for managing message sending and receiving
  * Handles socket connections and message state
+ * 
  */
-export const useSendMessages = () => {
+type LastMessageSentType = {
+    receiver_id: string,
+    sender_id: string,
+    content: string,
+}
+interface LastMessageSent {
+    data: {
+        messages: LastMessageSentType[]
+    }
+}
+export const useSendMessages = (roomId: string) => {
     const { mutate } = useApiPost(GENERAL_API_END_POINTS.SEND_MESSAGE, 'messages');
+    const [status, setStatus] = useState("");
     const [messages, setMessages] = useState<Message[]>([]);
+
     const { data: userData } = useGetUser();
+    const lastMessageEndpoint = `${GENERAL_API_END_POINTS.GET_LAST_SENT_MESSAGE}`
+    const { data: lastMessageContent, error } = useGetData<LastMessageSent>(lastMessageEndpoint, 'message')
+    const [lastMessage, setLastMessage] = useState<LastMessageSentType[]>([]);
     const currentUser = userData?.data.user.user_id;
     const socketRef = useRef<Socket | null>(null);
 
@@ -210,7 +227,18 @@ export const useSendMessages = () => {
             console.log('Joining room:', roomId);
             socketRef.current.emit('join_room', roomId);
         }
+
     }, []);
+
+    useEffect(() => {
+        if (lastMessageContent?.data?.messages) {
+            console.log(lastMessageContent.data.messages)
+            setLastMessage(lastMessageContent.data.messages);
+        }
+        if (error && axios.isAxiosError(error)) {
+            console.log("Error fetching last message messages", error.response?.data);
+        }
+    }, [lastMessageContent, error]);
 
     useEffect(() => {
         const newSocket = io(SOCKET_SERVER);
@@ -220,17 +248,30 @@ export const useSendMessages = () => {
             console.log('Socket connected');
         });
 
+        newSocket.on("status_change", (data) => {
+            setStatus(data.status)
+        })
+
         newSocket.on('new_message', (data: Message) => {
             if (data.sender_id !== currentUser) {
                 setMessages(prev => [...prev, data]);
             }
+        });
+        newSocket.on('last_message', (data) => {
+            setLastMessage(prev => {
+                const otherMessages = prev.filter(msg =>
+                    (msg.sender_id !== data.sender_id || msg.receiver_id !== data.receiver_id) &&
+                    (msg.sender_id !== data.receiver_id || msg.receiver_id !== data.sender_id)
+                );
+                return [...otherMessages, data];
+            });
         });
 
         return () => {
             newSocket.disconnect();
             socketRef.current = null;
         };
-    }, [currentUser]);
+    }, [currentUser, status]);
 
     const handleSendingMessage = async (message: string, receiver_id: string, chatRoomId: string) => {
         if (!message.trim() || !receiver_id || !chatRoomId || !currentUser) return;
@@ -261,7 +302,7 @@ export const useSendMessages = () => {
         });
     };
 
-    return { handleSendingMessage, joinChatRoom, messages, setMessages };
+    return { handleSendingMessage, status, lastMessage, joinChatRoom, messages, setMessages };
 };
 
 /**
@@ -273,7 +314,6 @@ const useGetAllMessages = (chatRoomId: string) => {
     if (error && axios.isAxiosError(error)) {
         console.log("Error fecting messages", error.response?.data);
     }
-    console.log("Messages", data?.data?.messages)
 
     return { data };
 

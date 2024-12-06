@@ -14,7 +14,7 @@ interface ChatAreaProps {
   messages: Message[];
   handleSendMessage: () => void;
   onEmojiClick: (emojiData: EmojiClickData) => void;
-
+  status: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   message: string;
   textareaRef: LegacyRef<HTMLTextAreaElement> | undefined;
@@ -30,6 +30,7 @@ function ChatArea({
   adjustTextareaHeight,
   handleSendMessage,
   message,
+  status,
   onEmojiClick,
   currentUser,
   setMessage,
@@ -52,6 +53,7 @@ function ChatArea({
           {/* Chat header */}
 
           <ChatHeader
+            status={status}
             selectedChat={selectedChat}
             setShowMobileChat={setShowMobileChat}
           />

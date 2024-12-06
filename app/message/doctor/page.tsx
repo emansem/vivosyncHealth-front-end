@@ -17,6 +17,8 @@ export default function ChatInterface() {
     showMobileChat,
     messageEndRef,
     onEmojiClick,
+    lastMessage,
+    status,
     setShowMobileChat,
     handleSetSelectChat,
     messages
@@ -34,6 +36,8 @@ export default function ChatInterface() {
     <div className="flex h-[calc(100vh-5rem)] bg-white rounded-lg shadow-sm">
       {/* Sidebar */}
       <ChatSideBar
+        currentUser={currentUser}
+        lastSentMessage={lastMessage}
         activeUsers={activeUsers as UserType[]}
         handleSetSelectChat={handleSetSelectChat}
         selectedChat={selectedChat}
@@ -41,6 +45,7 @@ export default function ChatInterface() {
       />
       {/* Chat area */}
       <ChatArea
+        status={status}
         onEmojiClick={onEmojiClick}
         currentUser={currentUser as string}
         selectedChat={selectedChat}

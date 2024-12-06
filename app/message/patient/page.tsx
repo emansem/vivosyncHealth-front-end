@@ -13,12 +13,14 @@ export default function ChatInterface() {
     activeUsers,
     // isLoading,
     handleSendMessage,
+    lastMessage,
     selectedChat,
     onEmojiClick,
     showMobileChat,
     handleSetSelectChat,
     messageEndRef,
     setShowMobileChat,
+    status,
     messages
   } = useSendingMessage();
   const { data, isLoading: userLoading } = useGetUser();
@@ -33,6 +35,8 @@ export default function ChatInterface() {
     <div className="flex h-[calc(100vh-5rem)] bg-white rounded-lg shadow-sm">
       {/* Sidebar */}
       <ChatSideBar
+        currentUser={currentUser}
+        lastSentMessage={lastMessage}
         activeUsers={activeUsers as UserType[]}
         handleSetSelectChat={handleSetSelectChat}
         selectedChat={selectedChat}
@@ -40,6 +44,7 @@ export default function ChatInterface() {
       />
       {/* Chat area */}
       <ChatArea
+        status={status}
         currentUser={currentUser as string}
         selectedChat={selectedChat}
         setMessage={setMessage}

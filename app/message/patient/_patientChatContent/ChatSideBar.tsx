@@ -1,22 +1,31 @@
 import { PRIMARY_COLOR, SECONDARY_COLOR } from "@/app/lib/constant";
 import { UserType } from "@/src/hooks/serviceHook";
-import { Chat } from "@/src/types/general";
 import { Search } from "lucide-react";
 import React from "react";
+type LastMessageSentType = {
+  receiver_id: string;
+  sender_id: string;
+  content: string;
+};
 interface ChatSideBarProps {
   showMobileChat: boolean;
   activeUsers: UserType[];
+  currentUser: string;
   // demoChats: Chat[];
   handleSetSelectChat: (user: UserType | null) => void;
   selectedChat: UserType | null;
+  lastSentMessage: LastMessageSentType[];
 }
 
 function ChatSideBar({
   showMobileChat,
   activeUsers,
   selectedChat,
+
+  lastSentMessage,
   handleSetSelectChat
 }: ChatSideBarProps) {
+  console.log("last sent message", lastSentMessage);
   return (
     <>
       {/* Sidebar */}
@@ -80,15 +89,20 @@ function ChatSideBar({
                     {/* {chat.lastMessage && formatTime(chat.lastMessage.timestamp)} */}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 mb-1">
-                  {/* {chat.participants[0].specialty} */}
-                  nothing
-                </p>
+
                 {/* {chat.lastMessage && ( */}
-                <p className="text-sm text-gray-500 truncate">
-                  {/* {chat.lastMessage.content} */}
-                  just last message sent..
-                </p>
+
+                {/* Map through messages and show only relevant ones */}
+                {lastSentMessage.map((message, index) => (
+                  <p key={index} className="text-sm text-gray-500 truncate">
+                    {/* Show message if you're the sender or receiver */}
+                    {message.sender_id === user.user_id ||
+                    message.receiver_id === user.user_id
+                      ? message.content
+                      : ""}
+                  </p>
+                ))}
+
                 {/* )} */}
               </div>
               {/* {chat.unreadCount > 0 && ( */}
