@@ -57,7 +57,7 @@ export const MessagesArea = ({
                     </div>
                   </div>
                   <div className="text-[11px] px-2 text-gray-500">
-                    {/* {formatTime(msg.timestamp)} */}
+                    {/* {formatTime(msg.timestamp as string)} */}
                   </div>
                 </div>
               </div>

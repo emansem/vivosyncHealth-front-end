@@ -8,12 +8,17 @@ export const capitalizeFirstLetter = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
-export const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "numeric",
+export const formatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) {
+        // Handle invalid date
+        return "Invalid time";
+    }
+    return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
         hour12: true
-    }).format(date);
+    });
 };
 
 export const formatDateIntl = (date: Date) => {

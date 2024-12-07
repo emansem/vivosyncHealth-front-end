@@ -106,13 +106,7 @@ function ChatSideBar({
                 {/* )} */}
               </div>
               {/* {chat.unreadCount > 0 && ( */}
-              <span
-                className="px-2 py-1 text-xs font-medium text-white bg-primary rounded-full"
-                style={{ backgroundColor: PRIMARY_COLOR }}
-              >
-                {/* {chat.unreadCount} */}
-                20
-              </span>
+
               {/* )} */}
             </div>
           ))}
@@ -123,3 +117,13 @@ function ChatSideBar({
 }
 
 export default ChatSideBar;
+
+{
+  /* <span
+  className="px-2 py-1 text-xs font-medium text-white bg-primary rounded-full"
+  style={{ backgroundColor: PRIMARY_COLOR }}
+>
+  {/* {chat.unreadCount} */
+}
+//20
+//</span> */}
