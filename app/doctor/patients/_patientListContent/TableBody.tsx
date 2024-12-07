@@ -1,3 +1,5 @@
+import { getStatusColor } from "@/src/components/utils/getStatusColor";
+import { formatDate } from "@/src/helper/helper";
 import { TableBodyProps } from "@/src/types/general";
 
 export const TableBody = ({
@@ -7,24 +9,20 @@ export const TableBody = ({
 }: TableBodyProps) => {
   return (
     <tbody>
-      {subscriptionData.slice(startIndex, endIndex).map((item, index) => (
+      {subscriptionData?.slice(startIndex, endIndex).map((item, index) => (
         <tr className="cursor-pointer hover:bg-gray-50" key={index}>
-          <td>{item.name}</td>
-          <td>{item.patientId}</td>
-          <td>{item.subDate}</td>
-          <td>{item.expireDate}</td>
+          <td className="capitalize">{item.plan_type}</td>
+          <td>{item.amount.toFixed(2)}</td>
+          <td>{formatDate(item.created_at)}</td>
+          <td>{formatDate(item.expire_date)}</td>
           <td>
             <span
               className={`
               px-3 py-1 rounded-full text-sm font-medium
-              ${
-                item.status === "active"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }
+              ${getStatusColor(item.subscription_status)}
             `}
             >
-              {item.status}
+              {item.subscription_status}
             </span>
           </td>
         </tr>

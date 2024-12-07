@@ -265,6 +265,9 @@ export const DOCTOR_API_END_POINTS = {
     },
     dashboard: {
         getAllData: "/doctors/details/all"
+    },
+    SUBSCRIPTION: {
+        GET_ALL_SUBSCRIPTION_DATA: '/doctors/all/subscription/details'
     }
 } as const;
 

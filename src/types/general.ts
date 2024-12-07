@@ -26,12 +26,13 @@ export interface ShowActiveTagProps {
 
 //Patient list data types
 export interface Patient {
-    id: number;
+    id: number,
+    amount: number;
     name: string;
-    patientId: string
-    subDate: string;
-    expireDate: string;
-    status: string
+    plan_type: string
+    expire_date: string;
+    created_at: string;
+    subscription_status: string
 }
 //Patientlist body data props types
 export interface TableBodyProps {

@@ -3,31 +3,31 @@ import { PatientField, SubscriptionPlanMobileTypes } from "@/src/types/general";
 //The mobile patientlist table fields lable
 export const PATIENT_FIELDS: PatientField[] = [
     {
-        label: "Name",
-        key: "name"
+        label: "Plan Type",
+        key: "plan_type"
     },
     {
-        label: "Patient Id",
-        key: "patientId"
+        label: "Plan Amount",
+        key: "amount"
     },
     {
         label: "Subscription Date",
-        key: "subDate"
+        key: "created_at"
     },
     {
         label: "Expire Date",
-        key: "expireDate"
+        key: "expire_date"
     },
     {
         label: "Status",
-        key: "status"
+        key: "subscription_status"
     }
 ];
 
 //The desktop  patientlist lable fields
 export const PATIENTLIST_TABLE_FIELDS = [
-    "Name",
-    "Patient Id",
+    "Plan Type",
+    "Amount",
     "Subscription Date",
     "Expired Date",
     "Status"

@@ -1,17 +1,22 @@
-import { SubscriptionData } from "@/app/lib/types";
+import {
+  getStatusColor,
+  styles
+} from "@/app/patient/subscription/_subscriptionContent/SubscriptionTable";
 import { capitalizeFirstLetter, formatDate } from "@/src/helper/helper";
-// import Link from "next/link";
-import { getStatusColor, styles } from "./SubscriptionTable";
-// Update the MobileTableProps interface to include align
+import { Patient } from "@/src/types/general";
+
 interface MobileTableProps {
-  data: SubscriptionData[];
+  data: Patient[];
   fields: {
-    key: keyof SubscriptionData;
+    key: keyof Patient;
     label: string;
   }[];
 }
 
-function MobileSubscriptionTableLyaout({ data, fields }: MobileTableProps) {
+export function MobileSubscriptionTableLyaout({
+  data,
+  fields
+}: MobileTableProps) {
   return (
     <div className="w-full md:hidden space-y-4">
       {data?.map((subscription, index) => (
@@ -51,5 +56,3 @@ function MobileSubscriptionTableLyaout({ data, fields }: MobileTableProps) {
     </div>
   );
 }
-
-export default MobileSubscriptionTableLyaout;

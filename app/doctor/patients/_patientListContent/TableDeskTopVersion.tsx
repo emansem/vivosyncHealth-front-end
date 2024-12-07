@@ -1,21 +1,31 @@
 import PaginationButton from "@/src/components/utils/table/Pagination";
 import { TableHead } from "@/src/components/utils/table/TableHead";
 import TableLayout from "@/src/components/utils/table/TableLayout";
-import usePaginationHook from "@/src/hooks/usePaginationHook";
 import { TableBody } from "../_patientListContent/TableBody";
-import { subscriptionData } from "@/data/patientlist";
 import { PATIENTLIST_TABLE_FIELDS } from "@/data/table";
-export const DesktopTable = () => {
-  const totalResult = subscriptionData.length;
-  const {
-    pageNumber,
-    pages,
-    handlePrevButton,
-    startIndex,
-    endIndex,
-    getPageNumber,
-    handleNextButton
-  } = usePaginationHook(totalResult);
+import { Patient } from "@/src/types/general";
+interface DesktopTableProps {
+  handlePrevButton: () => void;
+  getPageNumber: (page: number) => void;
+  handleNextButton: () => void;
+  endIndex: number;
+  pageNumber: number;
+  totalResult: number;
+  startIndex: number;
+  pages: number[];
+  subscriptionData: Patient[];
+}
+export const DesktopTable = ({
+  handleNextButton,
+  handlePrevButton,
+  endIndex,
+  pages,
+  subscriptionData,
+  startIndex,
+  totalResult,
+  getPageNumber,
+  pageNumber
+}: DesktopTableProps) => {
   return (
     <>
       <TableLayout>

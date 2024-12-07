@@ -12,7 +12,7 @@ import { DashBoardHeading } from "../../../../src/components/ui/Headings";
 interface ReportCardsProps {
   lable: string;
   CardIcon: React.ElementType;
-  cardValue?: number;
+  cardValue?: number | string;
   cardPercentage: number;
   cardsubTitle: string;
   isDecrease?: boolean;
@@ -80,7 +80,7 @@ function StatisticOverview({
         <ReportCards
           CardIcon={ChartNoAxesCombined}
           lable="Total revenue"
-          cardValue={totalBalance || 0}
+          cardValue={`${totalBalance.toFixed(2) || 0}XAF`}
           cardsubTitle="4 more than last week"
           cardPercentage={2.1}
         />
