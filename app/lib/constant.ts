@@ -262,6 +262,9 @@ export const DOCTOR_API_END_POINTS = {
         GET_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account",
         CREATE_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account/create",
         UPDATE_WITHDRAWAL_ACCOUNT: "/doctors/withdrawal/account/update"
+    },
+    dashboard: {
+        getAllData: "/doctors/details/all"
     }
 } as const;
 

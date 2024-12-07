@@ -1,6 +1,9 @@
 import React from "react";
 
-function Welcome() {
+interface WelcomeProps {
+  doctorName: string;
+}
+function Welcome({ doctorName }: WelcomeProps) {
   const checkTime = () => {
     const hours = new Date().getHours();
 
@@ -18,11 +21,10 @@ function Welcome() {
     <div>
       <h1 className="flex flex-col md:flex-row text-left md:items-center md:gap-2 text-xl md:text-2xl text-stone-700 font-medium">
         <span>{checkTime()},</span>
-        <span className="text-primary_color">Dr. Eman sem</span>
+        <span className="text-primary_color">
+          Dr.{doctorName.split(" ")[0]}
+        </span>
       </h1>
-      <p className="text-sm italic stroke-stone-300 ">
-        A doctor&apos;s smile is the best prescription
-      </p>
     </div>
   );
 }

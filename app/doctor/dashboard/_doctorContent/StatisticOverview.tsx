@@ -7,7 +7,7 @@ import {
   Users
 } from "lucide-react";
 import React from "react";
-import { DashBoardHeading } from "../../Headings";
+import { DashBoardHeading } from "../../../../src/components/ui/Headings";
 
 interface ReportCardsProps {
   lable: string;
@@ -52,8 +52,19 @@ const ReportCards = ({
     </li>
   );
 };
+interface StatisticOverviewProps {
+  activeSubscription: number;
+  inactiveSubscription: number;
+  totalBalance: number;
+  totalPatient: number;
+}
 
-function StatisticOverview() {
+function StatisticOverview({
+  activeSubscription,
+  totalBalance,
+  totalPatient,
+  inactiveSubscription
+}: StatisticOverviewProps) {
   return (
     <div>
       <DashBoardHeading>Statistics Overview</DashBoardHeading>
@@ -62,21 +73,21 @@ function StatisticOverview() {
         <ReportCards
           CardIcon={Users}
           lable="Total patients"
-          cardValue={300}
+          cardValue={totalPatient || 0}
           cardsubTitle="2 more than last week"
           cardPercentage={3.9}
         />
         <ReportCards
           CardIcon={ChartNoAxesCombined}
           lable="Total revenue"
-          cardValue={50000}
+          cardValue={totalBalance || 0}
           cardsubTitle="4 more than last week"
           cardPercentage={2.1}
         />
         <ReportCards
           CardIcon={UserRoundCheck}
           lable="Active subscription"
-          cardValue={50}
+          cardValue={activeSubscription || 0}
           isDecrease
           cardsubTitle="2 more than last week"
           cardPercentage={4.9}
@@ -84,7 +95,7 @@ function StatisticOverview() {
         <ReportCards
           CardIcon={UserRoundX}
           lable="Inactive subscription"
-          cardValue={20}
+          cardValue={inactiveSubscription || 0}
           cardsubTitle="20 more than last week"
           cardPercentage={2.9}
         />

@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { weeklySubscriptionData } from "@/data/chatData";
 import React from "react";
-import { DashBoardHeading } from "../../../Headings";
+import { DashBoardHeading } from "../../../../../src/components/ui/Headings";
 import ChartWrapper from "./ChartWrapper";
 
 function WeeklyRevenueChart() {
