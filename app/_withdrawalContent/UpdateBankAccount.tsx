@@ -30,7 +30,7 @@ export function UpdateWithdrawalAccount({
             inputPlaceholder={field.placeHolder}
           />
         ))}
-        <div className="flex justify-end mt-4 gap-4">
+        <div className="flex justify-end  mt-4 gap-4">
           <div className="w-1/2">
             <CancelButton handleClick={handleClose}>Cancel</CancelButton>
           </div>

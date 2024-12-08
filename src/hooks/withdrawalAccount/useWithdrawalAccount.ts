@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { withdrawalAccountFormValidation } from "@/src/helper/formValidation";
 import { WithdrawalAccountData } from "@/app/lib/types";
 import { DOCTOR_API_END_POINTS, GET_WITHDRAWAL_ACCOUNT_QUERY_KEY } from "@/app/lib/constant";
+import toast from "react-hot-toast";
 
 // Interface for the API response when fetching withdrawal account
 interface WithdrawalAccountApiRespone {
@@ -40,7 +41,7 @@ export const useGetWwithdrawalAccount = () => {
 
     // Reset no-account state when data is received
     useEffect(() => {
-        if (data) {
+        if (data?.data?.account === null) {
             setNoaccount(false)
         }
     }, [data])
@@ -72,7 +73,9 @@ export const useAddWithdrawalAccount = () => {
     // Handle form submission
     const onSubmit = async (data: WithdrawalAccountData) => {
         if (data) {
-            mutate(data)
+            mutate(data, {
+                onSuccess: (result) => toast.success(result.data.message)
+            })
         }
     };
 

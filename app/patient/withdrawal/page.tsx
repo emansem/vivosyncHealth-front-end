@@ -1,6 +1,6 @@
 "use client";
 
-import WithdrawalPage from "./_withdrawalContent/WithdrawalPage";
+import WithdrawalPage from "../../_withdrawalContent/WithdrawalPage";
 
 const Page = () => {
   const data = {

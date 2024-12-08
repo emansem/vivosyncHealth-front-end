@@ -3,9 +3,11 @@
 import React from "react";
 import { Wallet, Clock, CheckCircle, XCircle } from "lucide-react";
 import { useOpenAndClose } from "@/app/lib/hooks";
-import BalanceCardSection from "./BalanceCardSection";
 import { StatCard } from "./StateCardSection";
 import WithdrawalHistorySection from "./WithdrawalHistory";
+import { useGetWwithdrawalAccount } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
+import { WithdrawalAccountData } from "@/app/lib/types";
+import BalanceCardSection from "./BalanceCard";
 
 export interface WithdrawalHistory {
   id: string;
@@ -40,6 +42,8 @@ const WithdrawalPage: React.FC<Props> = ({
   stats
 }) => {
   const { open, handle0pen, handleClose } = useOpenAndClose();
+  const { data, noAccount } = useGetWwithdrawalAccount();
+  console.log(data);
 
   return (
     <div className=" bg-white rounded-lg p-4 md:p-8">
@@ -74,10 +78,11 @@ const WithdrawalPage: React.FC<Props> = ({
 
         {/* Balance and Account Section */}
         <BalanceCardSection
+          noAccount={noAccount}
           handle0penModal={handle0pen}
           handleCloseModal={handleClose}
           isOpen={open}
-          withdrawalAccount={withdrawalAccount as WithdrawalAccount}
+          withdrawalAccount={data?.data?.account as WithdrawalAccountData}
           balance={balance}
         />
         <WithdrawalHistorySection withdrawalHistory={withdrawalHistory} />

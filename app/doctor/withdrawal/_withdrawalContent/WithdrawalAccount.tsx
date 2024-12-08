@@ -3,13 +3,13 @@ import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { useGetWwithdrawalAccount } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
 import { Landmark } from "lucide-react";
 import React from "react";
-import { UpdateWithdrawalAccount } from "./UpdateBankAccount";
+import { UpdateWithdrawalAccount } from "../../../_withdrawalContent/UpdateBankAccount";
 import { useOpenAndClose } from "@/app/lib/hooks";
 
 function WithdrawalAccount() {
-  const { data } = useGetWwithdrawalAccount();
+  const { data, noAccount } = useGetWwithdrawalAccount();
+  console.log(noAccount);
   const { handle0pen, open, handleClose } = useOpenAndClose();
-  console.log(data);
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
