@@ -1,25 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CreditCard,
   ArrowDownToLine,
   ArrowUpFromLine,
-  Search
+  Search,
+  Loader
 } from "lucide-react";
+import { useTransactions } from "@/src/hooks/useTransactions";
+import usePaginationHook from "@/src/hooks/usePaginationHook";
+import TransactionMobileView from "./_transactionsContent/TransactionMobileView";
+import { Transactions } from "@/app/lib/types";
+import TransactionDeskTopView from "./_transactionsContent/TransactionDeskTopView";
 
-type TransactionType = "subscription" | "withdrawal" | "deposit";
-type TransactionStatus = "completed" | "pending" | "failed";
-
-interface Transaction {
-  id: string;
-  amount: number;
-  type: TransactionType;
-  date: string;
-  status: TransactionStatus;
-}
+export type TransactionType = "subscription" | "withdrawal" | "deposit";
+export type TransactionStatus = "completed" | "pending" | "failed";
 
 export default function TransactionPage() {
+  const [result, setResult] = useState(0);
+  const {
+    pageNumber
+    // pages,
+    // handlePrevButton,
+    // startIndex,
+    // endIndex,
+    // getPageNumber,
+    // handleNextButton
+  } = usePaginationHook(result);
+
+  const { transactionsData, isLoading } = useTransactions(pageNumber);
+  useEffect(() => {
+    setResult(transactionsData?.length as number);
+  }, [result, transactionsData]);
+
   // States for filters and search
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [typeFilter, setTypeFilter] = useState<TransactionType | "all">("all");
@@ -27,31 +41,6 @@ export default function TransactionPage() {
     "all"
   );
   const [dateRange, setDateRange] = useState<string>("all");
-
-  // Sample data - replace with API call
-  const transactions: Transaction[] = [
-    {
-      id: "TRX001",
-      amount: 299.99,
-      type: "subscription",
-      date: "2024-12-08",
-      status: "completed"
-    },
-    {
-      id: "TRX002",
-      amount: 150.0,
-      type: "withdrawal",
-      date: "2024-12-07",
-      status: "pending"
-    },
-    {
-      id: "TRX003",
-      amount: 500.0,
-      type: "deposit",
-      date: "2024-12-06",
-      status: "completed"
-    }
-  ];
 
   const getTransactionIcon = (type: TransactionType) => {
     switch (type) {
@@ -64,15 +53,24 @@ export default function TransactionPage() {
     }
   };
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesSearch =
-      transaction.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      transaction.amount.toString().includes(searchQuery);
-    const matchesType = typeFilter === "all" || transaction.type === typeFilter;
-    const matchesStatus =
-      statusFilter === "all" || transaction.status === statusFilter;
-    return matchesSearch && matchesType && matchesStatus;
-  });
+  // const filteredTransactions = transactions.filter((transaction) => {
+  //   const matchesSearch =
+  //     transaction.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     transaction.amount.toString().includes(searchQuery);
+  //   const matchesType = typeFilter === "all" || transaction.type === typeFilter;
+  //   const matchesStatus =
+  //     statusFilter === "all" || transaction.status === statusFilter;
+  //   return matchesSearch && matchesType && matchesStatus;
+  // });
+  if (isLoading)
+    return (
+      <div className="flex gap-1 text-center justify-center h-screen items-center">
+        <Loader className="animate-spin" />
+        <span className="text-lg text-text_color2 font-medium">
+          Please wait...
+        </span>
+      </div>
+    );
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
@@ -142,109 +140,16 @@ export default function TransactionPage() {
       {/* Transaction Table - Responsive */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {/* Desktop Table */}
-        <div className="hidden md:block">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Transaction ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredTransactions.map((transaction) => (
-                <tr key={transaction.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {getTransactionIcon(transaction.type)}
-                      <span className="ml-2 text-sm text-gray-900 capitalize">
-                        {transaction.type}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${transaction.amount.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction.date}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${
-                        transaction.status === "completed"
-                          ? "bg-green-100 text-green-800"
-                          : transaction.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {transaction.status.charAt(0).toUpperCase() +
-                        transaction.status.slice(1)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <TransactionDeskTopView
+          getTransactionIcon={getTransactionIcon}
+          filteredTransactions={transactionsData as Transactions[]}
+        />
 
         {/* Mobile View */}
-        <div className="md:hidden">
-          {filteredTransactions.map((transaction) => (
-            <div key={transaction.id} className="p-4 border-b">
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-sm font-medium text-gray-900">
-                  {transaction.id}
-                </span>
-                <span
-                  className={`px-2 py-1 text-xs rounded-full ${
-                    transaction.status === "completed"
-                      ? "bg-green-100 text-green-800"
-                      : transaction.status === "pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {transaction.status}
-                </span>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    {getTransactionIcon(transaction.type)}
-                    <span className="ml-2 text-sm text-gray-600 capitalize">
-                      {transaction.type}
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium">
-                    ${transaction.amount.toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Date</span>
-                  <span className="text-sm text-gray-900">
-                    {transaction.date}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <TransactionMobileView
+          getTransactionIcon={getTransactionIcon}
+          filteredTransactions={transactionsData as Transactions[]}
+        />
       </div>
     </div>
   );

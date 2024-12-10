@@ -374,5 +374,6 @@ export const GENERAL_API_END_POINTS = {
     GET_CHAT_ROOM_ID: '/message/chat-room/find',
     SEND_MESSAGE: "/message/send-message",
     GET_ALL_MESSAGES: '/message/all-messages',
-    GET_LAST_SENT_MESSAGE: "/message/chat-room/last-sent"
+    GET_LAST_SENT_MESSAGE: "/message/chat-room/last-sent",
+    GET_ALL_TRANSACTIONS: "/transactions/all"
 }

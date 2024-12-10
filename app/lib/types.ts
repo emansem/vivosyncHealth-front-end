@@ -195,3 +195,14 @@ export interface SubscriptionPlanDataType {
     plan_status: "active" | "inactive",
     plan_features: PlanFeatures[]
 }
+
+//Structure for transactions table
+
+export interface Transactions {
+    id: number
+    transaction_id: string,
+    amount: number,
+    type: "subscription" | "withdrawal" | "deposit";
+    created_at: string
+    status: "completed" | "pending" | "failed"
+}
