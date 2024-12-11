@@ -5,6 +5,7 @@ import PlanSelectFields from "../../create-plan/_create-planContent/PlanSelectFi
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { useParams } from "next/navigation";
 import { useUpdateSubscriptionPlan } from "@/src/hooks/pricingPlan/useUpdatePlan";
+import LoadingState from "@/src/components/ui/loading/LoadingState";
 
 function UpdateSubscriptionPlan() {
   const params = useParams();
@@ -23,7 +24,7 @@ function UpdateSubscriptionPlan() {
     handleOnchangePlanFeature
   } = useUpdateSubscriptionPlan(id);
 
-  if (isLoading) return <div>loading.....</div>;
+  if (isLoading) return <LoadingState />;
 
   return (
     <div>

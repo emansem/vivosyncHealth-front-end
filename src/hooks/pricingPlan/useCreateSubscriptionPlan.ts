@@ -88,7 +88,10 @@ const useSubmitSubscriptionPlanData = ({
 
         if (isInputValid) {
             mutate(subscriptionPlanData, {
-                onSuccess: () => window.location.reload()
+                onSuccess: (result) => {
+                    toast.success(result.data.message)
+                    setTimeout(() => window.location.reload(), 600);
+                }
             });
         }
     };

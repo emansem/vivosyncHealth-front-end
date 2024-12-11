@@ -19,6 +19,8 @@ import {
   useDeleteSubscriptionPlan,
   useGetAllSubscriptionPlansData
 } from "@/src/hooks/pricingPlan/useRetreivePlanData";
+import LoadingState from "@/src/components/ui/loading/LoadingState";
+import NoResults from "@/src/components/ui/noFound/EmptyResult";
 
 function PricingPage() {
   const dispatch = useAppDispatch();
@@ -35,7 +37,7 @@ function PricingPage() {
   };
   const { handleSubmitDeletePlan, isPending } = useDeleteSubscriptionPlan();
 
-  if (isLoading) return <div>Loading.....</div>;
+  if (isLoading) return <LoadingState message="Loading Plans..." />;
   return (
     <div>
       <GlobalWarningAlert
@@ -45,27 +47,54 @@ function PricingPage() {
         handleClose={handleClose}
       />
       <div className="flex justify-end py-2 ">
-        <div className="cursor-pointer w-1/2 md:w-[250px]">
-          <Link href="/doctor/create-plan">
-            <PrimaryButton
-              backgroud
-              children="Add new plans"
-              color="text-white"
+        {data?.data.plans.length !== 0 && (
+          <div className="cursor-pointer w-1/2 md:w-[250px]">
+            <Link href="/doctor/create-plan">
+              <PrimaryButton
+                backgroud
+                children="Add new plans"
+                color="text-white"
+              />
+            </Link>
+          </div>
+        )}
+      </div>
+      {/* No result section */}
+      {data?.data.plans.length === 0 && (
+        <div className="flex flex-col items-center justify-center">
+          <div>
+            <NoResults
+              heading="No Subscription Plan Found"
+              message="Get started by creating your first subscription plan"
             />
-          </Link>
+          </div>
+          <div className="cursor-pointer w-1/2 md:w-[250px]">
+            <Link href="/doctor/create-plan">
+              <PrimaryButton
+                backgroud
+                children="Add new plans"
+                color="text-white"
+              />
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="hidden md:block">
-        <PlanDeskTopTable />
-      </div>
-      <div className="md:hidden">
-        <MobileTable<SubscriptionPlanDataType>
-          isActionEnabled={true}
-          data={data?.data.plans}
-          handleDeletButton={handleGetPlanIdAndOpen}
-          fields={MobileSubscriptionPlansField}
-        />
-      </div>
+      )}
+
+      {data?.data.plans.length !== 0 && (
+        <div>
+          <div className="hidden md:block">
+            <PlanDeskTopTable />
+          </div>
+          <div className="md:hidden">
+            <MobileTable<SubscriptionPlanDataType>
+              isActionEnabled={true}
+              data={data?.data.plans}
+              handleDeletButton={handleGetPlanIdAndOpen}
+              fields={MobileSubscriptionPlansField}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
