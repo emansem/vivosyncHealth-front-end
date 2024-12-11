@@ -150,7 +150,7 @@ export default function TransactionPage() {
             getTransactionIcon={getTransactionIcon}
             filteredTransactions={transactionsData as Transactions[]}
           />
-          {/* Pagination - Only shown when there are 10 or more items */}
+          {/* Pagination - Only shown when there are 10 or more items or the total pages is equal to pageNumber */}
           {shouldShowPagination && (
             <div className="px-6">
               <PaginationButton
