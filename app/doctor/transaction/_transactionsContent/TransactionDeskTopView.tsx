@@ -4,10 +4,14 @@ import { formatDate } from "@/src/helper/helper";
 
 interface TransactionDeskTopViewProps {
   filteredTransactions: Transactions[];
+  startIndex: number;
+  endIndex: number;
   getTransactionIcon: (type: TransactionType) => React.JSX.Element;
 }
 function TransactionDeskTopView({
   filteredTransactions,
+  startIndex,
+  endIndex,
   getTransactionIcon
 }: TransactionDeskTopViewProps) {
   return (
@@ -26,9 +30,6 @@ function TransactionDeskTopView({
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Date
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Status
             </th>
           </tr>
         </thead>
@@ -51,19 +52,6 @@ function TransactionDeskTopView({
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {formatDate(transaction.created_at)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span
-                  className={`px-2 py-1 text-xs rounded-full ${
-                    transaction?.status === "completed"
-                      ? "bg-green-100 text-green-800"
-                      : transaction.status === "pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  test
-                </span>
               </td>
             </tr>
           ))}

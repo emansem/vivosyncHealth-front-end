@@ -104,19 +104,30 @@ export const useGetUser = (): UseQueryResult<User, Error> => {
     });
 };
 
-export const useGetData = <TData>(apiEndpoint: string, queryKeyType: string):
-    UseQueryResult<TData, Error> => {
-    ;
+export const useGetData = <TData>(apiEndpoint: string, queryKeyType: string): UseQueryResult<TData, Error> => {
+    // We'll extract any query parameters from the API endpoint
+    const queryParams = apiEndpoint.split('?')[1];
+
+    // Create a more specific query key that includes both the type and any parameters
+    const fullQueryKey = queryParams
+        ? [queryKeyType, queryParams]  // If there are query params, include them in the key
+        : [queryKeyType];              // If no params, just use the type
 
     return useQuery({
-        queryKey: [queryKeyType],
+        queryKey: fullQueryKey,
         queryFn: async () => {
             const { data } = await api.get<TData>(apiEndpoint);
             return data;
         },
+
+        staleTime: 30000, // Consider data fresh for 30 seconds
+
+
+        // Prevent unnecessary background refetches
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
     });
 };
-
 
 
 // useDeleteData.ts
