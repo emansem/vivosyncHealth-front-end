@@ -1,18 +1,24 @@
 "use client";
-import DoctorChartWrapper from "@/src/components/ui/doctor/dashboard/charts/DoctorChartWrapper";
-import SubscriptionChart from "@/src/components/ui/doctor/dashboard/charts/WeeklySubscriptionChart";
-import StatisticOverview from "@/src/components/ui/doctor/dashboard/StatisticOverview";
-import Welcome from "@/src/components/ui/doctor/dashboard/Welcome";
-import React from "react";
-
-function page() {
+import DoctorChartWrapper from "@/app/doctor/dashboard/_doctorContent/charts/DoctorChartWrapper";
+import StatisticOverview from "@/app/doctor/dashboard/_doctorContent/StatisticOverview";
+import Welcome from "@/app/doctor/dashboard/_doctorContent/Welcome";
+import { useDoctorDashboard } from "@/src/hooks/useDoctorDashboard";
+function Page() {
+  const doctorData = useDoctorDashboard();
+  if (doctorData?.isLoading) return <div>loading...</div>;
+  const details = doctorData?.doctorData;
   return (
     <div className="flex flex-col gap-4">
-      <Welcome />
-      <StatisticOverview />
+      <Welcome doctorName={details?.doctorName as string} />
+      <StatisticOverview
+        totalPatient={details?.totalPatient as number}
+        totalBalance={details?.totalBalance as number}
+        inactiveSubscription={details?.inactiveSubscription as number}
+        activeSubscription={details?.activeSubscription as number}
+      />
       <DoctorChartWrapper />
     </div>
   );
 }
 
-export default page;
+export default Page;

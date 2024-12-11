@@ -1,11 +1,33 @@
 "use client";
 import { Mail } from "lucide-react";
-import React from "react";
-import PrimaryButton from "../button/PrimaryButton";
+import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import { CardLayout } from "../layout/CardLayout";
 import { VerifyEmailProps } from "@/src/types/general";
+// import { useResendLink } from "@/src/hooks/authentication/useResendToken";
+import PrimaryButton from "../button/PrimaryButton";
+import Input from "../forms/Input";
+import { useVerifyEmail } from "@/src/hooks/authentication/useVerifyUserEmail";
+import { EMAIL_SUBJECT } from "@/app/lib/constant";
+import { useResendLink } from "@/src/hooks/authentication/useResendToken";
 
-export function EmailVerifyWrapper({ message }: VerifyEmailProps) {
+export function EmailVerifyWrapper({
+  message,
+  email_subject
+}: VerifyEmailProps) {
+  const {
+    handleCodeOnchange,
+    submitVerificationCode,
+    isPending,
+    handleKeyDown,
+    isloading,
+    codes
+  } = useVerifyEmail(email_subject as string);
+
+  const { handleResendEmail, isDisabled, timeLeft } = useResendLink(
+    email_subject as string
+  );
+  if (isloading) return <div>loading.....</div>;
+
   return (
     <div className="px-4">
       <CardLayout>
@@ -19,16 +41,44 @@ export function EmailVerifyWrapper({ message }: VerifyEmailProps) {
             </h1>
             <p className="text-base text-text_color2 ">{message}</p>
           </div>
-          <div className="bg-red-50 p-4 rounded-lg font-medium border-red-200 border  text-red-700  text-sm">
-            <p>
-              Didn't receive the email? Check your spam folder or request a new
-              verification link.
-            </p>
+          <div className="flex justify-center gap-3">
+            {codes.map((code, index) => (
+              <div className="w-14 h-14" key={index}>
+                <Input
+                  onChange={(e) => handleCodeOnchange(e, index)}
+                  key={index}
+                  value={code}
+                  onKeyEvent={(e) => handleKeyDown(e, index)}
+                  name={`code-${index}`}
+                  inputType="text"
+                />
+              </div>
+            ))}
           </div>
           <div>
-            <PrimaryButton color="text-white" backgroud>
-              Resend link
+            <PrimaryButton
+              isSubmitting={isPending}
+              onClick={submitVerificationCode}
+              color="text-white"
+              backgroud
+            >
+              {isPending ? "Verifying..." : "Verify"}
             </PrimaryButton>
+          </div>
+
+          <div className=" flex flex-col items-center text-center gap-2 rounded-lg font-medium   text-sm">
+            <p className=" textt-sm md:text-base text-text_color2">
+              Didn&apos;t receive the email? Request a new code
+            </p>
+            <button
+              disabled={isDisabled}
+              onClick={handleResendEmail}
+              className={`text-secondary_color  hover:text-primary_color transition-all duration-200 ease-lineartext-sm md:text-base  ${
+                isDisabled ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
+            >
+              {isDisabled ? `Send gain in ${timeLeft}` : " Resend Code"}
+            </button>
           </div>
         </div>
       </CardLayout>

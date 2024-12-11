@@ -1,42 +1,20 @@
-import {
-  useAppDispatch,
-  useMultipleFormValidation,
-  useAppSelector
-} from "@/app/lib/hooks";
-import {
-  nextStep,
-  prevStep
-} from "@/app/lib/redux/features/form/multipleStepFormSlice";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import { InnerCardLayout } from "@/src/components/ui/layout/CardLayout";
 import { RenderForm } from "./RenderForm";
 import { TOTAL_FORM_STEPS } from "@/app/lib/constant";
 import { DisableButton } from "@/src/components/ui/button/DisableButton";
+import {
+  useUpdatedOnboardingData,
+  useMultipleFormValidation
+} from "@/src/hooks/authentication/useDoctorOnboard";
 
 export const StepFormLayout = () => {
-  const dispatch = useAppDispatch();
-  const { validateStepOneForm, validateStepTwoForm } =
+  const { handleNext, currentStep, handlePrevStep } =
     useMultipleFormValidation();
-  const { currentStep } = useAppSelector((state) => state.doctorStep);
+  const apiEndpoint = "/doctors/onboard";
+  const { isPending, handleSubmitDoctorOnboardData } =
+    useUpdatedOnboardingData(apiEndpoint);
 
-  const handleNext = () => {
-    switch (currentStep) {
-      case 1:
-        const isFormOneValid = validateStepOneForm();
-        if (!isFormOneValid) return;
-        dispatch(nextStep());
-      case 2:
-        const isValid = validateStepTwoForm();
-        if (!isValid) return;
-        dispatch(nextStep());
-
-      default:
-        break;
-    }
-  };
-  const handlePrevStep = () => {
-    dispatch(prevStep());
-  };
   return (
     <>
       <InnerCardLayout>
@@ -58,8 +36,13 @@ export const StepFormLayout = () => {
               Continue
             </PrimaryButton>
           ) : (
-            <PrimaryButton backgroud color="text-white">
-              Submit
+            <PrimaryButton
+              isSubmitting={isPending}
+              onClick={handleSubmitDoctorOnboardData}
+              backgroud
+              color="text-white"
+            >
+              {isPending ? "Saving.." : "Submit"}
             </PrimaryButton>
           )}
         </div>

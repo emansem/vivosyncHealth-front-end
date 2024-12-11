@@ -1,4 +1,4 @@
-import { Message } from "@/src/types/messageTypes";
+import { User, Chat, Message } from "@/src/types/general";
 
 type SubscriptionReport = {
     day: string,
@@ -20,95 +20,138 @@ export const weeklySubscriptionData: SubscriptionReport[] =
 
     ]
 
-// Mock data for doctors and patients
-const DOCTOR_ID = "d123";
-const PATIENT_ID = "p456";
-
-// Sample messages array
-export const demoMessages: Message[] = [
+// Demo doctors data
+export const demoDoctors: User[] = [
     {
-        id: "msg1",
-        senderId: PATIENT_ID,
-        receiverId: DOCTOR_ID,
-        content:
-            "Hello Dr. Smith, I've been experiencing severe tooth pain since yesterday",
-        timestamp: "2024-02-15T09:30:00Z",
-        status: "read"
+        id: "1",
+        name: "Dr. Sarah Wilson",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "online",
+        specialty: "Cardiologist"
     },
     {
-        id: "msg2",
-        senderId: DOCTOR_ID,
-        receiverId: PATIENT_ID,
-        content:
-            "Hello! I'm sorry to hear that. Can you describe the pain? Is it constant or intermittent?",
-        timestamp: "2024-02-15T09:32:00Z",
-        status: "read"
+        id: "2",
+        name: "Dr. Michael Chen",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "offline",
+        specialty: "Neurologist",
+        lastSeen: new Date()
     },
     {
-        id: "msg3",
-        senderId: PATIENT_ID,
-        receiverId: DOCTOR_ID,
-        content: "It's constant, and gets worse when I drink cold water",
-        timestamp: "2024-02-15T09:33:00Z",
-        status: "read"
+        id: "3",
+        name: "Dr. Emily Brown",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "online",
+        specialty: "Pediatrician"
     },
     {
-        id: "msg4",
-        senderId: DOCTOR_ID,
-        receiverId: PATIENT_ID,
-        content:
-            "I understand. This might be a sign of tooth sensitivity or a cavity. Have you noticed any swelling?",
-        timestamp: "2024-02-15T09:35:00Z",
-        status: "read"
+        id: "4",
+        name: "Dr. James Miller",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "online",
+        specialty: "Dermatologist"
     },
     {
-        id: "msg5",
-        senderId: PATIENT_ID,
-        receiverId: DOCTOR_ID,
-        content: "Yes, there's slight swelling on my left cheek",
-        timestamp: "2024-02-15T09:36:00Z",
-        status: "read"
+        id: "5",
+        name: "Dr. Lisa Anderson",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "offline",
+        specialty: "Psychiatrist"
     },
     {
-        id: "msg6",
-        senderId: DOCTOR_ID,
-        receiverId: PATIENT_ID,
-        content:
-            "We should examine this as soon as possible. Would you be able to come in today?",
-        timestamp: "2024-02-15T09:38:00Z",
-        status: "read"
+        id: "6",
+        name: "Dr. David Taylor",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "online",
+        specialty: "Orthopedist"
     },
     {
-        id: "msg7",
-        senderId: PATIENT_ID,
-        receiverId: DOCTOR_ID,
-        content: "Yes, I can come in today. What time works best?",
-        timestamp: "2024-02-15T09:39:00Z",
-        status: "delivered"
+        id: "7",
+        name: "Dr. Maria Garcia",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "online",
+        specialty: "Gynecologist"
     },
     {
-        id: "msg8",
-        senderId: DOCTOR_ID,
-        receiverId: PATIENT_ID,
-        content: "I have an opening at 2:30 PM today. Would that work for you?",
-        timestamp: "2024-02-15T09:40:00Z",
-        status: "delivered"
+        id: "8",
+        name: "Dr. Robert Lee",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "offline",
+        specialty: "Ophthalmologist"
     },
     {
-        id: "msg9",
-        senderId: PATIENT_ID,
-        receiverId: DOCTOR_ID,
-        content: "2:30 PM works perfectly. I'll be there",
-        timestamp: "2024-02-15T09:41:00Z",
-        status: "sent"
+        id: "9",
+        name: "Dr. Jennifer White",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "online",
+        specialty: "Endocrinologist"
     },
     {
-        id: "msg10",
-        senderId: DOCTOR_ID,
-        receiverId: PATIENT_ID,
-        content:
-            "Great, I'll see you then. Please bring any recent dental records if you have them.",
-        timestamp: "2024-02-15T09:42:00Z",
-        status: "sent"
+        id: "10",
+        name: "Dr. Thomas Martin",
+        avatar: "/api/placeholder/40/40",
+        role: "doctor",
+        status: "online",
+        specialty: "Oncologist"
     }
 ];
+
+// Demo messages
+// Generate demo chats
+
+export const generateDemoMessages = (doctorId: string): Message[] => [
+    {
+        id: `${doctorId}-1`,
+        content: "Good morning! How are you feeling today?",
+        senderId: doctorId,
+        timestamp: new Date(Date.now() - 3600000),
+        isRead: true
+    },
+    {
+        id: `${doctorId}-2`,
+        content: `'I've been experiencing some improvement with the new medication.'`,
+        senderId: "current-user",
+        timestamp: new Date(Date.now() - 3300000),
+        isRead: true
+    },
+    {
+        id: `${doctorId}-3`,
+        content: ` 'That's great to hear! Any side effects?'`,
+        senderId: doctorId,
+        timestamp: new Date(Date.now() - 3000000),
+        isRead: true
+    },
+    {
+        id: `${doctorId}-4`,
+        content:
+            "Just mild drowsiness in the morning, but it goes away after an hour.",
+        senderId: "current-user",
+        timestamp: new Date(Date.now() - 2700000),
+        isRead: true
+    },
+    {
+        id: `${doctorId}-5`,
+        content: ` 'That's a common initial side effect. It should improve over time. Keep monitoring and let me know if it persists.'`,
+        senderId: doctorId,
+        timestamp: new Date(Date.now() - 2400000),
+        isRead: true
+    }
+];
+
+export const demoChats: Chat[] = demoDoctors.map((doctor) => ({
+    id: doctor.id,
+    participants: [doctor],
+    lastMessage: generateDemoMessages(doctor.id)[4],
+    unreadCount: Math.floor(Math.random() * 3)
+}));
+
+

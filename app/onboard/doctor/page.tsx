@@ -3,8 +3,40 @@ import { TOTAL_FORM_STEPS } from "@/app/lib/constant";
 import { useAppSelector } from "@/app/lib/hooks";
 
 import { StepFormLayout } from "./_doctorOnboardingContents/StepFormLayout";
+import { useGetUser } from "@/src/hooks/serviceHook";
 
+import { SuccessWrapperAlert } from "@/src/components/ui/alert/SuccessAlert";
 function Page() {
+  const { data, isLoading, error } = useGetUser();
+  const isProfileCompleted = data?.isProfileCompleted;
+
+  // useEffect(() => {
+  //   if (error && axios.isAxiosError(error)) {
+  //     toast.error(error.response?.data.message);
+  //     window.location.href = `${window.location.protocol}//${window.location.hostname}/auth/register`;
+  //   }
+  // }, [error]);
+
+  if (isLoading) return <div>loading..</div>;
+
+  const message =
+    "Your profile is complete and verified. You can now access the dashboard.";
+
+  return (
+    <>
+      {isProfileCompleted ? (
+        <SuccessWrapperAlert
+          buttonText="Go To Dashboard"
+          warningMessage={message}
+        />
+      ) : (
+        <DoctorOnboardingLayout />
+      )}
+    </>
+  );
+}
+
+const DoctorOnboardingLayout = () => {
   const { currentStep } = useAppSelector((state) => state.doctorStep);
   const progressBarWidth = ((currentStep - 1) / (TOTAL_FORM_STEPS - 1)) * 100;
   return (
@@ -31,6 +63,6 @@ function Page() {
       </main>
     </div>
   );
-}
+};
 
 export default Page;

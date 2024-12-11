@@ -1,11 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import doctorSetUpReducer from "../redux/features/form/multipleStepFormSlice"
-import withdrawalAccountReducer from "./features/form/withdrawalAccountSlice"
-
+import subscriptionPlanReducer from "../redux/features/subscriptionPlanSlice/subscriptionPlanSlice"
 export const store = configureStore({
   reducer: {
     doctorStep: doctorSetUpReducer,
-    withdrawalAccount: withdrawalAccountReducer
+    subscriptionPlan: subscriptionPlanReducer,
   },
 
 });

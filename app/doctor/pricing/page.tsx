@@ -1,69 +1,108 @@
-import { subscriptionPlans } from "@/data/demoPlansData";
-import {
-  DOCTOR_SUBSCRIPTION_PLAN_FIELD,
-  MobileSubscriptionPlansField
-} from "@/data/table";
+"use client";
+import { MobileSubscriptionPlansField } from "@/data/table";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import MobileTable from "@/src/components/utils/table/MobileTable";
-import { TableHead } from "@/src/components/utils/table/TableHead";
-import TableLayout from "@/src/components/utils/table/TableLayout";
-import { EllipsisVertical } from "lucide-react";
 
-const TableData = () => {
-  return (
-    <tbody>
-      {subscriptionPlans.map((plan, index) => (
-        <tr className="hover:bg-green-50" key={index}>
-          <td>{plan.name}</td>
-          <td>{plan.price}</td>
-          <td>{plan.discountPercentage}</td>
-          <td>{plan.status}</td>
-          <td className="flex  justify-end">
-            <div className="flex  ">
-              <span>Update</span>
-              <span>Delete</span>
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  );
-};
+import PlanDeskTopTable from "./_pricingContents/PlanDeskTopTable";
 
-const DesktopTable = () => {
-  return (
-    <>
-      <TableLayout>
-        <TableHead tableHeadTitle={DOCTOR_SUBSCRIPTION_PLAN_FIELD} />
-        <TableData />
-      </TableLayout>
-    </>
-  );
-};
+import { GlobalWarningAlert } from "@/src/components/ui/alert/WarningAlert";
+import { useAppDispatch, useAppSelector } from "@/app/lib/hooks";
 
-function page() {
+import {
+  closeModal,
+  getPlanId,
+  openModal
+} from "@/app/lib/redux/features/subscriptionPlanSlice/subscriptionPlanSlice";
+import Link from "next/link";
+import { SubscriptionPlanDataType } from "@/app/lib/types";
+import {
+  useDeleteSubscriptionPlan,
+  useGetAllSubscriptionPlansData
+} from "@/src/hooks/pricingPlan/useRetreivePlanData";
+import LoadingState from "@/src/components/ui/loading/LoadingState";
+import NoResults from "@/src/components/ui/noFound/EmptyResult";
+
+function PricingPage() {
+  const dispatch = useAppDispatch();
+
+  const { isLoading, data } = useGetAllSubscriptionPlansData();
+  // const { handleClose } = useContext(SubscriptionContext);
+  const { open } = useAppSelector((state) => state.subscriptionPlan);
+  const handleClose = () => {
+    dispatch(closeModal());
+  };
+  const handleGetPlanIdAndOpen = (id: number) => {
+    dispatch(getPlanId(id));
+    dispatch(openModal());
+  };
+  const { handleSubmitDeletePlan, isPending } = useDeleteSubscriptionPlan();
+
+  if (isLoading) return <LoadingState message="Loading Plans..." />;
   return (
     <div>
+      <GlobalWarningAlert
+        isOpen={open}
+        isLoading={isPending}
+        handleConfirmButton={handleSubmitDeletePlan}
+        handleClose={handleClose}
+      />
       <div className="flex justify-end py-2 ">
-        <div className="cursor-pointer w-1/2 md:w-[250px]">
-          <PrimaryButton
-            backgroud
-            children="Add new plans"
-            color="text-white"
-          />
+        {data?.data.plans.length !== 0 && (
+          <div className="cursor-pointer w-1/2 md:w-[250px]">
+            <Link href="/doctor/create-plan">
+              <PrimaryButton
+                backgroud
+                children="Add new plans"
+                color="text-white"
+              />
+            </Link>
+          </div>
+        )}
+      </div>
+      {/* No result section */}
+      {data?.data.plans.length === 0 && (
+        <div className="flex flex-col items-center justify-center">
+          <div>
+            <NoResults
+              heading="No Subscription Plan Found"
+              message="Get started by creating your first subscription plan"
+            />
+          </div>
+          <div className="cursor-pointer w-1/2 md:w-[250px]">
+            <Link href="/doctor/create-plan">
+              <PrimaryButton
+                backgroud
+                children="Add new plans"
+                color="text-white"
+              />
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="hidden md:block">
-        <DesktopTable />
-      </div>
-      <div className="md:hidden">
-        <MobileTable
-          data={subscriptionPlans}
-          fields={MobileSubscriptionPlansField}
-        />
-      </div>
+      )}
+
+      {data?.data.plans.length !== 0 && (
+        <div>
+          <div className="hidden md:block">
+            <PlanDeskTopTable />
+          </div>
+          <div className="md:hidden">
+            <MobileTable<SubscriptionPlanDataType>
+              isActionEnabled={true}
+              data={data?.data.plans}
+              handleDeletButton={handleGetPlanIdAndOpen}
+              fields={MobileSubscriptionPlansField}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default page;
+export default PricingPage;
+// function disPatch(arg0: {
+//   payload: undefined;
+//   type: "subscriptionPlan/closeModal";
+// }) {
+//   throw new Error("Function not implemented.");
+// }

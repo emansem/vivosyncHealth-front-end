@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useMemo } from "react";
-import SideBar from "./patails/SideBar";
-import Header from "./patails/Header";
+// import React, { useEffect, useMemo } from "react";
+import SideBar from "./doctorPatial/SideBar";
+import Header from "./doctorPatial/Header";
 import useGeneralHook from "@/src/hooks/useGeneralHook";
-
-//Dashboard layout and some inner pages main the user thats protected routes layout
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { handleToggleOPenMenu, isOpen, elementRef, handleCloseSideBarMenu } =
     useGeneralHook();
+
   return (
     <div className="min-h-screen">
       {/* HEADER NAVIGATION*/}

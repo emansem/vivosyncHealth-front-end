@@ -1,6 +1,10 @@
+import { SubscriptionPlanDataType } from "@/app/lib/types";
+import React from "react";
+
 export interface VerifyEmailProps {
     message: string;
-    buttonText?: string
+    email_subject?: string;
+    buttonText?: string | React.ReactNode
 }
 
 //pagination types
@@ -18,23 +22,24 @@ export interface PaginationButtonProps {
 export interface ShowActiveTagProps {
     showActiveTag: (index: number) => void;
 }
-//Patientlist body data props types
-export interface TableBodyProps {
-    subscriptionData: unknown[];
-    startIndex?: number;
-    endIndex?: number;
-}
+
 
 //Patient list data types
 export interface Patient {
-    id: number;
+    id: number,
+    amount: number;
     name: string;
-    patientId: string
-    subDate: string;
-    expireDate: string;
-    status: string
+    plan_type: string
+    expire_date: string;
+    created_at: string;
+    subscription_status: string
 }
-
+//Patientlist body data props types
+export interface TableBodyProps {
+    subscriptionData: Patient[]
+    startIndex?: number;
+    endIndex?: number;
+}
 //Mobile patientlist fileds types
 export interface PatientField {
     label: string;
@@ -57,7 +62,7 @@ export type SubscriptionPlan = {
 
 export type SubscriptionPlanMobileTypes = {
     label: string;
-    key: keyof SubscriptionPlan
+    key: keyof SubscriptionPlanDataType
 }
 
 export type PatientReviewsTypes = {
@@ -68,6 +73,32 @@ export type PatientReviewsTypes = {
     timeStamp: string | number
 }
 
+// Types
+export type Message = {
+    id?: number;
+    content: string;
+    sender_id: string;
+    receiver_id: string,
+    timestamp: Date;
+    isRead?: boolean;
+};
+
+export type User = {
+    id: string;
+    name: string;
+    avatar: string;
+    role: "doctor";
+    status: "online" | "offline";
+    specialty: string;
+    lastSeen?: Date;
+};
+
+export type Chat = {
+    id: string;
+    participants: User[];
+    lastMessage?: Message;
+    unreadCount: number;
+};
 
 
 

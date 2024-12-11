@@ -13,6 +13,13 @@
     --foreground: #ededed;
   }
 }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 li {
   list-style: none;
 }
@@ -85,4 +92,7 @@ td {
         after:rotate-45
         after:opacity-0
         peer-checked:after:opacity-100;
+}
+.label {
+  @apply text-lg text-text_color2 font-medium select-none;
 }

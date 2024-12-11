@@ -1,6 +1,6 @@
 import { STEP_ONE_FORM_FIELDS } from "@/app/lib/constant";
-import { useOnchangeDoctorOnboarding, useAppSelector } from "@/app/lib/hooks";
-import { DoctorOnboardingForm } from "@/app/lib/redux/features/form/multipleStepFormSlice";
+import { useAppSelector } from "@/app/lib/hooks";
+import { useOnchangeDoctorOnboarding } from "@/src/hooks/authentication/useDoctorOnboard";
 import { FormStepsStyles } from "@/src/components/utils/css/generalstyles";
 import Input from "@/src/components/ui/forms/Input";
 
@@ -20,7 +20,7 @@ export const StepOneForm = () => {
               name={field.name}
               inputType={field.type}
               inputPlaceholder={field.placeholder}
-              value={formData[field.name as keyof DoctorOnboardingForm]}
+              // value={formData[field.name as keyof DoctorOnboardingForm]}
               onChange={handleFormChange}
               error={errors?.[field.name]}
             />

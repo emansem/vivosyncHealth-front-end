@@ -1,48 +1,78 @@
-import React from "react";
-interface FieldTypes {
-  label: string;
-  key: keyof any;
-}
-interface MobileTableProps {
-  data: any[];
-  fields: FieldTypes[];
+import { getStatusColor } from "../getStatusColor";
+import Link from "next/link";
+// Update the MobileTableProps interface to include align
+interface MobileTableProps<TData> {
+  isActionEnabled?: boolean;
+  handleDeletButton?: (id: number) => void;
+  data?: TData[];
+  fields: {
+    key: keyof TData;
+    label: string;
+  }[];
 }
 
-function MobileTable({ data, fields }: MobileTableProps) {
+function MobileTable<TData extends { id?: number }>({
+  data,
+  fields,
+  isActionEnabled = false,
+  handleDeletButton
+}: MobileTableProps<TData>) {
   return (
     <div className="w-full md:hidden space-y-4">
-      {data.map((patient, index) => (
+      {data?.map((item, index) => (
         <div
-          key={index}
+          key={item.id || index}
           className="bg-white rounded-lg shadow-sm border overflow-hidden"
         >
           {/* Each info row */}
           <div className="divide-y">
-            {fields.map((field, index) => (
+            {fields.map((field, fieldIndex) => (
               <div
-                key={index}
+                key={fieldIndex}
                 className="flex justify-between p-4 hover:bg-gray-50"
               >
                 <span className="text-gray-600 font-medium">{field.label}</span>
-                {field.key === "status" ? (
+                {field.key === "plan_status" || field.key === "status" ? (
                   <span
                     className={`
-              px-3 py-1 rounded-full text-sm font-medium
-              ${
-                patient.status === "active"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }
-            `}
+                      px-3 py-1 rounded-full text-sm font-medium
+                      ${getStatusColor(String(item[field.key]))}
+                    `}
                   >
-                    {patient[field.key]}
+                    {String(item[field.key])}
                   </span>
                 ) : (
-                  <span>{patient[field.key]}</span>
+                  <span>{String(item[field.key])}</span>
                 )}
               </div>
             ))}
           </div>
+          {isActionEnabled && (
+            <div className="divide-y">
+              <div className="flex justify-between p-4 hover:bg-gray-50">
+                <span className="text-gray-600 font-medium">Action</span>
+                <div className="flex gap-2 items-center">
+                  <span
+                    onClick={() => {
+                      if (handleDeletButton && item.id) {
+                        handleDeletButton(item.id);
+                      }
+                    }}
+                    className="bg-red-600/10 text-red-500 cursor-pointer text-base py-2 px-4 rounded-md"
+                  >
+                    Delete
+                  </span>
+                  {item.id && (
+                    <Link href={`/doctor/pricing/${item.id}`}>
+                      <span className="bg-primary_color/10 text-primary_color cursor-pointer text-base py-2 px-4 rounded-md">
+                        Update
+                      </span>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </div>
