@@ -274,7 +274,7 @@ export const DOCTOR_API_END_POINTS = {
 // Query keys for data fetching
 export const GET_ALL_PLANS_KEY = "plans";
 export const GET_USER_QUERY_KEY = 'user';
-export const GET_WITHDRAWAL_ACCOUNT_QUERY_KEY = "withdrawalAccount";
+export const GET_WITHDRAWAL_ACCOUNT_QUERY_KEY = "withdrawalDetails";
 export const GET_DOCTOR_DETAILS = 'doctor';
 
 // Fields for updating withdrawal account information
@@ -375,7 +375,8 @@ export const GENERAL_API_END_POINTS = {
     SEND_MESSAGE: "/message/send-message",
     GET_ALL_MESSAGES: '/message/all-messages',
     GET_LAST_SENT_MESSAGE: "/message/chat-room/last-sent",
-    GET_ALL_TRANSACTIONS: "/transactions/all"
+    GET_ALL_TRANSACTIONS: "/transactions/all",
+    REQUEST_NEW_WITHDRAWAL: "withdrawal/request"
 }
 
 export const WITHDRAWAL_FORM_INPUTS = [

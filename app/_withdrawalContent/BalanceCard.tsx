@@ -9,7 +9,7 @@ interface BalanceCardSectionProps {
   handleCloseModal: () => void;
   balance: number;
   handle0penModal: () => void;
-  noAccount: boolean;
+
   isOpen: boolean;
   withdrawalAccount: WithdrawalAccountData;
 }
@@ -43,7 +43,7 @@ function BalanceCardSection({
           </div>
           <div className="mb-6">
             <p className="text-3xl font-bold text-primary_color">
-              ${balance.toLocaleString()}
+              ${balance.toFixed(2)}
             </p>
             <p className="text-sm text-gray-500 mt-1">
               Available for withdrawal

@@ -5,45 +5,24 @@ import { Wallet, Clock, CheckCircle, XCircle } from "lucide-react";
 import { useOpenAndClose } from "@/app/lib/hooks";
 import { StatCard } from "./StateCardSection";
 import WithdrawalHistorySection from "./WithdrawalHistory";
-import { useGetWwithdrawalAccount } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
+import {
+  useGetWwithdrawalAccount,
+  WithdrawalHistory
+} from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
 import { WithdrawalAccountData } from "@/app/lib/types";
 import BalanceCardSection from "./BalanceCard";
 
-export interface WithdrawalHistory {
-  id: string;
-  amount: number;
-  status: "pending" | "completed" | "failed";
-  date: string;
-}
-
-interface WithdrawalStats {
-  total: number;
-  failed: number;
-  pending: number;
-  successful: number;
-}
-
-export interface WithdrawalAccount {
-  bank: string;
-  accountNumber: string;
-}
-
-interface Props {
-  balance: number;
-  withdrawalAccount?: WithdrawalAccount;
-  withdrawalHistory: WithdrawalHistory[];
-  stats: WithdrawalStats;
-}
-
-const WithdrawalPage: React.FC<Props> = ({
-  balance,
-  withdrawalAccount,
-  withdrawalHistory,
-  stats
-}) => {
+const WithdrawalPage = () => {
   const { open, handle0pen, handleClose } = useOpenAndClose();
-  const { data, noAccount } = useGetWwithdrawalAccount();
-  console.log(data);
+  const { data, isLoading } = useGetWwithdrawalAccount();
+  console.log("Withdrawal account and states", data);
+
+  const totalWithdrawal = data?.data.withdrawal_details.withdrawal_data.reduce(
+    (total, withdrawal) => total + withdrawal.amount,
+    0
+  );
+
+  if (isLoading) return <div>Loading..</div>;
 
   return (
     <div className=" bg-white rounded-lg p-4 md:p-8">
@@ -52,25 +31,31 @@ const WithdrawalPage: React.FC<Props> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             title="Total Withdrawn"
-            amount={stats.total}
+            amount={totalWithdrawal?.toFixed(2) || 0}
             icon={<Wallet className="w-6 h-6 text-primary_color" />}
             colorClass="bg-primary_color/10"
           />
           <StatCard
             title="Successful"
-            amount={stats.successful}
+            amount={
+              data?.data?.withdrawal_details?.successWithdrawal.toFixed(2) || 0
+            }
             icon={<CheckCircle className="w-6 h-6 text-green-600" />}
             colorClass="bg-green-100"
           />
           <StatCard
             title="Pending"
-            amount={stats.pending}
+            amount={
+              data?.data?.withdrawal_details?.pendingWithdrawal.toFixed(2) || 0
+            }
             icon={<Clock className="w-6 h-6 text-orange-600" />}
             colorClass="bg-orange-100"
           />
           <StatCard
-            title="Failed"
-            amount={stats.failed}
+            title="Rejected"
+            amount={
+              data?.data?.withdrawal_details?.rejectedWithdrawal.toFixed(2) || 0
+            }
             icon={<XCircle className="w-6 h-6 text-red-600" />}
             colorClass="bg-red-100"
           />
@@ -78,14 +63,17 @@ const WithdrawalPage: React.FC<Props> = ({
 
         {/* Balance and Account Section */}
         <BalanceCardSection
-          noAccount={noAccount}
           handle0penModal={handle0pen}
           handleCloseModal={handleClose}
           isOpen={open}
           withdrawalAccount={data?.data?.account as WithdrawalAccountData}
-          balance={balance}
+          balance={data?.data?.withdrawal_details?.totalBalance || 0}
         />
-        <WithdrawalHistorySection withdrawalHistory={withdrawalHistory} />
+        <WithdrawalHistorySection
+          withdrawalHistory={
+            data?.data.withdrawal_details.withdrawal_data as WithdrawalHistory[]
+          }
+        />
       </div>
     </div>
   );

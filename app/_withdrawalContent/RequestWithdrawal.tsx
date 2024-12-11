@@ -9,14 +9,20 @@ import {
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import Input from "@/src/components/ui/forms/Input";
 import { useRequestWithdrawal } from "@/src/hooks/withdrawalAccount/useRequestWithdrawal";
+import SubmittingLoader from "@/src/components/ui/SubmittingLoader";
 
 interface WithdrawalFormProps {
   onClose: () => void;
 }
 
 const WithdrawalForm = ({ onClose }: WithdrawalFormProps) => {
-  const { handleInputChange, accountName, accountNumber, handleSubmit } =
-    useRequestWithdrawal();
+  const {
+    handleInputChange,
+    isPending,
+    accountName,
+    accountNumber,
+    handleSubmit
+  } = useRequestWithdrawal();
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -125,8 +131,13 @@ const WithdrawalForm = ({ onClose }: WithdrawalFormProps) => {
             </div>
 
             {/* Submit Button */}
-            <PrimaryButton backgroud color="text-white">
-              Withdrawal Funds
+            <PrimaryButton
+              type="submit"
+              isSubmitting={isPending}
+              backgroud
+              color="text-white"
+            >
+              {isPending ? <SubmittingLoader /> : "Withdraw Funds"}
             </PrimaryButton>
           </form>
         </div>

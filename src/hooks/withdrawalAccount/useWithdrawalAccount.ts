@@ -1,16 +1,30 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useApiPost, useGetData, useUpdateData } from "../serviceHook"
-import axios from "axios";
+// import axios from "axios";
 import { useForm } from "react-hook-form";
 import { withdrawalAccountFormValidation } from "@/src/helper/formValidation";
 import { WithdrawalAccountData } from "@/app/lib/types";
 import { DOCTOR_API_END_POINTS, GET_WITHDRAWAL_ACCOUNT_QUERY_KEY } from "@/app/lib/constant";
 import toast from "react-hot-toast";
+export interface WithdrawalHistory {
+    id: string;
+    amount: number;
+    transaction_id: string,
+    status: "pending" | "success" | "rejected";
+    created_at: string;
+}
 
 // Interface for the API response when fetching withdrawal account
 interface WithdrawalAccountApiRespone {
     data: {
-        account: WithdrawalAccountData
+        account: WithdrawalAccountData,
+        withdrawal_details: {
+            pendingWithdrawal: number,
+            rejectedWithdrawal: number,
+            totalBalance: number,
+            successWithdrawal: number,
+            withdrawal_data: WithdrawalHistory[]
+        }
     }
 }
 
@@ -19,34 +33,34 @@ interface WithdrawalAccountApiRespone {
 * Handles loading states and no-account scenarios
 */
 export const useGetWwithdrawalAccount = () => {
-    const [noAccount, setNoaccount] = useState(false)
-    const [isPending, setIspending] = useState(true)
+    // const [noAccount, setNoaccount] = useState(false)
+    // const [isPending, setIspending] = useState(true)
 
     // Fetch withdrawal account data
-    const { data, error, isLoading } = useGetData<WithdrawalAccountApiRespone>(
+    const { data, isLoading } = useGetData<WithdrawalAccountApiRespone>(
         DOCTOR_API_END_POINTS.WITHDRAWAL_ACCOUNT.GET_WITHDRAWAL_ACCOUNT,
         GET_WITHDRAWAL_ACCOUNT_QUERY_KEY
     )
 
     // Handle case when no account exists
-    useEffect(() => {
-        if (axios.isAxiosError(error)) {
-            const { account } = error.response?.data
-            if (account === null) {
-                setNoaccount(true)
-                setIspending(false)
-            }
-        }
-    }, [error])
+    // useEffect(() => {
+    //     if (axios.isAxiosError(error)) {
+    //         const { account } = error.response?.data
+    //         if (account === null) {
+    //             setNoaccount(true)
+    //             setIspending(false)
+    //         }
+    //     }
+    // }, [error])
 
     // Reset no-account state when data is received
-    useEffect(() => {
-        if (data?.data?.account === null) {
-            setNoaccount(false)
-        }
-    }, [data])
+    // useEffect(() => {
+    //     if (data?.data?.account === null) {
+    //         setNoaccount(false)
+    //     }
+    // }, [data])
 
-    return { data, isLoading, isPending, noAccount }
+    return { data, isLoading }
 }
 
 /**
