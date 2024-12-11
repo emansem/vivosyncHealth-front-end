@@ -9,7 +9,7 @@ import {
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import Input from "@/src/components/ui/forms/Input";
 import { useRequestWithdrawal } from "@/src/hooks/withdrawalAccount/useRequestWithdrawal";
-import SubmittingLoader from "@/src/components/ui/SubmittingLoader";
+import SubmittingLoader from "@/src/components/ui/loading/SubmittingLoader";
 
 interface WithdrawalFormProps {
   onClose: () => void;

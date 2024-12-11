@@ -11,6 +11,7 @@ import {
 } from "@/src/hooks/withdrawalAccount/useWithdrawalAccount";
 import { WithdrawalAccountData } from "@/app/lib/types";
 import BalanceCardSection from "./BalanceCard";
+import LoadingState from "@/src/components/ui/loading/LoadingState";
 
 const WithdrawalPage = () => {
   const { open, handle0pen, handleClose } = useOpenAndClose();
@@ -22,8 +23,7 @@ const WithdrawalPage = () => {
     0
   );
 
-  if (isLoading) return <div>Loading..</div>;
-
+  if (isLoading) return <LoadingState />;
   return (
     <div className=" bg-white rounded-lg p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
