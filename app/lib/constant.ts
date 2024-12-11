@@ -377,3 +377,18 @@ export const GENERAL_API_END_POINTS = {
     GET_LAST_SENT_MESSAGE: "/message/chat-room/last-sent",
     GET_ALL_TRANSACTIONS: "/transactions/all"
 }
+
+export const WITHDRAWAL_FORM_INPUTS = [
+    {
+        name: "amount",
+        type: "number",
+        placeHolder: "$ 0.00",
+        label: "Withdrawal Amount"
+    },
+    {
+        name: "password",
+        type: "password",
+        placeHolder: "Enter withdrawal password",
+        label: " Withdrawal Password"
+    }
+];
