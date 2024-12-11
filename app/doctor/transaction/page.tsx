@@ -165,7 +165,6 @@ export default function TransactionPage() {
             </div>
           )}
         </div>
-        <div>hello world</div>
 
         {/* Mobile View Component */}
         <TransactionMobileView
