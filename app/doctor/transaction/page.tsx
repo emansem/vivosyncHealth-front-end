@@ -15,6 +15,7 @@ import {
   TRANSACTION_FILTER_DATE_RANGE
 } from "@/app/lib/constant";
 import NoResults from "@/src/components/ui/noFound/EmptyResult";
+import { Transactions } from "@/app/lib/types";
 
 // Type definitions for transaction types and status
 export type TransactionType = "subscription" | "withdrawal" | "deposit";
@@ -104,13 +105,13 @@ export default function TransactionPage() {
       )}
 
       {/* Main Content Area - Contains both desktop and mobile views */}
-      {filterTransaction.length !== 0 && (
+      {filterTransaction && filterTransaction.length !== 0 && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {/* Desktop View Component */}
           <div>
             <TransactionDeskTopView
               getTransactionIcon={getTransactionIcon}
-              filteredTransactions={filterTransaction}
+              filteredTransactions={filterTransaction as Transactions[]}
             />
             {/* Pagination - Only shown when there are 10 or more items or the total pages is equal to pageNumber */}
             {shouldShowPagination && (
@@ -129,7 +130,9 @@ export default function TransactionPage() {
           </div>
 
           {/* Mobile View Component */}
-          <TransactionMobileView filteredTransactions={filterTransaction} />
+          <TransactionMobileView
+            filteredTransactions={filterTransaction as Transactions[]}
+          />
         </div>
       )}
     </div>

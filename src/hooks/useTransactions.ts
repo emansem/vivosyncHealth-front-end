@@ -30,30 +30,9 @@ export const useTransactions = (pageNumber: number) => {
     const handleTypeFilter = (e: ChangeEvent<HTMLSelectElement>) => setTypeFilter(e.target.value as TransactionType || 'all')
     const handleDateRange = (e: ChangeEvent<HTMLSelectElement>) => setDateRange(e.target.value)
 
-    let filterTransaction: Transactions[] = []
-
-    if (data) {
-        if (data.data.transactions.length !== 0) {
-            if (typeFilter === 'all') {
-                // If type is 'all', return all transactions
-                filterTransaction = data.data.transactions
-                console.log("Returning all transactions:", filterTransaction)
-            } else {
-                // Filter by type
-                const filtered = data.data.transactions.filter(item => item.type === typeFilter)
-                filterTransaction = filtered
-                console.log("Filtered transactions:", filterTransaction)
-            }
-        } else {
-            console.log("No transactions found")
-            filterTransaction = []
-        }
-    }
-
-    console.log("Filter transactions", data?.data, typeFilter)
 
 
 
-    return { transactionsData: data?.data.transactions, handleDateRange, handleTypeFilter, filterTransaction, dateRange, typeFilter, isLoading, totalItems: data?.totalItems }
+    return { filterTransaction: data?.data.transactions, handleDateRange, handleTypeFilter, dateRange, typeFilter, isLoading, totalItems: data?.totalItems }
 
 }
