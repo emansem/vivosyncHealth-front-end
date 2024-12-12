@@ -6,10 +6,12 @@ import { ChangeEvent } from "react";
 
 interface TableTabAreaProps {
   value: string;
+  statusTag: string;
   handleFilterPlanType: (e: ChangeEvent<HTMLSelectElement>) => void;
 }
 export const TableTabArea = ({
   value,
+  statusTag = "All",
   handleFilterPlanType
 }: TableTabAreaProps) => {
   const SUBSCRIPTION_FILTER_PLAN_TYPES = [
@@ -30,7 +32,8 @@ export const TableTabArea = ({
       value: "premium"
     }
   ];
-  const { activeIndex, filterTags } = useFilterHook();
+  const { filterTags } = useFilterHook();
+  console.log(statusTag);
   return (
     <div className="flex flex-col bg-white p-4 rounded-md md:flex-row md:justify-end items-center gap-5">
       <div className="relative w-full md:w-[20%]">
@@ -46,7 +49,7 @@ export const TableTabArea = ({
           <li
             onClick={() => filterTags(tag.status, index)}
             className={`${
-              activeIndex === index
+              tag.status === statusTag
                 ? "bg-primary_color text-white rounded-lg"
                 : "text-stone-500"
             } py-2 px-4 `}

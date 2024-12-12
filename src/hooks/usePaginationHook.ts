@@ -26,7 +26,7 @@ function usePaginationHook(totalPages: number) {
     }
     const startIndex = (pageNumber - 1) * limit
     const endIndex = pageNumber * limit
-    return { pageNumber, getPageNumber, limit, pages, handleNextButton, handlePrevButton, endIndex, startIndex }
+    return { pageNumber, getPageNumber, limit, setPageNumber, pages, handleNextButton, handlePrevButton, endIndex, startIndex }
 }
 
 export default usePaginationHook

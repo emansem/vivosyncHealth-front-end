@@ -31,3 +31,13 @@ export const formatDateIntl = (date: Date) => {
   }).format(date);
 };
 
+export const formatTimestamp = (timestamp: number) => {
+  // Ensure we have a valid timestamp
+  if (!timestamp) return 'N/A';
+
+  // Convert seconds to milliseconds and format
+  return new Date(timestamp * 1000).toLocaleDateString();
+};
+
+// Usage in JSX
+
