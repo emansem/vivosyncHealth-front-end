@@ -393,3 +393,47 @@ export const WITHDRAWAL_FORM_INPUTS = [
         label: " Withdrawal Password"
     }
 ];
+
+//Transaction filter types select options
+export const TRANSACTION_FILTER_TYPE = [
+    {
+        label: "All Types",
+        value: "all"
+    },
+    {
+        label: "Subscription",
+        value: "subscription"
+    },
+    {
+        label: "Withdrawal",
+        value: "withdrawal"
+    },
+    {
+        label: "Deposit",
+        value: "deposit"
+    }
+];
+
+//Transaction filter time or date range select options
+export const TRANSACTION_FILTER_DATE_RANGE = [
+    {
+        label: "All Time",
+        value: "all"
+    },
+    {
+        label: "Today",
+        value: "today"
+    },
+    {
+        label: "This Week",
+        value: "week"
+    },
+    {
+        label: "THis Month",
+        value: "month"
+    },
+    {
+        label: "This Year",
+        value: "year"
+    }
+];
