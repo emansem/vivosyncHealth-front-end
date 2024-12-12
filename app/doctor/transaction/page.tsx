@@ -28,7 +28,7 @@ export default function TransactionPage() {
     pageNumber,
     pages,
     handlePrevButton,
-
+    setPageNumber,
     endIndex,
     getPageNumber,
     handleNextButton
@@ -50,13 +50,13 @@ export default function TransactionPage() {
     setResult(totalItems as number);
   }, [totalItems]);
 
-  // Calculate total pages (10 items per page)
-  const totalPages = Math.ceil((totalItems as number) / 10);
+  // Effect: Reset page number when filter changes
+  useEffect(() => {
+    setPageNumber(1);
+  }, [setPageNumber, typeFilter, dateRange]);
 
   // Check if current page is valid
-  const shouldShowPagination =
-    filterTransaction &&
-    (pageNumber === totalPages || filterTransaction.length >= 10);
+  const shouldShowPagination = totalItems && totalItems >= 11;
 
   // Show loading state while fetching data
   if (isLoading) return <LoadingState message="Loading Transactions..." />;

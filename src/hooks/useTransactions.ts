@@ -20,7 +20,7 @@ export const useTransactions = (pageNumber: number) => {
 
 
 
-    const getAllTranasactionsEndPoint = `${GENERAL_API_END_POINTS.GET_ALL_TRANSACTIONS}/?page=${pageNumber}&limit=10`
+    const getAllTranasactionsEndPoint = `${GENERAL_API_END_POINTS.GET_ALL_TRANSACTIONS}/?page=${pageNumber}&limit=10&type=${typeFilter}`
     const { data, error, isLoading } = useGetData<TransactionsApiResponse>(getAllTranasactionsEndPoint, 'transactions');
     if (error && axios.isAxiosError(error)) {
         console.log("Error fetching transactions data", error.response?.data)
@@ -50,7 +50,7 @@ export const useTransactions = (pageNumber: number) => {
         }
     }
 
-    console.log("Filter transactions", filterTransaction, typeFilter)
+    console.log("Filter transactions", data?.data, typeFilter)
 
 
 
