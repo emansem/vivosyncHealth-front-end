@@ -37,7 +37,8 @@ export const PATIENTLIST_TABLE_FIELDS = [
 export const filterTag = [
     { status: "All" },
     { status: "Active" },
-    { status: "Expired" }
+    { status: "Expired" },
+    { status: "Cancelled" }
 ];
 
 //Desktop view subscription plans data 

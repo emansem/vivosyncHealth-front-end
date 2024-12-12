@@ -10,7 +10,6 @@ import {
   HelpCircle,
   LogOut,
   CreditCard,
-  UsersRound,
   File,
   X
 } from "lucide-react";
@@ -53,8 +52,8 @@ const SideBarMenus = () => {
         <Navlink Icon={LayoutDashboard} link="/doctor/dashboard">
           Overview
         </Navlink>
-        <Navlink Icon={UsersRound} link="/doctor/patients">
-          Patients
+        <Navlink Icon={CreditCard} link="/doctor/subscriptions">
+          Subscriptions
         </Navlink>
         <Navlink Icon={UserPlus} link="/doctor/team">
           My team

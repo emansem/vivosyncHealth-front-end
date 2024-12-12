@@ -1,7 +1,7 @@
 import PaginationButton from "@/src/components/utils/table/Pagination";
 import { TableHead } from "@/src/components/utils/table/TableHead";
 import TableLayout from "@/src/components/utils/table/TableLayout";
-import { TableBody } from "../_patientListContent/TableBody";
+import { TableBody } from "./TableBody";
 import { PATIENTLIST_TABLE_FIELDS } from "@/data/table";
 import { Patient } from "@/src/types/general";
 interface DesktopTableProps {
@@ -26,6 +26,9 @@ export const DesktopTable = ({
   getPageNumber,
   pageNumber
 }: DesktopTableProps) => {
+  const totalPages = Math.ceil(totalResult / 10);
+  const showPagination = subscriptionData && totalResult >= 11;
+  console.log(totalPages, pageNumber, showPagination);
   return (
     <>
       <TableLayout>
@@ -36,7 +39,7 @@ export const DesktopTable = ({
           subscriptionData={subscriptionData}
         />
       </TableLayout>
-      <div className={`${totalResult < 11 && "hidden"}`}>
+      <div className={`${!showPagination && "hidden"}`}>
         <PaginationButton
           pageNumber={pageNumber}
           totalResult={totalResult}

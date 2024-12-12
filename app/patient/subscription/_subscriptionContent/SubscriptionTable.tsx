@@ -1,10 +1,7 @@
 import { subscriptionTableHeaders } from "@/app/lib/constant";
 import { SubscriptionTableProps } from "@/app/lib/types";
 import { formatDate, capitalizeFirstLetter } from "@/src/helper/helper";
-import {
-  ChevronRight,
- 
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 // Centralized styles object for the component
 export const styles = {
@@ -81,7 +78,7 @@ export const SubscriptionTable = ({
                   {formatDate(subscription.created_at)}
                 </td>
                 <td className={styles.cell.content}>
-                  {formatDate(subscription.expire_date)}
+                  {formatDate(subscription.expire_date as string)}
                 </td>
                 <td className={styles.cell.base}>
                   <span

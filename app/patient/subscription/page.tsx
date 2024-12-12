@@ -2,11 +2,7 @@
 import { Users, CheckCircle, AlertCircle } from "lucide-react";
 import { StatsCard } from "@/src/components/utils/StateCard";
 import { SubscriptionTable } from "./_subscriptionContent/SubscriptionTable";
-import MobileTable from "@/src/components/utils/table/MobileTable";
-import {
-  MOBILE_SUBSCRIPTION_TABLE_HEADER,
-  subscriptionTableHeaders
-} from "@/app/lib/constant";
+import { MOBILE_SUBSCRIPTION_TABLE_HEADER } from "@/app/lib/constant";
 import { SubscriptionData } from "@/app/lib/types";
 import { useGetSubscriptionData } from "@/src/hooks/useSubscription";
 import MobileSubscriptionTableLyaout from "./_subscriptionContent/MobileSubscriptionTableLyaout";

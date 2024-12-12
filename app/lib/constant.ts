@@ -376,7 +376,8 @@ export const GENERAL_API_END_POINTS = {
     GET_ALL_MESSAGES: '/message/all-messages',
     GET_LAST_SENT_MESSAGE: "/message/chat-room/last-sent",
     GET_ALL_TRANSACTIONS: "/transactions/all",
-    REQUEST_NEW_WITHDRAWAL: "withdrawal/request"
+    REQUEST_NEW_WITHDRAWAL: "withdrawal/request",
+    GET_ALL_SUBSCRIPTION_DATA: '/subscriptions/all/doctor&patients'
 }
 
 export const WITHDRAWAL_FORM_INPUTS = [
