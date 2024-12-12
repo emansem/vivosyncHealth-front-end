@@ -5,8 +5,7 @@ import {
   CreditCard,
   ArrowDownToLine,
   ArrowUpFromLine,
-  Search,
-  Loader
+  Search
 } from "lucide-react";
 import { useTransactions } from "@/src/hooks/useTransactions";
 import usePaginationHook from "@/src/hooks/usePaginationHook";
@@ -29,7 +28,7 @@ export default function TransactionPage() {
     pageNumber,
     pages,
     handlePrevButton,
-    startIndex,
+
     endIndex,
     getPageNumber,
     handleNextButton
@@ -145,8 +144,6 @@ export default function TransactionPage() {
         {/* Desktop View Component */}
         <div>
           <TransactionDeskTopView
-            startIndex={startIndex}
-            endIndex={endIndex}
             getTransactionIcon={getTransactionIcon}
             filteredTransactions={transactionsData as Transactions[]}
           />
