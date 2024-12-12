@@ -4,14 +4,12 @@ import { formatDate } from "@/src/helper/helper";
 
 interface TransactionDeskTopViewProps {
   filteredTransactions: Transactions[];
-  startIndex: number;
-  endIndex: number;
+
   getTransactionIcon: (type: TransactionType) => React.JSX.Element;
 }
 function TransactionDeskTopView({
   filteredTransactions,
-  startIndex,
-  endIndex,
+
   getTransactionIcon
 }: TransactionDeskTopViewProps) {
   return (

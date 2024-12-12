@@ -44,9 +44,8 @@ export const useApiPost = <TData, TVariables>(apiEndpoint: string, queryKey?: st
         },
 
         onSuccess: (result) => {
-            const { message, jwt } = result.data;
+            const { jwt } = result.data;
             // console.log('Succesfull sent data to the server:', result.data);
-            // toast.success(message);
             if (jwt) {
                 localStorage.setItem('jwt', JSON.stringify(jwt));
             }
