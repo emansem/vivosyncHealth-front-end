@@ -19,8 +19,8 @@ export default function DoctorSettings() {
     handleClosePasswordForm,
     isPasswordDialogOpen,
     isSubmittingPasswordForm,
-    isWithdrawalPassWordDialogOpen,
-    handleOnchangeAccountlPassword,
+    isWithdrawalPasswordDialogOpen,
+    handleOnchangeAccountPassword,
     submitAccountPasswordForm,
     submitWithdrawalPasswordForm,
     isSubmitWithdrawalForm,
@@ -89,7 +89,7 @@ export default function DoctorSettings() {
       <DailogForm
         isSubmitting={isSubmittingPasswordForm}
         onSubmit={submitAccountPasswordForm}
-        onChange={handleOnchangeAccountlPassword}
+        onChange={handleOnchangeAccountPassword}
         isOpen={isPasswordDialogOpen}
         onClose={handleClosePasswordForm}
         inputsFields={CHANGE_PASSWORD_INPUTS}
@@ -100,7 +100,7 @@ export default function DoctorSettings() {
         isSubmitting={isSubmitWithdrawalForm}
         onSubmit={submitWithdrawalPasswordForm}
         onChange={handleOnchangeWithdrawalPassword}
-        isOpen={isWithdrawalPassWordDialogOpen}
+        isOpen={isWithdrawalPasswordDialogOpen}
         onClose={handleCloseWithdrawalPasswordForm}
         inputsFields={CHANGE_WITHDRAWAL_PASSWORD}
         title="Update Withdrawal Password"
