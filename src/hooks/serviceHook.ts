@@ -19,6 +19,7 @@ export interface UserType {
     rating: number,
     num_reviews: number,
     balance?: number,
+    user_type? : string,
     user_id: string,
     // Location/Practice Info
     hospital_name: string;

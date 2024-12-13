@@ -4,6 +4,7 @@ import { formValidation } from "../helper/formValidation";
 import { LoginFormValue } from "@/app/lib/types";
 import { useApiPost } from "./serviceHook";
 import { USER_TYPES } from "@/app/lib/constant";
+import toast from "react-hot-toast";
 
 function useLoginForm() {
   const {
@@ -29,6 +30,8 @@ function useLoginForm() {
       onSuccess: (result) => {
         localStorage.setItem("jwt", JSON.stringify(result.data.jwt));
         reset();
+
+        toast.success(result.data.message);
 
         if (USER_TYPES.DOCTOR === result.data.user_type) {
           setTimeout(() => (window.location.href = "/doctor/dashboard"), 400);
