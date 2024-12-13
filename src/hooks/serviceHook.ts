@@ -19,7 +19,7 @@ export interface UserType {
     rating: number,
     num_reviews: number,
     balance?: number,
-    user_type? : string,
+    user_type?: string,
     user_id: string,
     // Location/Practice Info
     hospital_name: string;
@@ -78,7 +78,7 @@ export const useUpdateData = <TData, TVariables>(apiEndpoint: string, queryKey?:
         onSuccess: (result) => {
             if (result) {
                 console.log("Updated data", result.data)
-                toast.success(result.data.message)
+
             }
             queryClient.invalidateQueries({ queryKey: [queryKey] })
 
