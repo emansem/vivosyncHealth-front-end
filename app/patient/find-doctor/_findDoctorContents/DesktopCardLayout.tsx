@@ -46,7 +46,9 @@ const DesktopCardLayout: React.FC<{ doctor: UserType }> = ({ doctor }) => {
             <span className="text-gray-800 font-semibold">{doctor.rating}</span>
             <Star className="w-4 h-4 text-orange-400 ml-1" />
           </div>
-          <span className="text-gray-500">{doctor.num_reviews} reviews</span>
+          <span className="text-gray-500">
+            {doctor.num_reviews || 0} reviews
+          </span>
         </div>
       </div>
 

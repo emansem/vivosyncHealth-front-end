@@ -397,7 +397,9 @@ export const GENERAL_API_END_POINTS = {
     REQUEST_NEW_WITHDRAWAL: "withdrawal/request",
     GET_ALL_SUBSCRIPTION_DATA: '/subscriptions/all/doctor&patients',
     UPDATE_WITHDRAWAL_PASSWORD: "/settings/withdrawal/password",
-    UPDATE_ACCOUNT_PASSWORD: "/settings/account/password"
+    UPDATE_ACCOUNT_PASSWORD: "/settings/account/password",
+    GET_APPLICATION_META_DATA: '/meta-data/all'
+
 }
 
 export const WITHDRAWAL_FORM_INPUTS = [
