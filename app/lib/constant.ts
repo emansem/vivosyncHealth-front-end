@@ -1,6 +1,7 @@
 import { CreditCard, BadgeJapaneseYen, Wallet } from "lucide-react";
 import { PaymentMethod } from "../patient/checkout/[planId]/page";
 import { FormFields, OnboardingFormFields, SubscriptionData, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
+import { InputsProps } from "../doctor/settings/DailogForm";
 
 export const SOCKET_SERVER = 'http://localhost:5740/';
 
@@ -10,6 +11,23 @@ export const primary_color = "#269c65";
 export const PRIMARY_COLOR = `#269c65`;
 export const SECONDARY_COLOR = `#e8f5e9`;
 
+// Color constants using stone palette
+export const colors = {
+    primary: "#269c65",
+    secondary: "#e8f5e9",
+    stone: {
+        50: "#fafaf9",
+        100: "#f5f5f4",
+        200: "#e7e5e4",
+        300: "#d6d3d1",
+        400: "#a8a29e",
+        500: "#78716c",
+        600: "#57534e",
+        700: "#44403c",
+        800: "#292524",
+        900: "#1c1917"
+    }
+};
 
 // Total number of steps in the onboarding form
 export const TOTAL_FORM_STEPS = 3;
@@ -377,7 +395,9 @@ export const GENERAL_API_END_POINTS = {
     GET_LAST_SENT_MESSAGE: "/message/chat-room/last-sent",
     GET_ALL_TRANSACTIONS: "/transactions/all",
     REQUEST_NEW_WITHDRAWAL: "withdrawal/request",
-    GET_ALL_SUBSCRIPTION_DATA: '/subscriptions/all/doctor&patients'
+    GET_ALL_SUBSCRIPTION_DATA: '/subscriptions/all/doctor&patients',
+    UPDATE_WITHDRAWAL_PASSWORD: "/settings/withdrawal/password",
+    UPDATE_ACCOUNT_PASSWORD: "/settings/account/password"
 }
 
 export const WITHDRAWAL_FORM_INPUTS = [
@@ -436,5 +456,47 @@ export const TRANSACTION_FILTER_DATE_RANGE = [
     {
         label: "This Year",
         value: "year"
+    }
+];
+
+export const CHANGE_PASSWORD_INPUTS: InputsProps[] = [
+    {
+        label: "Current Password",
+        type: "password",
+        placeHolder: "Current password",
+        name: "currentPassword"
+    },
+    {
+        label: "New Password",
+        type: "password",
+        placeHolder: "New Password",
+        name: "newPassword"
+    },
+    {
+        label: "Repeat Password",
+        type: "password",
+        placeHolder: "Confirm New Password",
+        name: "repeatPassword"
+    }
+];
+
+export const CHANGE_WITHDRAWAL_PASSWORD: InputsProps[] = [
+    {
+        label: "Current Password",
+        type: "password",
+        placeHolder: "Current password",
+        name: "currentWithdrawalPassword"
+    },
+    {
+        label: "New Password",
+        type: "password",
+        placeHolder: "New Password",
+        name: "newWithdrawalPassword"
+    },
+    {
+        label: "Repeat Password",
+        type: "password",
+        placeHolder: "Confirm New Password",
+        name: "repeatWithdrawalPassword"
     }
 ];
