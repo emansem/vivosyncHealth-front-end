@@ -320,7 +320,7 @@ export const UPDATE_WITHDRAWAL_ACCOUNT_FIELDS = [
 // API endpoints for patient-related operations
 export const PATIENT_API_ENDPOINTS = {
     DOCTOR: {
-        getAllDoctors: "/patients/find-doctor?page=1&limit=10",
+        getAllDoctors: "/patients/find-doctor",
         getDoctor: "/patients/find-doctor",
         getDoctorPlan: "/patients/doctor/plans"
     },

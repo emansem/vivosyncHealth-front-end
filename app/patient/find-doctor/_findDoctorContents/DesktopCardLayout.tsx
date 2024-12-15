@@ -35,7 +35,7 @@ const DesktopCardLayout: React.FC<{ doctor: UserType }> = ({ doctor }) => {
 
         {/* Specialties tags */}
         <div className="flex flex-wrap gap-2 justify-center mb-3">
-          <span className="text-xs px-2 py-1 bg-primary_color/10 text-secondary_color rounded-full">
+          <span className="text-xs px-2 py-1 capitalize bg-primary_color/10 text-secondary_color rounded-full">
             {doctor.speciality}
           </span>
         </div>

@@ -38,12 +38,12 @@ interface MetadataApiResponse {
 }
 
 export const useFetchApplicationMetadata = () => {
-    const { data, error } = useGetData<MetadataApiResponse>(GENERAL_API_END_POINTS.GET_APPLICATION_META_DATA, 'generalData');
+    const { data, error, isLoading: isLoadingSpecialty } = useGetData<MetadataApiResponse>(GENERAL_API_END_POINTS.GET_APPLICATION_META_DATA, 'generalData');
     if (error && axios.isAxiosError(error)) {
         console.log("Error fetching meta data", error)
     }
     const specialties = data?.data.specialties
     const countries = data?.data.countries
     const availability = data?.data.availability
-    return { specialties, countries, availability }
+    return { specialties, isLoadingSpecialty, countries, availability }
 }
