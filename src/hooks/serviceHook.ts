@@ -29,6 +29,8 @@ export interface UserType {
     city: string;
     zip_code: string;
     working_days: string;
+    created_at?: Date | number | string,
+    upadted_at?: Date | number | string
 }
 export interface User {
     data: {

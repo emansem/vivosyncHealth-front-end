@@ -1,7 +1,19 @@
 import { subscriptionTableHeaders } from "@/app/lib/constant";
-import { SubscriptionTableProps } from "@/app/lib/types";
+import { SubscriptionData } from "@/app/lib/types";
+import PaginationButton from "@/src/components/utils/table/Pagination";
 import { formatDate, capitalizeFirstLetter } from "@/src/helper/helper";
 import { ChevronRight } from "lucide-react";
+
+interface SubscriptionTableProps {
+  handlePrevButton: () => void;
+  getPageNumber: (page: number) => void;
+  handleNextButton: () => void;
+  endIndex: number;
+  pageNumber: number;
+  totalResult: number;
+  pages: number[];
+  subscriptions: SubscriptionData[];
+}
 
 // Centralized styles object for the component
 export const styles = {
@@ -41,8 +53,17 @@ export const getStatusColor = (status: string) => {
   return statusColors[status as keyof typeof statusColors] || "";
 };
 export const SubscriptionTable = ({
-  subscriptions
+  subscriptions,
+  handleNextButton,
+  handlePrevButton,
+  endIndex,
+  pages,
+
+  totalResult,
+  getPageNumber,
+  pageNumber
 }: SubscriptionTableProps) => {
+  const showPagination = totalResult > 11;
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Subscription History</h2>
@@ -71,7 +92,7 @@ export const SubscriptionTable = ({
                 <td className={styles.cell.content}>
                   {subscription.doctor_id}
                 </td>
-                <td className={styles.cell.content}>
+                <td className={`capitalize ${styles.cell.content}`}>
                   {subscription.plan_type}
                 </td>
                 <td className={styles.cell.content}>
@@ -102,6 +123,17 @@ export const SubscriptionTable = ({
             ))}
           </tbody>
         </table>
+        {showPagination && (
+          <PaginationButton
+            pageNumber={pageNumber}
+            totalResult={totalResult}
+            result={endIndex}
+            handlePrevButton={handlePrevButton}
+            handleNextButton={handleNextButton}
+            getPageNumber={getPageNumber}
+            pages={pages}
+          />
+        )}
       </div>
     </div>
   );

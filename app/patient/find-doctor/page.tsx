@@ -18,7 +18,7 @@ import { useFetchApplicationMetadata } from "@/src/hooks/useFetchGeneralData";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 import SubmittingLoader from "@/src/components/ui/loading/SubmittingLoader";
 import NoResults from "@/src/components/ui/noFound/EmptyResult";
-import { Loader2 } from "lucide-react";
+import { InnerPageLoader } from "@/src/components/ui/loading/InnerPageLoader";
 
 // Main component
 const DoctorFinder: React.FC = () => {
@@ -155,17 +155,6 @@ const DoctorFinder: React.FC = () => {
             </div>
           ))}
       </div>
-    </div>
-  );
-};
-
-const InnerPageLoader = () => {
-  return (
-    <div className="flex  flex-col justify-center gap-1 items-center">
-      <Loader2 className="text-4xl text-secondary_color font-bold animate-spin" />
-      <span className="text-center text-text_color2 font-medium text-lg">
-        Loading..
-      </span>
     </div>
   );
 };

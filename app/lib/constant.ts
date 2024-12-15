@@ -336,6 +336,9 @@ export const PATIENT_API_ENDPOINTS = {
         getAllSubscription: "/patients/subscription/patient",
         getCurrentSubscription: "/patients/subscription/current/patient",
         updateSubscriptionStatus: "patients/subscription/current/patient/update"
+    },
+    PROFILE: {
+        getProfileDetails: "/patients/profile/all/details"
     }
 } as const;
 
@@ -500,5 +503,24 @@ export const CHANGE_WITHDRAWAL_PASSWORD: InputsProps[] = [
         type: "password",
         placeHolder: "Confirm New Password",
         name: "repeatWithdrawalPassword"
+    }
+];
+
+export const SUBSCRIPTION_FILTER_OPTIONS = [
+    {
+        label: "Select Status",
+        value: "all"
+    },
+    {
+        label: "Active",
+        value: "active"
+    },
+    {
+        label: "Expired",
+        value: "expired"
+    },
+    {
+        label: "Cancelled",
+        value: "cancelled"
     }
 ];

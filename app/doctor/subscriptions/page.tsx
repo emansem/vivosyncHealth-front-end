@@ -97,7 +97,7 @@ function SubscriptionPage() {
       {subscriptions?.length === 0 && <NoResults message={noResultsMessage} />}
 
       {/* Data Display Section */}
-      {subscriptions?.length !== 0 && (
+      {!isLoading && subscriptions?.length !== 0 && (
         <div>
           {/* Desktop View */}
           <div className="hidden md:block">
