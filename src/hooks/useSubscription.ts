@@ -12,6 +12,7 @@ interface SubscriptionPayment {
     payment_method: string
 }
 interface SubscriptionDataApiResponse {
+    totalResult: number,
     data: {
         subscription: SubscriptionData[]
     }
@@ -21,6 +22,18 @@ interface SubscriptionDataWithPlan {
         current_subscription: SubscriptionData,
         subscription_plans: SubscriptionPlanDataType[]
     }
+}
+
+export interface FilterValues {
+    status: string,
+    startDate: string,
+    endDate: string
+}
+
+const FILTER_VALUES_INITIAL_STATE: FilterValues = {
+    status: "all",
+    startDate: "",
+    endDate: ""
 }
 
 export const useSubscription = (planId: string, selectedMethod: string) => {
@@ -78,16 +91,29 @@ export const useSubscription = (planId: string, selectedMethod: string) => {
     }
 }
 
-export const useGetSubscriptionData = () => {
-    const { data, isLoading, error } = useGetData<SubscriptionDataApiResponse>
-        (PATIENT_API_ENDPOINTS.SUBSCRIPTION.getAllSubscription, "subscription")
+export const useGetSubscriptionData = (page: number) => {
+    const [filterValues, setFilterValues] = useState<FilterValues>(FILTER_VALUES_INITIAL_STATE);
 
-    console.log("Subscription data received from the api", data?.data?.subscription)
+    const subscriptionApiEndPoint = `${PATIENT_API_ENDPOINTS.SUBSCRIPTION.getAllSubscription}/?page=${page}&limit=${10}&status=${filterValues.status}&startDate=${filterValues.startDate}&endDate=${filterValues.endDate}`
+    const { data, isLoading, error } = useGetData<SubscriptionDataApiResponse>
+        (subscriptionApiEndPoint, "subscription")
+
+
+    const handleOnchange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+        const { name, value } = e.target
+        setFilterValues(prev => ({ ...prev, [name]: value }))
+    }
+
+    const handleResetFilter = () => {
+        setFilterValues(prev => ({ ...prev, status: 'Select Status', endDate: "", startDate: "" }))
+    }
+
+    console.log("Subscription filter", filterValues)
     if (error && axios.isAxiosError(error)) {
         console.log("Error", error.response?.data)
     }
 
-    return { subscriptionDetails: data?.data?.subscription, isLoading }
+    return { subscriptionDetails: data?.data?.subscription, isLoading, totalResult: data?.totalResult, filterValues, handleOnchange, handleResetFilter }
 }
 
 export const useManageSubscriptionData = (subscriptionId: string) => {
@@ -159,3 +185,4 @@ export const usePayWithAccountBalance = (planId: string) => {
     return { isLoading: isPending, handlePayment }
 
 }
+

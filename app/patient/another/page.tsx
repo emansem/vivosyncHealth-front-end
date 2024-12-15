@@ -3,21 +3,24 @@
 import React, { useState } from "react";
 import {
   User,
+  Clock,
   Calendar,
   DollarSign,
-  MessageSquare,
   Bell,
-  Award,
+  MessageSquare,
   Shield,
-  ChevronRight,
+  Award,
+  Settings,
+  Plus,
+  X,
   Camera,
-  X
+  AlertCircle,
+  ChevronRight
 } from "lucide-react";
 import { CardLayout } from "@/src/components/ui/layout/CardLayout";
 import ImageComponent from "@/src/components/utils/Image";
 import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
 
-// Colors constants
 const colors = {
   primary: "#269c65",
   secondary: "#e8f5e9",
@@ -35,633 +38,606 @@ const colors = {
   }
 };
 
-// Navigation Types
-type TabId =
-  | "profile"
-  | "schedule"
-  | "fees"
-  | "templates"
-  | "notifications"
-  | "certificates"
-  | "security";
-
-interface NavigationTab {
-  id: TabId;
-  label: string;
-  icon: React.ElementType;
-}
-
-// Profile Types
-interface DoctorProfile {
-  id: string;
-  photoUrl: string;
-  personalInfo: PersonalInfo;
-  professionalInfo: ProfessionalInfo;
-  languages: Language[];
-  contactInfo: ContactInfo;
-}
-
-interface PersonalInfo {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dateOfBirth: string;
-  gender: "male" | "female" | "other";
-}
-
-interface ProfessionalInfo {
-  title: string;
-  specialization: string;
-  licenseNumber: string;
-  experience: number;
-  qualifications: string[];
-  biography: string;
-}
-
-interface Language {
-  id: string;
-  name: string;
-  proficiency: "basic" | "intermediate" | "fluent" | "native";
-}
-
-interface ContactInfo {
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postalCode: string;
-}
-
-// Schedule Types
-interface WeeklySchedule {
-  [key: string]: DaySchedule;
-}
-
-interface DaySchedule {
-  isWorking: boolean;
-  shifts: TimeSlot[];
-  breaks: TimeSlot[];
-}
-
-interface TimeSlot {
-  start: string;
-  end: string;
-}
-
-interface EmergencyAvailability {
-  isAvailable: boolean;
-  responseTime: "15" | "30" | "60";
-  additionalFee: number;
-}
-
-interface AppointmentSettings {
-  defaultDuration: 15 | 30 | 45 | 60;
-  bufferTime: 5 | 10 | 15 | 20;
-  maxDailyAppointments: number;
-}
-
-// Fees Types
-interface ConsultationFees {
-  videoConsultation: Fee;
-  inPerson: Fee;
-  emergency: Fee;
-  followUp: Fee;
-}
-
-interface Fee {
-  amount: number;
-  currency: string;
-  description?: string;
-}
-
-interface Discount {
-  id: string;
-  name: string;
-  type: "percentage" | "fixed";
-  value: number;
-  startDate?: string;
-  endDate?: string;
-  isActive: boolean;
-  applicableTo: ("video" | "inPerson" | "emergency" | "followUp")[];
-}
-
-interface Package {
-  id: string;
-  name: string;
-  sessions: number;
-  validityDays: number;
-  price: number;
-  savings: number;
-  isActive: boolean;
-}
-
-// Message Template Types
-interface MessageTemplate {
-  id: string;
-  title: string;
-  content: string;
-  type: "appointment" | "reminder" | "followUp" | "prescription" | "custom";
-  variables: string[];
-  isActive: boolean;
-}
-
-// Notification Types
-interface NotificationPreferences {
-  appointments: NotificationChannel;
-  reminders: NotificationChannel;
-  payments: NotificationChannel;
-  reviews: NotificationChannel;
-  emergencies: NotificationChannel;
-}
-
-interface NotificationChannel {
-  email: boolean;
-  sms: boolean;
-  push: boolean;
-  whatsapp: boolean;
-}
-
-// Certificate Types
-interface Certificate {
-  id: string;
-  name: string;
-  issuedBy: string;
-  issuedDate: string;
-  expiryDate?: string;
-  documentUrl: string;
-  verificationUrl?: string;
-  type: "degree" | "license" | "certification" | "award";
-  status: "active" | "expired" | "pending";
-}
-
-// Security Types
-interface SecuritySettings {
-  password: {
-    lastChanged: string;
-    requiresChange: boolean;
-  };
-  twoFactorAuth: {
-    isEnabled: boolean;
-    method: "app" | "sms" | "email";
-    lastVerified: string;
-  };
-  sessions: Session[];
-  loginHistory: LoginRecord[];
-}
-
-interface Session {
-  id: string;
-  device: string;
-  browser: string;
-  location: string;
-  ip: string;
-  lastActive: string;
-  isCurrent: boolean;
-}
-
-interface LoginRecord {
-  id: string;
-  timestamp: string;
-  status: "success" | "failed";
-  ip: string;
-  location: string;
-  device: string;
-}
-
-// File Upload Types
-interface FileUpload {
-  file: File;
-  progress: number;
-  error?: string;
-  uploadedUrl?: string;
-}
-
-// Response Types for API Integration
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-// Form States
-interface FormState {
-  isEditing: boolean;
-  isSubmitting: boolean;
-  hasChanges: boolean;
-  error?: string;
-}
-
-// Export all types
-export type {
-  TabId,
-  NavigationTab,
-  DoctorProfile,
-  PersonalInfo,
-  ProfessionalInfo,
-  Language,
-  ContactInfo,
-  WeeklySchedule,
-  DaySchedule,
-  TimeSlot,
-  EmergencyAvailability,
-  AppointmentSettings,
-  ConsultationFees,
-  Fee,
-  Discount,
-  Package,
-  MessageTemplate,
-  NotificationPreferences,
-  NotificationChannel,
-  Certificate,
-  SecuritySettings,
-  Session,
-  LoginRecord,
-  FileUpload,
-  ApiResponse,
-  FormState
-};
-
-("use client");
-
-import React, { useState, useRef } from "react";
-import {
-  User,
-  Calendar,
-  DollarSign,
-  MessageSquare,
-  Bell,
-  Award,
-  Shield,
-  ChevronRight,
-  Camera,
-  X,
-  Plus,
-  Check
-} from "lucide-react";
-import { CardLayout } from "@/src/components/ui/layout/CardLayout";
-import ImageComponent from "@/src/components/utils/Image";
-import PrimaryButton from "@/src/components/ui/button/PrimaryButton";
-
-// [Previous types remain the same...]
-
-// Reusable Components
-const Input = ({
-  label,
-  value,
-  onChange,
-  disabled,
-  type = "text",
-  error,
-  required = false
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-  type?: string;
-  error?: string;
-  required?: boolean;
-}) => (
-  <div>
-    <label className="block text-sm font-medium text-stone-700 mb-2">
-      {label}
-      {required && <span className="text-red-500 ml-1">*</span>}
-    </label>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      disabled={disabled}
-      className={`w-full p-3 rounded-xl border ${
-        error ? "border-red-300" : "border-stone-200"
-      } disabled:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-primary/20`}
-      style={{ borderColor: error ? undefined : "#e7e5e4" }}
-    />
-    {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-  </div>
-);
-
-// Profile Photo Component
-const ProfilePhoto = ({
-  currentPhotoUrl,
-  onPhotoChange,
-  disabled
-}: {
-  currentPhotoUrl: string;
-  onPhotoChange: (file: File) => void;
-  disabled?: boolean;
-}) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState(currentPhotoUrl);
-  const [error, setError] = useState("");
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validation
-    if (!file.type.startsWith("image/")) {
-      setError("Please select an image file");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image must be smaller than 5MB");
-      return;
-    }
-
-    // Create preview
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
-    setError("");
-    onPhotoChange(file);
-
-    // Cleanup
-    return () => URL.revokeObjectURL(objectUrl);
-  };
+// Navigation tabs for doctor settings
+const SettingsNavigation = ({ activeTab, setActiveTab }) => {
+  const tabs = [
+    { id: "profile", label: "Professional Profile", icon: User },
+    { id: "schedule", label: "Schedule & Availability", icon: Calendar },
+    { id: "fees", label: "Fees & Discounts", icon: DollarSign },
+    { id: "templates", label: "Message Templates", icon: MessageSquare },
+    { id: "notifications", label: "Notifications", icon: Bell },
+    { id: "credentials", label: "Credentials", icon: Award },
+    { id: "security", label: "Security", icon: Shield }
+  ];
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="relative">
-        <div className="w-24 h-24 rounded-full overflow-hidden">
-          <ImageComponent
-            imageStyle="w-full h-full object-cover"
-            altAttribute="Profile"
-            imageUrl={previewUrl || "/placeholder-profile.png"}
-          />
-        </div>
-        {!disabled && (
-          <>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-0 right-0 p-2 rounded-full"
-              style={{ backgroundColor: colors.primary }}
-            >
-              <Camera className="w-4 h-4 text-white" />
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileSelect}
-            />
-          </>
-        )}
-      </div>
-      <div>
-        <h3 className="font-medium text-stone-800">Profile Photo</h3>
-        {error ? (
-          <p className="text-sm text-red-500">{error}</p>
-        ) : (
-          <p className="text-sm text-stone-500">JPG, PNG or GIF (max. 5MB)</p>
-        )}
-      </div>
+    <div className="bg-white rounded-3xl p-4">
+      <nav>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`w-full flex items-center justify-between p-4 rounded-xl text-left transition-colors ${
+              activeTab === tab.id ? "bg-secondary" : "hover:bg-stone-50"
+            }`}
+            style={{
+              color: activeTab === tab.id ? colors.primary : colors.stone[700]
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <tab.icon className="w-5 h-5" />
+              <span className="font-medium">{tab.label}</span>
+            </div>
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        ))}
+      </nav>
     </div>
   );
 };
 
-// Language Selection Component
-const LanguageSelector = ({
-  languages,
-  onAdd,
-  onRemove,
-  disabled
-}: {
-  languages: Language[];
-  onAdd: (language: Language) => void;
-  onRemove: (id: string) => void;
-  disabled?: boolean;
-}) => {
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [newLanguage, setNewLanguage] = useState<Partial<Language>>({
-    name: "",
-    proficiency: "intermediate"
+// Schedule Management Section
+const ScheduleSection = () => {
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+  ];
+  const [workingDays, setWorkingDays] = useState({
+    Monday: true,
+    Tuesday: true,
+    Wednesday: true,
+    Thursday: true,
+    Friday: true,
+    Saturday: false,
+    Sunday: false
+  });
+  const [timeSlots, setTimeSlots] = useState({
+    Monday: {
+      start: "09:00",
+      end: "17:00",
+      breakStart: "13:00",
+      breakEnd: "14:00"
+    },
+    Tuesday: {
+      start: "09:00",
+      end: "17:00",
+      breakStart: "13:00",
+      breakEnd: "14:00"
+    },
+    Wednesday: {
+      start: "09:00",
+      end: "17:00",
+      breakStart: "13:00",
+      breakEnd: "14:00"
+    },
+    Thursday: {
+      start: "09:00",
+      end: "17:00",
+      breakStart: "13:00",
+      breakEnd: "14:00"
+    },
+    Friday: {
+      start: "09:00",
+      end: "17:00",
+      breakStart: "13:00",
+      breakEnd: "14:00"
+    },
+    Saturday: { start: "09:00", end: "13:00", breakStart: "", breakEnd: "" },
+    Sunday: { start: "", end: "", breakStart: "", breakEnd: "" }
   });
 
-  const handleAdd = () => {
-    if (!newLanguage.name || !newLanguage.proficiency) return;
-
-    onAdd({
-      id: Date.now().toString(),
-      name: newLanguage.name,
-      proficiency: newLanguage.proficiency!
-    });
-
-    setNewLanguage({ name: "", proficiency: "intermediate" });
-    setShowAddDialog(false);
-  };
-
   return (
-    <div>
-      <label className="block text-sm font-medium text-stone-700 mb-2">
-        Languages
-      </label>
-      <div className="flex flex-wrap gap-2">
-        {languages.map((lang) => (
-          <div
-            key={lang.id}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100"
-          >
-            <span className="text-sm text-stone-600">{lang.name}</span>
-            <span className="text-xs text-stone-500">({lang.proficiency})</span>
-            {!disabled && (
-              <button
-                onClick={() => onRemove(lang.id)}
-                className="text-stone-400 hover:text-stone-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        ))}
-        {!disabled && (
-          <button
-            onClick={() => setShowAddDialog(true)}
-            className="px-3 py-1.5 rounded-full border border-dashed border-stone-300 text-sm text-stone-500 hover:border-stone-400"
-          >
-            + Add Language
-          </button>
-        )}
-      </div>
+    <div className="bg-white rounded-3xl p-6">
+      <h2 className="text-xl font-bold text-stone-800 mb-6">
+        Schedule & Availability
+      </h2>
 
-      {showAddDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-stone-800 mb-4">
-              Add Language
-            </h3>
-            <div className="space-y-4">
-              <Input
-                label="Language Name"
-                value={newLanguage.name || ""}
-                onChange={(value) =>
-                  setNewLanguage({ ...newLanguage, name: value })
-                }
-                required
+      <div className="space-y-6">
+        {/* Regular Schedule */}
+        <div>
+          <h3 className="font-medium text-stone-800 mb-4">
+            Regular Working Hours
+          </h3>
+          <div className="space-y-4">
+            {daysOfWeek.map((day) => (
+              <div key={day} className="p-4 rounded-xl bg-stone-50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={workingDays[day]}
+                      onChange={(e) =>
+                        setWorkingDays({
+                          ...workingDays,
+                          [day]: e.target.checked
+                        })
+                      }
+                      className="rounded border-stone-300 text-primary"
+                    />
+                    <span className="font-medium text-stone-800">{day}</span>
+                  </div>
+                </div>
+
+                {workingDays[day] && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-stone-700">
+                        Working Hours
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="time"
+                          value={timeSlots[day].start}
+                          onChange={(e) =>
+                            setTimeSlots({
+                              ...timeSlots,
+                              [day]: {
+                                ...timeSlots[day],
+                                start: e.target.value
+                              }
+                            })
+                          }
+                          className="p-2 rounded-lg border border-stone-200"
+                        />
+                        <span className="text-stone-500">to</span>
+                        <input
+                          type="time"
+                          value={timeSlots[day].end}
+                          onChange={(e) =>
+                            setTimeSlots({
+                              ...timeSlots,
+                              [day]: { ...timeSlots[day], end: e.target.value }
+                            })
+                          }
+                          className="p-2 rounded-lg border border-stone-200"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-stone-700">
+                        Break Time
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="time"
+                          value={timeSlots[day].breakStart}
+                          onChange={(e) =>
+                            setTimeSlots({
+                              ...timeSlots,
+                              [day]: {
+                                ...timeSlots[day],
+                                breakStart: e.target.value
+                              }
+                            })
+                          }
+                          className="p-2 rounded-lg border border-stone-200"
+                        />
+                        <span className="text-stone-500">to</span>
+                        <input
+                          type="time"
+                          value={timeSlots[day].breakEnd}
+                          onChange={(e) =>
+                            setTimeSlots({
+                              ...timeSlots,
+                              [day]: {
+                                ...timeSlots[day],
+                                breakEnd: e.target.value
+                              }
+                            })
+                          }
+                          className="p-2 rounded-lg border border-stone-200"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Emergency Hours Section */}
+        <div
+          className="p-4 rounded-xl bg-stone-50 border-l-4"
+          style={{ borderColor: colors.primary }}
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-medium text-stone-800">
+                Emergency Availability
+              </h3>
+              <p className="text-sm text-stone-500 mt-1">
+                Set your availability for emergency consultations outside
+                regular hours
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                className="rounded border-stone-300 text-primary"
               />
+              <span className="text-sm font-medium text-stone-700">
+                Available for emergencies
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4 p-4 rounded-lg bg-white">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-stone-700 mb-2">
-                  Proficiency Level
+                  Emergency Fee (Additional)
                 </label>
-                <select
-                  value={newLanguage.proficiency}
-                  onChange={(e) =>
-                    setNewLanguage({
-                      ...newLanguage,
-                      proficiency: e.target.value as Language["proficiency"]
-                    })
-                  }
-                  className="w-full p-3 rounded-xl border border-stone-200"
-                >
-                  <option value="basic">Basic</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="fluent">Fluent</option>
-                  <option value="native">Native</option>
-                </select>
+                <div className="flex items-center">
+                  <span className="px-3 py-2 bg-stone-100 border border-stone-200 rounded-l-lg text-stone-600">
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    placeholder="100"
+                    className="flex-1 p-2 border border-l-0 border-stone-200 rounded-r-lg"
+                  />
+                </div>
               </div>
-              <div className="flex justify-end gap-2 mt-6">
-                <button
-                  onClick={() => setShowAddDialog(false)}
-                  className="px-4 py-2 text-stone-600"
-                >
-                  Cancel
-                </button>
-                <PrimaryButton
-                  onClick={handleAdd}
-                  disabled={!newLanguage.name}
-                  backgroud
-                  color="text-white"
-                >
-                  Add Language
-                </PrimaryButton>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-2">
+                  Response Time
+                </label>
+                <select className="w-full p-2 border border-stone-200 rounded-lg">
+                  <option>Within 15 minutes</option>
+                  <option>Within 30 minutes</option>
+                  <option>Within 1 hour</option>
+                </select>
               </div>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Appointment Duration */}
+        <div>
+          <h3 className="font-medium text-stone-800 mb-4">
+            Appointment Settings
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                Default Appointment Duration
+              </label>
+              <select className="w-full p-3 rounded-xl border border-stone-200">
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60">1 hour</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                Buffer Time Between Appointments
+              </label>
+              <select className="w-full p-3 rounded-xl border border-stone-200">
+                <option value="5">5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="15">15 minutes</option>
+                <option value="20">20 minutes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <PrimaryButton backgroud color="text-white">
+            Save Schedule
+          </PrimaryButton>
+        </div>
+      </div>
     </div>
   );
 };
 
-// Profile Section Component
+// Fees and Discounts Section
+const FeesSection = () => {
+  return (
+    <div className="bg-white rounded-3xl p-6">
+      <h2 className="text-xl font-bold text-stone-800 mb-6">
+        Fees & Discounts
+      </h2>
+
+      <div className="space-y-6">
+        {/* Regular Consultation Fees */}
+        <div className="p-4 rounded-xl bg-stone-50">
+          <h3 className="font-medium text-stone-800 mb-4">Consultation Fees</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                Video Consultation Fee
+              </label>
+              <div className="flex items-center">
+                <span className="px-3 py-2 bg-stone-100 border border-stone-200 rounded-l-lg text-stone-600">
+                  $
+                </span>
+                <input
+                  type="number"
+                  placeholder="100"
+                  className="flex-1 p-2 border border-l-0 border-stone-200 rounded-r-lg"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                In-Person Consultation Fee
+              </label>
+              <div className="flex items-center">
+                <span className="px-3 py-2 bg-stone-100 border border-stone-200 rounded-l-lg text-stone-600">
+                  $
+                </span>
+                <input
+                  type="number"
+                  placeholder="150"
+                  className="flex-1 p-2 border border-l-0 border-stone-200 rounded-r-lg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Discount Settings */}
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-medium text-stone-800">Discount Programs</h3>
+            <button
+              className="flex items-center gap-2 text-sm font-medium"
+              style={{ color: colors.primary }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Discount
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              { name: "Senior Citizens", discount: "20%", status: "active" },
+              { name: "Children under 12", discount: "15%", status: "active" },
+              {
+                name: "New Patient Special",
+                discount: "10%",
+                status: "inactive"
+              }
+            ].map((discount, i) => (
+              <div
+                key={i}
+                className="p-4 rounded-xl bg-stone-50 flex justify-between items-center"
+              >
+                <div>
+                  <h4 className="font-medium text-stone-800">
+                    {discount.name}
+                  </h4>
+                  <p className="text-sm text-stone-500">
+                    {discount.discount} off regular fee
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      discount.status === "active"
+                        ? "bg-secondary text-primary"
+                        : "bg-stone-200 text-stone-600"
+                    }`}
+                  >
+                    {discount.status}
+                  </div>
+                  <button className="text-stone-400 hover:text-stone-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Package Rates */}
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-medium text-stone-800">Package Rates</h3>
+            <button
+              className="flex items-center gap-2 text-sm font-medium"
+              style={{ color: colors.primary }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Package
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              {
+                name: "3 Sessions Package",
+                price: "$250",
+                savings: "Save 15%"
+              },
+              { name: "5 Sessions Package", price: "$400", savings: "Save 20%" }
+            ].map((package_, i) => (
+              <div
+                key={i}
+                className="p-4 rounded-xl bg-stone-50 flex justify-between items-center"
+              >
+                <div>
+                  <h4 className="font-medium text-stone-800">
+                    {package_.name}
+                  </h4>
+                  <p className="text-sm text-stone-500">
+                    {package_.price} - {package_.savings}
+                  </p>
+                </div>
+                <button className="text-stone-400 hover:text-stone-600">
+                  <Settings className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <PrimaryButton backgroud color="text-white">
+            Save Fee Settings
+          </PrimaryButton>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Message Templates Section
+const TemplatesSection = () => {
+  return (
+    <div className="bg-white rounded-3xl p-6">
+      <h2 className="text-xl font-bold text-stone-800 mb-6">
+        Message Templates
+      </h2>
+
+      <div className="space-y-6">
+        {/* Appointment Templates */}
+        <div>
+          <h3 className="font-medium text-stone-800 mb-4">
+            Appointment Messages
+          </h3>
+          <div className="space-y-4">
+            {[
+              {
+                title: "Appointment Confirmation",
+                template:
+                  "Dear [Patient Name], Your appointment is confirmed for [Date] at [Time]."
+              },
+              {
+                title: "Appointment Reminder",
+                template:
+                  "Reminder: You have an appointment tomorrow at [Time]."
+              },
+              {
+                title: "Follow-up Message",
+                template:
+                  "Thank you for your visit. Here are your follow-up instructions: [Instructions]"
+              }
+            ].map((template, i) => (
+              <div key={i} className="p-4 rounded-xl bg-stone-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h4 className="font-medium text-stone-800">
+                    {template.title}
+                  </h4>
+                  <button
+                    className="text-sm font-medium"
+                    style={{ color: colors.primary }}
+                  >
+                    Edit
+                  </button>
+                </div>
+                <textarea
+                  defaultValue={template.template}
+                  rows={3}
+                  className="w-full p-3 rounded-lg border border-stone-200 bg-white"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Newsletter Templates */}
+        <div>
+          <h3 className="font-medium text-stone-800 mb-4">
+            Newsletter Templates
+          </h3>
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-stone-50">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h4 className="font-medium text-stone-800">
+                    Monthly Health Tips
+                  </h4>
+                  <p className="text-sm text-stone-500">
+                    Sent on the 1st of every month
+                  </p>
+                </div>
+                <button
+                  className="text-sm font-medium"
+                  style={{ color: colors.primary }}
+                >
+                  Edit
+                </button>
+              </div>
+              <textarea
+                defaultValue="Dear [Patient Name], Here are this month's health tips..."
+                rows={4}
+                className="w-full p-3 rounded-lg border border-stone-200 bg-white"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Custom Templates */}
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-medium text-stone-800">Custom Templates</h3>
+            <button
+              className="flex items-center gap-2 text-sm font-medium"
+              style={{ color: colors.primary }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Template
+            </button>
+          </div>
+
+          <div className="p-4 rounded-xl bg-stone-50 border border-dashed border-stone-300">
+            <p className="text-center text-stone-500">
+              Create custom message templates for specific purposes
+            </p>
+          </div>
+        </div>
+
+        {/* Available Variables */}
+        <div className="p-4 rounded-xl bg-stone-50">
+          <h3 className="font-medium text-stone-800 mb-2">
+            Available Variables
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {[
+              "[Patient Name]",
+              "[Date]",
+              "[Time]",
+              "[Doctor Name]",
+              "[Clinic Name]",
+              "[Instructions]"
+            ].map((variable, i) => (
+              <span
+                key={i}
+                className="px-2 py-1 rounded-lg bg-white border border-stone-200 text-sm text-stone-600"
+              >
+                {variable}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <PrimaryButton backgroud color="text-white">
+            Save Templates
+          </PrimaryButton>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Professional Profile Section
 const ProfileSection = () => {
-  // Form state
   const [isEditing, setIsEditing] = useState(false);
-  const [formState, setFormState] = useState<{
-    personalInfo: PersonalInfo;
-    professionalInfo: ProfessionalInfo;
-    languages: Language[];
-    contactInfo: ContactInfo;
-    photoUrl: string;
-  }>({
-    personalInfo: {
-      firstName: "John",
-      lastName: "Smith",
-      email: "john.smith@example.com",
-      phone: "+1 (555) 123-4567",
-      dateOfBirth: "1980-01-01",
-      gender: "male"
-    },
-    professionalInfo: {
-      title: "Dr.",
-      specialization: "Cardiologist",
-      licenseNumber: "MD12345",
-      experience: 15,
-      qualifications: ["MBBS", "MD Cardiology"],
-      biography:
-        "Board-certified cardiologist with over 15 years of experience..."
-    },
-    languages: [
-      { id: "1", name: "English", proficiency: "native" },
-      { id: "2", name: "Spanish", proficiency: "fluent" }
-    ],
-    contactInfo: {
-      address: "123 Medical Plaza",
-      city: "New York",
-      state: "NY",
-      country: "USA",
-      postalCode: "10001"
-    },
-    photoUrl: ""
-  });
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  // Handlers
-  const handlePhotoChange = (file: File) => {
-    // Handle photo upload
-    // For now, just create an object URL
-    const url = URL.createObjectURL(file);
-    setFormState((prev) => ({ ...prev, photoUrl: url }));
-  };
-
-  const handleInputChange = (
-    section: keyof typeof formState,
-    field: string,
-    value: any
-  ) => {
-    setFormState((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value
-      }
-    }));
-    // Clear error for this field if exists
-    if (errors[`${section}.${field}`]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[`${section}.${field}`];
-        return newErrors;
-      });
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    // Required fields validation
-    const requiredFields = {
-      "personalInfo.firstName": "First name is required",
-      "personalInfo.lastName": "Last name is required",
-      "personalInfo.email": "Email is required",
-      "professionalInfo.title": "Title is required",
-      "professionalInfo.specialization": "Specialization is required",
-      "professionalInfo.licenseNumber": "License number is required"
-    };
-
-    Object.entries(requiredFields).forEach(([field, message]) => {
-      const [section, key] = field.split(".");
-      if (!formState[section as keyof typeof formState][key]) {
-        newErrors[field] = message;
-      }
-    });
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (
-      formState.personalInfo.email &&
-      !emailRegex.test(formState.personalInfo.email)
-    ) {
-      newErrors["personalInfo.email"] = "Invalid email format";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSave = () => {
-    if (!validateForm()) return;
-
-    // Save changes
-    setIsEditing(false);
-    // Here you would typically make an API call to save the changes
-  };
 
   return (
     <div className="bg-white rounded-3xl p-6">
@@ -670,7 +646,7 @@ const ProfileSection = () => {
           Professional Profile
         </h2>
         <button
-          onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
+          onClick={() => setIsEditing(!isEditing)}
           className="text-sm font-medium"
           style={{ color: colors.primary }}
         >
@@ -678,129 +654,76 @@ const ProfileSection = () => {
         </button>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Profile Photo */}
-        <ProfilePhoto
-          currentPhotoUrl={formState.photoUrl}
-          onPhotoChange={handlePhotoChange}
-          disabled={!isEditing}
-        />
-
-        {/* Personal Information */}
-        <div>
-          <h3 className="font-medium text-stone-800 mb-4">
-            Personal Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="First Name"
-              value={formState.personalInfo.firstName}
-              onChange={(value) =>
-                handleInputChange("personalInfo", "firstName", value)
-              }
-              disabled={!isEditing}
-              error={errors["personalInfo.firstName"]}
-              required
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <ImageComponent
+              imageStyle="w-24 h-24 rounded-full"
+              altAttribute="Profile"
+              imageUrl=""
             />
-            <Input
-              label="Last Name"
-              value={formState.personalInfo.lastName}
-              onChange={(value) =>
-                handleInputChange("personalInfo", "lastName", value)
-              }
-              disabled={!isEditing}
-              error={errors["personalInfo.lastName"]}
-              required
-            />
-            <Input
-              label="Email"
-              type="email"
-              value={formState.personalInfo.email}
-              onChange={(value) =>
-                handleInputChange("personalInfo", "email", value)
-              }
-              disabled={!isEditing}
-              error={errors["personalInfo.email"]}
-              required
-            />
-            <Input
-              label="Phone"
-              type="tel"
-              value={formState.personalInfo.phone}
-              onChange={(value) =>
-                handleInputChange("personalInfo", "phone", value)
-              }
-              disabled={!isEditing}
-              error={errors["personalInfo.phone"]}
-            />
+            <button
+              className="absolute bottom-0 right-0 p-2 rounded-full"
+              style={{ backgroundColor: colors.primary }}
+            >
+              <Camera className="w-4 h-4 text-white" />
+            </button>
+          </div>
+          <div>
+            <h3 className="font-medium text-stone-800">Profile Photo</h3>
+            <p className="text-sm text-stone-500">
+              Professional headshot recommended
+            </p>
           </div>
         </div>
 
-        {/* Professional Information */}
-        <div>
-          <h3 className="font-medium text-stone-800 mb-4">
-            Professional Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="Title"
-              value={formState.professionalInfo.title}
-              onChange={(value) =>
-                handleInputChange("professionalInfo", "title", value)
-              }
+        {/* Basic Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              defaultValue="Dr. John Smith"
               disabled={!isEditing}
-              error={errors["professionalInfo.title"]}
-              required
-            />
-            <Input
-              label="Specialization"
-              value={formState.professionalInfo.specialization}
-              onChange={(value) =>
-                handleInputChange("professionalInfo", "specialization", value)
-              }
-              disabled={!isEditing}
-              error={errors["professionalInfo.specialization"]}
-              required
-            />
-            <Input
-              label="License Number"
-              value={formState.professionalInfo.licenseNumber}
-              onChange={(value) =>
-                handleInputChange("professionalInfo", "licenseNumber", value)
-              }
-              disabled={!isEditing}
-              error={errors["professionalInfo.licenseNumber"]}
-              required
-            />
-            <Input
-              label="Years of Experience"
-              type="number"
-              value={formState.professionalInfo.experience.toString()}
-              onChange={(value) =>
-                handleInputChange(
-                  "professionalInfo",
-                  "experience",
-                  parseInt(value) || 0
-                )
-              }
-              disabled={!isEditing}
+              className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
             />
           </div>
-          <div className="mt-4">
+
+          <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Professional Biography
+              Specialization
             </label>
-            <textarea
-              value={formState.professionalInfo.biography}
-              onChange={(e) =>
-                handleInputChange(
-                  "professionalInfo",
-                  "biography",
-                  e.target.value
-                )
-              }
+            <input
+              type="text"
+              defaultValue="Cardiologist"
               disabled={!isEditing}
-              rows={4}
+              className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              License Number
+            </label>
+            <input
+              type="text"
+              defaultValue="MD12345"
+              disabled={!isEditing}
+              className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              Years of Experience
+            </label>
+            <input
+              type="number"
+              defaultValue="15"
+              disabled={!isEditing}
               className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
             />
           </div>
@@ -812,88 +735,78 @@ const ProfileSection = () => {
             Contact Information
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
-              <Input
-                label="Address"
-                value={formState.contactInfo.address}
-                onChange={(value) =>
-                  handleInputChange("contactInfo", "address", value)
-                }
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                defaultValue="dr.smith@example.com"
                 disabled={!isEditing}
+                className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
               />
             </div>
-            <Input
-              label="City"
-              value={formState.contactInfo.city}
-              onChange={(value) =>
-                handleInputChange("contactInfo", "city", value)
-              }
-              disabled={!isEditing}
-            />
-            <Input
-              label="State/Province"
-              value={formState.contactInfo.state}
-              onChange={(value) =>
-                handleInputChange("contactInfo", "state", value)
-              }
-              disabled={!isEditing}
-            />
-            <Input
-              label="Country"
-              value={formState.contactInfo.country}
-              onChange={(value) =>
-                handleInputChange("contactInfo", "country", value)
-              }
-              disabled={!isEditing}
-            />
-            <Input
-              label="Postal Code"
-              value={formState.contactInfo.postalCode}
-              onChange={(value) =>
-                handleInputChange("contactInfo", "postalCode", value)
-              }
-              disabled={!isEditing}
-            />
+
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                Phone
+              </label>
+              <input
+                type="tel"
+                defaultValue="+1 (555) 123-4567"
+                disabled={!isEditing}
+                className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                Office Address
+              </label>
+              <textarea
+                rows={3}
+                defaultValue="123 Medical Center Drive, Suite 100, City, State 12345"
+                disabled={!isEditing}
+                className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+              />
+            </div>
           </div>
+        </div>
+
+        {/* Professional Bio */}
+        <div>
+          <label className="block text-sm font-medium text-stone-700 mb-2">
+            Professional Biography
+          </label>
+          <textarea
+            rows={6}
+            defaultValue="Board-certified cardiologist with over 15 years of experience..."
+            disabled={!isEditing}
+            className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+          />
         </div>
 
         {/* Languages */}
         <div>
-          <LanguageSelector
-            languages={formState.languages}
-            onAdd={(language) =>
-              setFormState((prev) => ({
-                ...prev,
-                languages: [...prev.languages, language]
-              }))
-            }
-            onRemove={(id) =>
-              setFormState((prev) => ({
-                ...prev,
-                languages: prev.languages.filter((lang) => lang.id !== id)
-              }))
-            }
-            disabled={!isEditing}
-          />
-        </div>
-
-        {/* Form Actions */}
-        {isEditing && (
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={() => {
-                setIsEditing(false);
-                setErrors({});
-              }}
-              className="px-6 py-2 rounded-xl text-stone-600 hover:bg-stone-50"
-            >
-              Cancel
-            </button>
-            <PrimaryButton onClick={handleSave} backgroud color="text-white">
-              Save Changes
-            </PrimaryButton>
+          <label className="block text-sm font-medium text-stone-700 mb-2">
+            Languages Spoken
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {["English", "Spanish", "French"].map((lang, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 rounded-full text-sm bg-stone-100 text-stone-600"
+              >
+                {lang}
+              </span>
+            ))}
+            {isEditing && (
+              <button className="px-3 py-1 rounded-full text-sm border border-dashed border-stone-300 text-stone-500">
+                + Add Language
+              </button>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -901,13 +814,18 @@ const ProfileSection = () => {
 
 // Main Settings Page Component
 const DoctorSettingsPage = () => {
-  const [activeTab, setActiveTab] = useState<TabId>("profile");
+  const [activeTab, setActiveTab] = useState("profile");
 
   const renderContent = () => {
     switch (activeTab) {
       case "profile":
         return <ProfileSection />;
-      // Add other sections here
+      case "schedule":
+        return <ScheduleSection />;
+      case "fees":
+        return <FeesSection />;
+      case "templates":
+        return <TemplatesSection />;
       default:
         return <ProfileSection />;
     }
@@ -928,7 +846,7 @@ const DoctorSettingsPage = () => {
             <div className="sticky top-6">
               <SettingsNavigation
                 activeTab={activeTab}
-                onTabChange={setActiveTab}
+                setActiveTab={setActiveTab}
               />
             </div>
           </div>
