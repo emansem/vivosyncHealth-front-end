@@ -96,3 +96,24 @@ td {
 .label {
   @apply text-lg text-text_color2 font-medium select-none;
 }
+
+/* Add this to your CSS */
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #999;
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  background: #269c65;
+}
+
+/* Add margin at the bottom for pagination dots */
+.swiper {
+  padding-bottom: 40px !important;
+}
+
+.swiper-pagination {
+  bottom: 0 !important;
+}
