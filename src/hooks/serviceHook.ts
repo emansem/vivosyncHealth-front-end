@@ -28,6 +28,9 @@ export interface UserType {
     state: string;
     city: string;
     zip_code: string;
+    gender?: "male" | "female" | 'custom' | '' | undefined
+    date_of_birth?: string
+
     working_days: string;
     created_at?: Date | number | string,
     upadted_at?: Date | number | string

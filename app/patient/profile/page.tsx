@@ -8,21 +8,13 @@ import { TransactionItem } from "./_profileContents/TransactionSection";
 import { useGetPatientProfileDetails } from "@/src/hooks/patient/usePatientProfile";
 import { UserType } from "@/src/hooks/serviceHook";
 import { Transactions } from "@/app/lib/types";
+import LoadingState from "@/src/components/ui/loading/LoadingState";
 
 const PatientDashboard = () => {
   const { stats, isLoading, patientData, recentTransactions } =
     useGetPatientProfileDetails();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div
-          className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent"
-          style={{ borderColor: colors.primary }}
-        ></div>
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingState />;
 
   return (
     <div className="min-h-screen bg-stone-50">

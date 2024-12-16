@@ -1,11 +1,25 @@
-import { colors } from "@/app/lib/constant";
+import { colors, GENDER_OPTIONS } from "@/app/lib/constant";
+import Input from "@/src/components/ui/forms/Input";
+import SelectInput from "@/src/components/ui/forms/SelectInput";
+import LoadingState from "@/src/components/ui/loading/LoadingState";
+import SubmittingLoader from "@/src/components/ui/loading/SubmittingLoader";
+import { Button } from "@/src/components/utils/Button";
 import ImageComponent from "@/src/components/utils/Image";
+import { useUpdatePatientPersonalInfo } from "@/src/hooks/patient/usePatientProfile";
 import { Camera } from "lucide-react";
-import { useState } from "react";
 
 // Personal Information Section
 export const PersonalInfoSection = () => {
-  const [isEditing, setIsEditing] = useState(false);
+  const {
+    handleUpdatePatientPersonalInfo,
+    handlePhotoChange,
+    handleSubmit,
+    isLoading,
+    isPending,
+    previewImage,
+    patientPersonalInfo
+  } = useUpdatePatientPersonalInfo();
+  if (isLoading) return <LoadingState />;
 
   return (
     <div className="bg-white rounded-3xl p-6">
@@ -13,13 +27,6 @@ export const PersonalInfoSection = () => {
         <h2 className="text-xl font-bold text-stone-800">
           Personal Information
         </h2>
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className="text-sm font-medium"
-          style={{ color: colors.primary }}
-        >
-          {isEditing ? "Save Changes" : "Edit"}
-        </button>
       </div>
 
       <div className="space-y-6">
@@ -29,14 +36,22 @@ export const PersonalInfoSection = () => {
             <ImageComponent
               imageStyle="w-24 h-24 rounded-full"
               altAttribute="Profile"
-              imageUrl=""
+              imageUrl={previewImage || patientPersonalInfo.profile_photo || ""}
             />
-            <button
-              className="absolute bottom-0 right-0 p-2 rounded-full"
-              style={{ backgroundColor: colors.primary }}
-            >
-              <Camera className="w-4 h-4 text-white" />
-            </button>
+            <label>
+              <div
+                className="absolute cursor-pointer bottom-0 right-0 p-2 rounded-full"
+                style={{ backgroundColor: colors.primary }}
+              >
+                <Camera className="w-4 h-4 text-white" />
+              </div>
+              <input
+                onChange={handlePhotoChange}
+                type="file"
+                hidden
+                accept="image/*"
+              />
+            </label>
           </div>
           <div>
             <h3 className="font-medium text-stone-800">Profile Photo</h3>
@@ -49,66 +64,80 @@ export const PersonalInfoSection = () => {
         {/* Form Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              Full Name
-            </label>
-            <input
-              type="text"
-              defaultValue="John Doe"
-              disabled={!isEditing}
-              className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+            <Input
+              label="Full Name"
+              value={patientPersonalInfo?.name || ""}
+              inputType="text"
+              name="name"
+              onChange={handleUpdatePatientPersonalInfo}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              defaultValue="john.doe@example.com"
-              disabled={!isEditing}
-              className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+            <Input
+              label="Phone Number"
+              value={patientPersonalInfo?.phone_number || ""}
+              inputType="phone"
+              name="phone_number"
+              onChange={handleUpdatePatientPersonalInfo}
+            />
+          </div>
+          <div>
+            <Input
+              label="Country"
+              onChange={handleUpdatePatientPersonalInfo}
+              value={patientPersonalInfo?.country || ""}
+              inputType="text"
+              name="country"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              defaultValue="+1 (555) 000-0000"
-              disabled={!isEditing}
-              className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+            <Input
+              label="State"
+              value={patientPersonalInfo?.state || ""}
+              inputType="text"
+              name="state"
+              onChange={handleUpdatePatientPersonalInfo}
             />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              Date of Birth
-            </label>
-            <input
-              type="date"
-              defaultValue="1990-01-01"
-              disabled={!isEditing}
-              className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
+            <Input
+              label="City"
+              value={patientPersonalInfo?.city || ""}
+              inputType="text"
+              name="city"
+              onChange={handleUpdatePatientPersonalInfo}
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-stone-700 mb-2">
-            Address
-          </label>
-          <textarea
-            rows={3}
-            defaultValue="123 Medical Plaza, Suite 100, Health City, HC 12345"
-            disabled={!isEditing}
-            className="w-full p-3 rounded-xl border border-stone-200 disabled:bg-stone-50"
-          />
+          <div>
+            <Input
+              label="Date Of Birth"
+              value={patientPersonalInfo?.date_of_birth || ""}
+              inputType="date"
+              onChange={handleUpdatePatientPersonalInfo}
+              name="date_of_birth"
+            />
+          </div>
+          <div>
+            <SelectInput
+              label="Gender"
+              id="gender"
+              value={patientPersonalInfo?.gender}
+              onChange={handleUpdatePatientPersonalInfo}
+              name="gender"
+              options={GENDER_OPTIONS}
+            />
+          </div>
         </div>
       </div>
+      <Button onClick={handleSubmit} className="my-4" variant="primary">
+        {isPending ? (
+          <SubmittingLoader text="Saving changes.." />
+        ) : (
+          " Save Changes"
+        )}
+      </Button>
     </div>
   );
 };

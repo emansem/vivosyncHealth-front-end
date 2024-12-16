@@ -94,7 +94,7 @@ td {
         peer-checked:after:opacity-100;
 }
 .label {
-  @apply text-lg text-text_color2 font-medium select-none;
+  @apply text-base md:text-lg block text-stone-700 mb-2 font-medium select-none;
 }
 
 /* Add this to your CSS */

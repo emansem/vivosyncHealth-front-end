@@ -338,7 +338,8 @@ export const PATIENT_API_ENDPOINTS = {
         updateSubscriptionStatus: "patients/subscription/current/patient/update"
     },
     PROFILE: {
-        getProfileDetails: "/patients/profile/all/details"
+        getProfileDetails: "/patients/profile/all/details",
+        updatePersonalDetails: "/patients/update/personal-information/"
     }
 } as const;
 
@@ -524,3 +525,24 @@ export const SUBSCRIPTION_FILTER_OPTIONS = [
         value: "cancelled"
     }
 ];
+
+
+export const GENDER_OPTIONS = [
+    {
+        label: "Select gender",
+        value: ""
+    },
+    {
+        label: "Male",
+        value: "male"
+    },
+    {
+        label: "Female",
+        value: "female"
+    },
+    {
+        label: "Custom",
+        value: "custom"
+    }
+];
+
