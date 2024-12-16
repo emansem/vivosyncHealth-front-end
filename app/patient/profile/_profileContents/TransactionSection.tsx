@@ -52,7 +52,7 @@ export const TransactionItem = ({ transactions }: TransactionItemProps) => {
           </span> */}
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-sm text-stone-500">
+                <span className="text-sm capitalize text-stone-500">
                   {transaction.type}
                 </span>
                 <span className="w-1 h-1 rounded-full bg-stone-300" />

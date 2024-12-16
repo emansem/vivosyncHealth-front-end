@@ -35,12 +35,12 @@ const Input = forwardRef<HTMLInputElement, InputType>(
     ref
   ) => {
     return (
-      <div className=" w-full">
+      <div className="w-full">
         <label className="label" htmlFor={id}>
           {label}
         </label>
         <input
-          className={`${baseInputStyles} px-3 my-2
+          className={`${baseInputStyles} px-3 
             ${error ? "border-red-500" : "border-border_color"} ${
             isReadOnly && "bg-stone-700/10"
           }`}

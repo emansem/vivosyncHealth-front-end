@@ -17,8 +17,7 @@ function UpdateProfilePicture({
     if (profile_photo) {
       setPhoto(profile_photo);
     }
-    [profile_photo];
-  });
+  }, [profile_photo]);
 
   if (!photo) return;
   return (

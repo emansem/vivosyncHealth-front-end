@@ -1,5 +1,5 @@
+import { Loader2 } from "lucide-react";
 import React from "react";
-import { Loader } from "lucide-react";
 
 interface LoadingStateProps {
   message?: string;
@@ -20,7 +20,7 @@ function LoadingState({
         {/* Loader Container */}
         <div className="relative">
           {/* Main Loader */}
-          <Loader size={32} className="animate-spin  text-primary_color" />
+          <Loader2 size={32} className="animate-spin  text-primary_color" />
         </div>
 
         {/* Loading Message */}
@@ -36,23 +36,5 @@ function LoadingState({
     </div>
   );
 }
-
-// Add custom animation to tailwind config
-const tailwindConfig = {
-  theme: {
-    extend: {
-      animation: {
-        "ping-slow": "ping 2s cubic-bezier(0, 0, 0.2, 1) infinite",
-        fadeIn: "fadeIn 0.5s ease-in-out"
-      },
-      keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" }
-        }
-      }
-    }
-  }
-};
 
 export default LoadingState;
