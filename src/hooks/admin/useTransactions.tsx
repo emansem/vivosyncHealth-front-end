@@ -3,8 +3,8 @@ import { useGetData } from "../serviceHook";
 import { ADMIN_API_END_POINT } from "@/app/lib/constant";
 import { ChangeEvent, useEffect, useState } from "react";
 
-// API response structure
-interface TransactionApiResponse {
+// Shape of data we expect from the API
+interface ApiResponse {
   totalResult: number;
   totalRevenue: number;
   revenueDifference: string;
@@ -14,6 +14,8 @@ interface TransactionApiResponse {
     transactions: Transactions[];
   };
 }
+
+// Structure for tracking active filters
 export interface FIlterTransaction {
   type: string;
   status: string;
@@ -21,22 +23,29 @@ export interface FIlterTransaction {
   endDate: string;
 }
 
-const INITIAL_FILTER_TRANSACTION_VALUES: FIlterTransaction = {
+// Start with empty filters when component loads
+const DEFAULT_FILTERS: FIlterTransaction = {
   type: "",
   status: "",
   startDate: "",
   endDate: ""
 };
-export const useFilterTransaction = () => {
-  const [filterTransactionValues, setFilterTransactionValues] =
-    useState<FIlterTransaction>(INITIAL_FILTER_TRANSACTION_VALUES);
 
+// Manages filter state and actions - keeps track of what filters user has applied
+export const useFilterTransaction = () => {
+  // Store current filter selections
+  const [filterTransactionValues, setFilterTransactionValues] =
+    useState<FIlterTransaction>(DEFAULT_FILTERS);
+
+  // Update filters when user changes any input field
   const handleOnChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFilterTransactionValues((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Clear all active filters back to empty state
   const handleClearFilter = () => {
     setFilterTransactionValues((prev) => ({
       ...prev,
@@ -47,71 +56,76 @@ export const useFilterTransaction = () => {
     }));
   };
 
-  console.log("filter values", filterTransactionValues);
   return { filterTransactionValues, handleClearFilter, handleOnChange };
 };
 
-// Custom hook for fetching and managing paginated transactions
+// Main hook that handles all transaction data loading and state management
 export const useGetAllTransactions = (
   page: number,
   setPageNumber: React.Dispatch<React.SetStateAction<number>>
 ) => {
+  // Get filter functionality
   const { filterTransactionValues, handleClearFilter, handleOnChange } =
     useFilterTransaction();
   const { startDate, status, endDate, type } = filterTransactionValues;
-  // API endpoint with pagination
+
+  // Build API URL with current page and active filters
   const adminApiEndPoint = `${
     ADMIN_API_END_POINT.getAllTransactions
   }/?page=${page}&limit=${10}&type=${type}&startDate=${startDate}&endDate=${endDate}&status=${status}`;
 
-  // Fetch data for current page
-  const { data, isLoading, isError } = useGetData<TransactionApiResponse>(
+  // Load transaction data from API
+  const { data, isLoading } = useGetData<ApiResponse>(
     adminApiEndPoint,
     "transactions"
   );
+
+  // Track loading states and mobile transaction list
+  const [isPending, setIsPending] = useState(false);
+  //  const [preservedTotalResult, setPreservedTotalResult] = useState(0);
+  const [mobileTransactions, setMobileTransaction] = useState<Transactions[]>(
+    []
+  );
+  const [preservedTotalResult, setPreservedTotalResult] = useState(0);
+
+  // Go back to first page whenever filters change
   useEffect(() => {
     setPageNumber(1);
   }, [filterTransactionValues, setPageNumber]);
 
-  // State for managing mobile view transactions
-  const [mobileTransactions, setMobileTransaction] = useState<Transactions[]>(
-    []
-  );
-
-  // Calculate pagination values
+  // Calculate total pages needed for pagination
   const totalResult = data?.totalResult ?? 0;
   const totalPages = Math.ceil(totalResult / 10);
 
-  // Handle transaction data updates
+  // Update mobile transaction list when new data arrives
   useEffect(() => {
+    setIsPending(true);
     if (data?.data?.transactions) {
+      // First page resets the list, subsequent pages add to it
       if (page === 1) {
         setMobileTransaction(data.data.transactions);
       } else {
         setMobileTransaction((prev) => [...prev, ...data.data.transactions]);
       }
+      setIsPending(false);
     }
   }, [data, page]);
-  console.log("transactions", mobileTransactions);
 
-  // Handle "See More" button click
+  // Load more transactions when user clicks "See More"
   const handleSeeMoreBtn = () => {
     if (page < totalPages) {
       const nextPage = page + 1;
       setPageNumber(nextPage);
+      setIsPending(true);
     }
   };
 
-  const revenueDifference = data?.revenueDifference as string;
-  const totalRevenue = data?.totalRevenue as number;
-  const totalTransactionsToday = data?.totalTransactionsToday as number;
-  const todayTransactionAmount = data?.todayTransactionAmount as number;
-
+  // Prepare stats for the overview cards
   const stats = [
     {
       title: "Total Revenue",
-      value: totalRevenue || 0.0,
-      change: revenueDifference || 0,
+      value: data?.totalRevenue || 0.0,
+      change: data?.revenueDifference || "0",
       period: "vs last month"
     },
     {
@@ -121,20 +135,26 @@ export const useGetAllTransactions = (
     },
     {
       title: "Today's Transactions",
-      value: todayTransactionAmount || 0.0,
-      amount: totalTransactionsToday | 0
+      value: data?.todayTransactionAmount || 0.0,
+      amount: data?.totalTransactionsToday || 0
     }
   ];
+  useEffect(() => {
+    setPreservedTotalResult(totalResult);
+  }, [totalResult, mobileTransactions]);
+
+  // Return everything needed by the UI
   return {
     stats,
     handleClearFilter,
-
+    isPending,
     handleOnChange,
+    preservedTotalResult,
     filterTransactionValues,
-    data,
     result: totalResult,
     isLoading,
     handleSeeMoreBtn,
+    transactions: data?.data.transactions,
     mobileTransactions
   };
 };

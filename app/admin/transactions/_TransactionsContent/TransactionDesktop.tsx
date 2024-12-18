@@ -126,17 +126,19 @@ function TransactionDesktop({
               ))}
             </tbody>
           </table>
-          <div className="p-6">
-            <PaginationButton
-              pageNumber={pageNumber}
-              totalResult={totalResult}
-              result={endIndex}
-              handlePrevButton={handlePrevButton}
-              handleNextButton={handleNextButton}
-              getPageNumber={getPageNumber}
-              pages={pages}
-            />
-          </div>
+          {totalResult >= 11 && (
+            <div className="p-6">
+              <PaginationButton
+                pageNumber={pageNumber}
+                totalResult={totalResult}
+                result={endIndex}
+                handlePrevButton={handlePrevButton}
+                handleNextButton={handleNextButton}
+                getPageNumber={getPageNumber}
+                pages={pages}
+              />
+            </div>
+          )}
         </div>
       </Card>
     </div>

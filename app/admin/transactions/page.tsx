@@ -10,7 +10,8 @@ import TransactionListMobile from "./_TransactionsContent/TransactionListMobile"
 import { useGetAllTransactions } from "@/src/hooks/admin/useTransactions";
 import usePaginationHook from "@/src/hooks/usePaginationHook";
 import { Transactions } from "@/app/lib/types";
-import LoadingState from "@/src/components/ui/loading/LoadingState";
+import NoResults from "@/src/components/ui/noFound/EmptyResult";
+import { InnerPageLoader } from "@/src/components/ui/loading/InnerPageLoader";
 
 export const transactions = [
   {
@@ -58,8 +59,11 @@ export const transactions = [
 ];
 
 const TransactionManagement = () => {
-  // Pagination Logic
+  // Track total number of transactions to calculate pagination
   const [totalResult, setTotalResult] = useState(0);
+
+  // Get pagination controls and state from custom hook
+  // This handles page numbers, navigation, and item indexing
   const {
     pageNumber,
     pages,
@@ -71,23 +75,46 @@ const TransactionManagement = () => {
     setPageNumber
   } = usePaginationHook(totalResult);
 
+  // Get transaction data and related functionality
+  // This includes the transaction lists, loading states, and filter handlers
   const {
-    data,
     result,
+    isPending,
+    transactions,
     handleClearFilter,
     handleOnChange,
     filterTransactionValues,
     isLoading,
     handleSeeMoreBtn,
     stats,
+    preservedTotalResult,
     mobileTransactions
   } = useGetAllTransactions(pageNumber, setPageNumber);
+
+  // Update total results when the data changes
+  // This keeps pagination in sync with filtered results
   useEffect(() => {
     setTotalResult(result as number);
   }, [result]);
 
+  // Determine when to show content based on loading states
+  // Content shows when either:
+  const isStableState = !isLoading && !isPending;
+  const hasExistingDataWhilePending =
+    (isPending && transactions && transactions?.length > 0) ||
+    mobileTransactions.length > 0;
+  const shouldShowContent = isStableState || hasExistingDataWhilePending;
+
+  // Show loading spinner only during initial data fetch
+  const showLoader = isLoading && !isPending;
+
+  // Show "No Results" when we've finished loading and have no transactions
+  const hasNoTransactions =
+    !isLoading && transactions?.length === 0 && mobileTransactions.length === 0;
+
   return (
     <div className="space-y-6">
+      {/* Header with page title and export button */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-stone-800">
           Transaction Management
@@ -100,20 +127,31 @@ const TransactionManagement = () => {
         </div>
       </div>
 
-      {/* Stats Overview */}
+      {/* Display overview statistics cards */}
       <StatsOverview stats={stats} />
 
-      {/* Filters */}
+      {/* Transaction filter controls */}
       <FilterTransaction
         handleClearFilter={handleClearFilter}
         filterTransactionValues={filterTransactionValues}
         handleOnChange={handleOnChange}
       />
-      {isLoading && <LoadingState />}
 
-      {/* Transactions Table - Desktop */}
-      {!isLoading && (
+      {/* Show loader during initial data fetch */}
+      {showLoader && <InnerPageLoader />}
+
+      {/* Show "No Results" message when appropriate */}
+      {hasNoTransactions && (
+        <NoResults
+          heading="No Transaction Found"
+          message="We couldn't find any transaction"
+        />
+      )}
+
+      {/* Main content area - shows when we have data to display */}
+      {shouldShowContent && (
         <div>
+          {/* Desktop view with full transaction table */}
           <TransactionDesktop
             startIndex={startIndex}
             endIndex={endIndex}
@@ -123,11 +161,13 @@ const TransactionManagement = () => {
             handleNextButton={handleNextButton}
             handlePrevButton={handlePrevButton}
             totalResult={totalResult}
-            transactions={data?.data.transactions as Transactions[]}
+            transactions={transactions as Transactions[]}
           />
 
-          {/* Transactions List - Mobile */}
+          {/* Mobile view with simplified transaction list and "See More" functionality */}
           <TransactionListMobile
+            totalResult={preservedTotalResult}
+            isPending={isPending}
             handleSeeMoreBtn={handleSeeMoreBtn}
             transactions={mobileTransactions}
           />

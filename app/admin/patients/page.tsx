@@ -8,9 +8,7 @@ import {
   UserX,
   ChevronRight,
   Filter,
-  Globe2,
-  CalendarDays,
-  ArrowUpDown
+  Globe2
 } from "lucide-react";
 
 // Colors from your theme

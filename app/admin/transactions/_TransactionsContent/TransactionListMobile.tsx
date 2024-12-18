@@ -4,13 +4,19 @@ import { StatusBadge } from "./StatusBadge";
 import { TypeBadge } from "./TypeBadge";
 import { Transactions } from "@/app/lib/types";
 import { Button } from "@/src/components/utils/Button";
+import { InnerPageLoader } from "@/src/components/ui/loading/InnerPageLoader";
+import SubmittingLoader from "@/src/components/ui/loading/SubmittingLoader";
 interface TransactionListMobileProps {
   transactions: Transactions[];
   handleSeeMoreBtn: () => void;
+  isPending: boolean;
+  totalResult: number;
 }
 
 function TransactionListMobile({
   transactions,
+  isPending,
+  totalResult,
   handleSeeMoreBtn
 }: TransactionListMobileProps) {
   return (
@@ -55,9 +61,15 @@ function TransactionListMobile({
           </div>
         </Card>
       ))}
-      <Button onClick={handleSeeMoreBtn} className="w-full my-4">
-        See more
-      </Button>
+      {totalResult >= 11 && (
+        <Button
+          disabled={isPending}
+          onClick={handleSeeMoreBtn}
+          className="w-full my-4 disabled:cursor-not-allowed"
+        >
+          {isPending ? <SubmittingLoader text="Loading..." /> : "See More"}
+        </Button>
+      )}
     </div>
   );
 }
