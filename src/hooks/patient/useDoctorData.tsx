@@ -51,6 +51,7 @@ export const useGetAllDoctors = () => {
   );
 
   const [isPending, setIsPending] = useState(false);
+
   // State for accumulated doctors list
   const [doctors, setDoctors] = useState<UserType[]>([]);
 

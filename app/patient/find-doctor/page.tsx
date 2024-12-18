@@ -125,9 +125,7 @@ const DoctorFinder: React.FC = () => {
         {/* Shows "no results" if no data and not in initial loading */}
         {doctorData.length === 0 && !isLoading && <NoResults />}
 
-        {/* Shows the doctor grid when either:
-    1. Not loading initially AND not pending more data, OR
-    2. Loading more data (pending) AND we have existing data */}
+        {/* Shows the doctor grid when either */}
         {((!isLoading && !isPending) ||
           (isPending && doctorData.length !== 0)) && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-6">

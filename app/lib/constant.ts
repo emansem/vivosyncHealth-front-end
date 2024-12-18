@@ -546,3 +546,6 @@ export const GENDER_OPTIONS = [
     }
 ];
 
+export const ADMIN_API_END_POINT = {
+    getAllTransactions: '/admin/transactions/all'
+}
