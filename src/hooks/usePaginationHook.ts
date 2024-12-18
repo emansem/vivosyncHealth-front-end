@@ -9,7 +9,6 @@ function usePaginationHook(totalPages: number) {
 
 
     const pages = Array.from({ length: numberOfPages }, (_, i) => i + 1);
-    console.log(numberOfPages, pages)
     const getPageNumber = (page: number) => {
         setPageNumber(page)
 
