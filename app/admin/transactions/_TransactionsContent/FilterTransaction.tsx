@@ -1,12 +1,22 @@
 import Input from "@/src/components/ui/forms/Input";
 import SelectInput from "@/src/components/ui/forms/SelectInput";
+import { Button } from "@/src/components/utils/Button";
 import { Card } from "@/src/components/utils/Card";
-import { useState } from "react";
+import { FIlterTransaction } from "@/src/hooks/admin/useTransactions";
+import { ChangeEvent } from "react";
+interface FilterTransaction {
+  handleOnChange: (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
+  filterTransactionValues: FIlterTransaction;
+  handleClearFilter: () => void;
+}
 
-function FilterTransaction() {
-  const [selectedType, setSelectedType] = useState("all");
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const [dateRange, setDateRange] = useState({ start: "", end: "" });
+function FilterTransaction({
+  filterTransactionValues,
+  handleClearFilter,
+  handleOnChange
+}: FilterTransaction) {
   return (
     <Card className="p-6">
       <div className="">
@@ -21,15 +31,15 @@ function FilterTransaction() {
             className="w-full pl-10 pr-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div> */}
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-4 gap-4">
           <div>
             <SelectInput
               id=""
               name="type"
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
+              value={filterTransactionValues.type}
+              onChange={handleOnChange}
               options={[
-                { value: "all", label: "All Types" },
+                { value: "", label: "All Types" },
                 { value: "deposit", label: "Deposits" },
                 { value: "withdrawal", label: "Withdrawals" },
                 { value: "refund", label: "Refunds" },
@@ -39,12 +49,12 @@ function FilterTransaction() {
           </div>
           <div>
             <SelectInput
+              value={filterTransactionValues.status}
               id=""
               name="status"
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
+              onChange={handleOnChange}
               options={[
-                { value: "all", label: "All Status" },
+                { value: "", label: "All Status" },
                 { value: "completed", label: "Completed" },
                 { value: "pending", label: "Pending" },
                 { value: "failed", label: "Failed" }
@@ -53,17 +63,27 @@ function FilterTransaction() {
           </div>
           <div>
             <Input
+              value={filterTransactionValues.startDate}
               inputType="date"
               name="startDate"
-              value={dateRange.start}
-              onChange={(e) =>
-                setDateRange({ ...dateRange, start: e.target.value })
-              }
+              onChange={handleOnChange}
               inputPlaceholder="Start Date"
+            />
+          </div>
+          <div>
+            <Input
+              value={filterTransactionValues.endDate}
+              inputType="date"
+              name="endDate"
+              onChange={handleOnChange}
+              inputPlaceholder="End Date"
             />
           </div>
         </div>
       </div>
+      <Button onClick={handleClearFilter} className="my-4" variant="outline">
+        Clear filter
+      </Button>
     </Card>
   );
 }

@@ -15,8 +15,8 @@ function TransactionListMobile({
 }: TransactionListMobileProps) {
   return (
     <div className="md:hidden space-y-4">
-      {transactions?.map((transaction) => (
-        <Card key={transaction.id} className="p-4">
+      {transactions?.map((transaction, index) => (
+        <Card key={index} className="p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>

@@ -71,8 +71,17 @@ const TransactionManagement = () => {
     setPageNumber
   } = usePaginationHook(totalResult);
 
-  const { data, result, isLoading, handleSeeMoreBtn, mobileTransactions } =
-    useGetAllTransactions(pageNumber, setPageNumber);
+  const {
+    data,
+    result,
+    handleClearFilter,
+    handleOnChange,
+    filterTransactionValues,
+    isLoading,
+    handleSeeMoreBtn,
+    stats,
+    mobileTransactions
+  } = useGetAllTransactions(pageNumber, setPageNumber);
   useEffect(() => {
     setTotalResult(result as number);
   }, [result]);
@@ -92,10 +101,14 @@ const TransactionManagement = () => {
       </div>
 
       {/* Stats Overview */}
-      <StatsOverview />
+      <StatsOverview stats={stats} />
 
       {/* Filters */}
-      <FilterTransaction />
+      <FilterTransaction
+        handleClearFilter={handleClearFilter}
+        filterTransactionValues={filterTransactionValues}
+        handleOnChange={handleOnChange}
+      />
       {isLoading && <LoadingState />}
 
       {/* Transactions Table - Desktop */}

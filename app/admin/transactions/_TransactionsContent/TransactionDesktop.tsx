@@ -72,8 +72,8 @@ function TransactionDesktop({
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-200">
-              {transactions?.map((transaction) => (
-                <tr key={transaction.id} className="hover:bg-stone-50">
+              {transactions?.map((transaction, index) => (
+                <tr key={index} className="hover:bg-stone-50">
                   <td className="py-4 px-6 font-medium text-stone-800">
                     {transaction.transaction_id}
                   </td>
