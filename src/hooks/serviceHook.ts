@@ -18,7 +18,7 @@ export interface UserType {
     speciality: string;
     rating: number,
     num_reviews: number,
-    balance?: number,
+    balance?: number | string,
     user_type?: string,
     user_id: string,
     // Location/Practice Info
@@ -30,7 +30,7 @@ export interface UserType {
     zip_code: string;
     gender?: "male" | "female" | 'custom' | '' | undefined
     date_of_birth?: string
-
+    status?: string,
     working_days: string;
     created_at?: Date | number | string,
     upadted_at?: Date | number | string

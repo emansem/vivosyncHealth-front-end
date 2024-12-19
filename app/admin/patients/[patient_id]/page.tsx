@@ -1,143 +1,54 @@
 "use client";
-import React, { useState } from "react";
 import { Card } from "@/src/components/utils/Card";
 import { Button } from "@/src/components/utils/Button";
 import Input from "@/src/components/ui/forms/Input";
-import SelectInput from "@/src/components/ui/forms/SelectInput";
 import ImageComponent from "@/src/components/utils/Image";
 import { colors } from "@/app/lib/constant";
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  Activity,
-  CreditCard,
-  FileText,
-  Clock,
-  AlertCircle
-} from "lucide-react";
-
-// Gender options for select input
-const GENDER_OPTIONS = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "other", label: "Other" }
+import { Camera } from "lucide-react";
+import { useUpdateAndgetPatientProfile } from "@/src/hooks/admin/usePatients";
+import { useParams } from "next/navigation";
+import { InnerPageLoader } from "@/src/components/ui/loading/InnerPageLoader";
+import { formatDate } from "@/src/helper/helper";
+import NoResults from "@/src/components/ui/noFound/EmptyResult";
+import SelectInput from "@/src/components/ui/forms/SelectInput";
+import SubmittingLoader from "@/src/components/ui/loading/SubmittingLoader";
+const USER_STATUS_OPTIONS = [
+  {
+    label: "Select Staus",
+    value: ""
+  },
+  {
+    label: "Active",
+    value: "active"
+  },
+  {
+    label: "Inactive",
+    value: "inactive"
+  }
 ];
 
 const SinglePatientView = () => {
-  const [isPending, setIsPending] = useState(false);
-  const [patientPersonalInfo, setPatientPersonalInfo] = useState({
-    id: "P001",
-    first_name: "John",
-    last_name: "Smith",
-    email: "john.smith@example.com",
-    phone: "+1 (555) 123-4567",
-    country: "United States",
-    gender: "male",
-    date_of_birth: "1990-05-15",
-    profile_photo: "/api/placeholder/96/96",
-    address: "123 Main St, New York, NY",
-    blood_type: "A+",
-    emergency_contact: "+1 (555) 987-6543",
-    medical_conditions: "None",
-    status: "active"
-  });
+  const getPatientId = useParams();
+  const patientId = getPatientId["patient_id"] as string;
 
-  // Handler for input changes
-  const handleUpdatePatientPersonalInfo = (e) => {
-    const { name, value } = e.target;
-    setPatientPersonalInfo((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  const {
+    handleUpdatePatientPersonalInfo,
+    transactions,
+    isLoading,
+    handlePhotoChange,
+    previewImage,
+    image,
+    patientPersonalInfo,
+    handleUpdateDetails,
+    isPending
+  } = useUpdateAndgetPatientProfile(patientId);
 
-  // Handler for form submission
-  const handleSubmit = async () => {
-    setIsPending(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      // Handle success
-    } catch (error) {
-      // Handle error
-    } finally {
-      setIsPending(false);
-    }
-  };
-
-  // Stats cards data
-  const statsCards = [
-    {
-      title: "Total Visits",
-      value: "24",
-      icon: <Activity size={20} color={colors.primary} />,
-      color: colors.primary
-    },
-    {
-      title: "Last Visit",
-      value: "2 days ago",
-      icon: <Clock size={20} color="#2196F3" />,
-      color: "#2196F3"
-    },
-    {
-      title: "Outstanding Balance",
-      value: "$150",
-      icon: <CreditCard size={20} color="#F44336" />,
-      color: "#F44336"
-    }
-  ];
-
-  // Recent transactions data
-  const recentTransactions = [
-    {
-      id: 1,
-      date: "2024-03-15",
-      type: "Consultation",
-      amount: "$75",
-      status: "completed"
-    },
-    {
-      id: 2,
-      date: "2024-03-10",
-      type: "Laboratory Test",
-      amount: "$150",
-      status: "pending"
-    }
-  ];
-
+  if (isLoading) return <InnerPageLoader />;
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-8">
       {/* Header Section */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-stone-800">Patient Profile</h1>
-        <Button onClick={handleSubmit} variant="primary" className="my-4">
-          {isPending ? "Saving changes.." : "Save Changes"}
-        </Button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {statsCards.map((stat, index) => (
-          <Card key={index} className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-stone-600 text-sm font-medium">
-                  {stat.title}
-                </p>
-                <h3
-                  className="text-2xl font-bold mt-1"
-                  style={{ color: stat.color }}
-                >
-                  {stat.value}
-                </h3>
-              </div>
-              <div className="p-3 rounded-full bg-stone-50">{stat.icon}</div>
-            </div>
-          </Card>
-        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -148,26 +59,58 @@ const SinglePatientView = () => {
               Personal Information
             </h2>
             <div className="mb-6">
-              <ImageComponent
-                imageStyle="w-24 h-24 rounded-full"
-                altAttribute="Profile"
-                imageUrl={patientPersonalInfo.profile_photo}
-              />
+              {/* Profile Photo */}
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <ImageComponent
+                    imageStyle="w-24 h-24 rounded-full"
+                    altAttribute="Profile"
+                    imageUrl={
+                      previewImage ||
+                      patientPersonalInfo.profile_photo ||
+                      image ||
+                      ""
+                    }
+                  />
+                  <label>
+                    <div
+                      className="absolute cursor-pointer bottom-0 right-0 p-2 rounded-full"
+                      style={{ backgroundColor: colors.primary }}
+                    >
+                      <Camera className="w-4 h-4 text-white" />
+                    </div>
+                    <input
+                      value={""}
+                      onChange={handlePhotoChange}
+                      type="file"
+                      hidden
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
+                <div>
+                  <h3 className="font-medium text-stone-800">Profile Photo</h3>
+                  <p className="text-sm text-stone-500">
+                    JPG, GIF or PNG. Max size 2MB
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
-                label="First Name"
+                label="Name"
                 onChange={handleUpdatePatientPersonalInfo}
-                value={patientPersonalInfo.first_name}
+                value={patientPersonalInfo.name}
                 inputType="text"
-                name="first_name"
+                name="name"
               />
+
               <Input
-                label="Last Name"
+                label="Balance"
                 onChange={handleUpdatePatientPersonalInfo}
-                value={patientPersonalInfo.last_name}
+                value={patientPersonalInfo.balance}
                 inputType="text"
-                name="last_name"
+                name="balance"
               />
               <Input
                 label="Email"
@@ -179,9 +122,9 @@ const SinglePatientView = () => {
               <Input
                 label="Phone"
                 onChange={handleUpdatePatientPersonalInfo}
-                value={patientPersonalInfo.phone}
+                value={patientPersonalInfo.phone_number}
                 inputType="tel"
-                name="phone"
+                name="phone_number"
               />
               <Input
                 label="Country"
@@ -190,14 +133,7 @@ const SinglePatientView = () => {
                 inputType="text"
                 name="country"
               />
-              <SelectInput
-                label="Gender"
-                id="gender"
-                value={patientPersonalInfo.gender}
-                onChange={handleUpdatePatientPersonalInfo}
-                name="gender"
-                options={GENDER_OPTIONS}
-              />
+
               <Input
                 label="Date of Birth"
                 onChange={handleUpdatePatientPersonalInfo}
@@ -205,39 +141,25 @@ const SinglePatientView = () => {
                 inputType="date"
                 name="date_of_birth"
               />
-              <Input
-                label="Blood Type"
-                onChange={handleUpdatePatientPersonalInfo}
-                value={patientPersonalInfo.blood_type}
-                inputType="text"
-                name="blood_type"
-              />
-              <Input
-                label="Emergency Contact"
-                onChange={handleUpdatePatientPersonalInfo}
-                value={patientPersonalInfo.emergency_contact}
-                inputType="tel"
-                name="emergency_contact"
-              />
-              <div className="md:col-span-2">
-                <Input
-                  label="Address"
+
+              <div className="w-full space-x-3">
+                <SelectInput
                   onChange={handleUpdatePatientPersonalInfo}
-                  value={patientPersonalInfo.address}
-                  inputType="text"
-                  name="address"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Input
-                  label="Medical Conditions"
-                  onChange={handleUpdatePatientPersonalInfo}
-                  value={patientPersonalInfo.medical_conditions}
-                  inputType="text"
-                  name="medical_conditions"
+                  label="Change User Status"
+                  value={patientPersonalInfo.status}
+                  options={USER_STATUS_OPTIONS}
+                  id="status"
+                  name="status"
                 />
               </div>
             </div>
+            <Button
+              onClick={handleUpdateDetails}
+              disabled={isPending}
+              className="w-full md:w-[50%] my-4"
+            >
+              {isPending ? <SubmittingLoader /> : "Save Changes"}
+            </Button>
           </Card>
         </div>
 
@@ -249,67 +171,42 @@ const SinglePatientView = () => {
               Recent Transactions
             </h2>
             <div className="space-y-4">
-              {recentTransactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center justify-between p-4 bg-stone-50 rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium text-stone-800">
-                      {transaction.type}
-                    </p>
-                    <p className="text-sm text-stone-500">{transaction.date}</p>
+              {transactions.length === 0 && (
+                <NoResults
+                  message="This patient doesn't have any transaction yet"
+                  heading="No Transaction Found"
+                />
+              )}
+              {transactions.length !== 0 &&
+                transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between p-4 bg-stone-50 rounded-lg"
+                  >
+                    <div>
+                      <p className="font-medium capitalize text-stone-800">
+                        {transaction.type}
+                      </p>
+                      <p className="text-sm text-stone-500">
+                        {formatDate(transaction.created_at as string)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-stone-800">
+                        {transaction.amount.toFixed(2) || 0.0}
+                      </p>
+                      <p
+                        className={`text-sm capitalize ${
+                          transaction.status === "completed"
+                            ? "text-green-600"
+                            : "text-yellow-600"
+                        }`}
+                      >
+                        {transaction.status || "completed"}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-stone-800">
-                      {transaction.amount}
-                    </p>
-                    <p
-                      className={`text-sm ${
-                        transaction.status === "completed"
-                          ? "text-green-600"
-                          : "text-yellow-600"
-                      }`}
-                    >
-                      {transaction.status.charAt(0).toUpperCase() +
-                        transaction.status.slice(1)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          {/* Medical Records Summary */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-stone-800 mb-4">
-              Medical Records
-            </h2>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-stone-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText size={20} className="text-stone-400" />
-                  <div>
-                    <p className="font-medium text-stone-800">
-                      Last Checkup Report
-                    </p>
-                    <p className="text-sm text-stone-500">March 15, 2024</p>
-                  </div>
-                </div>
-                <Button variant="secondary">View</Button>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-stone-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText size={20} className="text-stone-400" />
-                  <div>
-                    <p className="font-medium text-stone-800">
-                      Blood Test Results
-                    </p>
-                    <p className="text-sm text-stone-500">March 10, 2024</p>
-                  </div>
-                </div>
-                <Button variant="secondary">View</Button>
-              </div>
+                ))}
             </div>
           </Card>
         </div>
