@@ -549,5 +549,7 @@ export const GENDER_OPTIONS = [
 export const ADMIN_API_END_POINT = {
     getAllTransactions: '/admin/transactions/all',
     getAllDoctorsDetails: "/admin/doctors/details/all",
-    getAllPatientsData: "/admin/patients/details/all"
+    getAllPatientsData: "/admin/patients/details/all",
+    getPatientById: "/admin/patients/single/details",
+    updatePatientDetails: "/admin//patients/update/details"
 }

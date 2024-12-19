@@ -4,6 +4,7 @@ import { getStatusColor } from "../page";
 import { UserType } from "@/src/hooks/serviceHook";
 import ImageComponent from "@/src/components/utils/Image";
 import { formatDate } from "@/src/helper/helper";
+import Link from "next/link";
 interface PatientListMobileProps {
   patients: UserType[];
 }
@@ -25,14 +26,15 @@ function PatientListMobile({ patients }: PatientListMobileProps) {
                 <p className="text-sm text-stone-500">{patient.user_id}</p>
               </div>
             </div>
-            <button
-              onClick={() =>
-                (window.location.href = `/patients/${patient.user_id}`)
-              }
-              className="text-stone-400 hover:text-primary transition-colors"
+            <Link
+              href={`/admin/patients/${patient.user_id}`}
+              className="inline-flex items-center p-2 rounded-md hover:bg-gray-100 transition-colors"
             >
-              <ChevronRight size={20} />
-            </button>
+              <ChevronRight
+                className="text-gray-400 hover:text-blue-600 transition-colors"
+                size={20}
+              />
+            </Link>
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">

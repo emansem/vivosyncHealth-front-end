@@ -5,6 +5,7 @@ import { UserType } from "@/src/hooks/serviceHook";
 import PaginationButton from "@/src/components/utils/table/Pagination";
 import { formatDate } from "@/src/helper/helper";
 import ImageComponent from "@/src/components/utils/Image";
+import Link from "next/link";
 interface PatientListDesktopProps {
   patients: UserType[];
   handlePrevButton: () => void;
@@ -115,14 +116,15 @@ function PatientListDesktop({
                     </span>
                   </td>
                   <td className="py-4 px-6">
-                    <button
-                      onClick={() =>
-                        (window.location.href = `/patients/${patient.user_id}`)
-                      }
-                      className="text-stone-400 hover:text-primary transition-colors"
+                    <Link
+                      href={`/admin/patients/${patient.user_id}`}
+                      className="inline-flex items-center p-2 rounded-md hover:bg-gray-100 transition-colors"
                     >
-                      <ChevronRight size={20} />
-                    </button>
+                      <ChevronRight
+                        className="text-gray-400 hover:text-blue-600 transition-colors"
+                        size={20}
+                      />
+                    </Link>
                   </td>
                 </tr>
               ))}

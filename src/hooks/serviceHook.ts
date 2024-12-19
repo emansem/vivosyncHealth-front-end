@@ -18,7 +18,7 @@ export interface UserType {
     speciality: string;
     rating: number,
     num_reviews: number,
-    balance?: number,
+    balance?: number | string,
     user_type?: string,
     user_id: string,
     // Location/Practice Info
