@@ -8,6 +8,8 @@ import PatientListDesktop from "./_patientsContent/PatientListDesktop";
 import PatientListMobile from "./_patientsContent/PatientListMobile";
 import usePaginationHook from "@/src/hooks/usePaginationHook";
 import { useGetPatientList } from "@/src/hooks/admin/usePatients";
+import { InnerPageLoader } from "@/src/components/ui/loading/InnerPageLoader";
+import NoResults from "@/src/components/ui/noFound/EmptyResult";
 
 // Helper function for status colors
 export const getStatusColor = (status: string) => {
@@ -87,35 +89,17 @@ const PatientList = () => {
     handleNextButton,
     setPageNumber
   } = usePaginationHook(totalResult);
-  const stats = [
-    {
-      title: "Total Patients",
-      value: "5,234",
-      icon: <Users />,
-      color: colors.primary,
-      bgColor: colors.secondary
-    },
-    {
-      title: "Active Patients",
-      value: "4,123",
-      icon: <UserCheck />,
-      color: "#2196F3",
-      bgColor: "#E3F2FD"
-    },
-    {
-      title: "Inactive Patients",
-      value: "1,111",
-      icon: <UserX />,
-      color: "#F44336",
-      bgColor: "#FFEBEE"
-    }
-  ];
+
   const {
     patients,
     totalPatients,
+    mobilePatientListData,
     handleClearFilter,
     handleOnChange,
     filterValues,
+    isLoading,
+    activePatients,
+    inActivePatients,
     totalResult: result
   } = useGetPatientList(pageNumber, setPageNumber);
 
@@ -124,6 +108,35 @@ const PatientList = () => {
   useEffect(() => {
     setTotalResult(result as number);
   }, [result]);
+
+  const shouldShowNoResult =
+    !isLoading && (!mobilePatientListData.length || !patients.length);
+  const shouldShowData =
+    !isLoading && (mobilePatientListData.length || patients.length);
+
+  const stats = [
+    {
+      title: "Total Patients",
+      value: totalPatients,
+      icon: <Users />,
+      color: colors.primary,
+      bgColor: colors.secondary
+    },
+    {
+      title: "Active Patients",
+      value: activePatients,
+      icon: <UserCheck />,
+      color: "#2196F3",
+      bgColor: "#E3F2FD"
+    },
+    {
+      title: "Inactive Patients",
+      value: inActivePatients,
+      icon: <UserX />,
+      color: "#F44336",
+      bgColor: "#FFEBEE"
+    }
+  ];
 
   return (
     <div className="space-y-6">
@@ -146,22 +159,33 @@ const PatientList = () => {
         filterValues={filterValues}
         handleOnChange={handleOnChange}
       />
+      {isLoading && <InnerPageLoader />}
+      {shouldShowNoResult && (
+        <NoResults
+          heading="No Patient Found"
+          message="We couldn't found any patient"
+        />
+      )}
 
-      {/* Patient List - Desktop */}
-      <PatientListDesktop
-        startIndex={startIndex}
-        endIndex={endIndex}
-        pages={pages}
-        patients={patients}
-        getPageNumber={getPageNumber}
-        pageNumber={pageNumber}
-        handleNextButton={handleNextButton}
-        handlePrevButton={handlePrevButton}
-        totalResult={totalResult}
-      />
+      {shouldShowData && (
+        <>
+          {/* Patient List - Desktop */}
+          <PatientListDesktop
+            startIndex={startIndex}
+            endIndex={endIndex}
+            pages={pages}
+            patients={patients}
+            getPageNumber={getPageNumber}
+            pageNumber={pageNumber}
+            handleNextButton={handleNextButton}
+            handlePrevButton={handlePrevButton}
+            totalResult={totalResult}
+          />
 
-      {/* Patient List - Mobile */}
-      <PatientListMobile />
+          {/* Patient List - Mobile */}
+          <PatientListMobile patients={mobilePatientListData} />
+        </>
+      )}
     </div>
   );
 };

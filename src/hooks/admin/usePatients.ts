@@ -6,8 +6,11 @@ import { ChangeEvent, useEffect, useState } from "react";
 interface PatientsApiResponse {
     totalPatients: number;
     totalResult: number;
+    activePatients: number,
+    inactivePatients: number,
     data: {
         patients: UserType[];
+        mobilePatientListData: UserType[]
     };
 }
 export interface FilterPatients {
@@ -33,24 +36,29 @@ export const useGetPatientList = (
 
     useEffect(() => {
         setPageNumber(1);
-    }, [filterValues]);
+    }, [filterValues, setPageNumber]);
 
     // Safely access nested properties
     const patients = data?.data?.patients || [];
     const totalPatients = data?.totalPatients ?? 0;
     const totalResult = data?.totalResult ?? 0;
+    const mobilePatientListData = data?.data.mobilePatientListData as UserType[] || []
+    const inActivePatients = data?.inactivePatients || 0
+    const activePatients = data?.activePatients || 0
 
     if (error && axios.isAxiosError(error)) {
         console.log("error", error.response?.data);
     }
-    console.log(error);
-    console.log("fetching......patients", data)
+
 
     return {
         patients,
         isLoading,
+        inActivePatients,
+        activePatients,
         totalPatients,
         totalResult,
+        mobilePatientListData,
         handleClearFilter,
         handleOnChange,
         filterValues

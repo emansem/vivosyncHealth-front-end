@@ -1,9 +1,10 @@
 import { Card } from "@/src/components/utils/Card";
 import { ChevronRight } from "lucide-react";
-import { getStatusColor, patients } from "../page";
+import { getStatusColor } from "../page";
 import { UserType } from "@/src/hooks/serviceHook";
 import PaginationButton from "@/src/components/utils/table/Pagination";
 import { formatDate } from "@/src/helper/helper";
+import ImageComponent from "@/src/components/utils/Image";
 interface PatientListDesktopProps {
   patients: UserType[];
   handlePrevButton: () => void;
@@ -80,10 +81,10 @@ function PatientListDesktop({
                 <tr key={index} className="hover:bg-stone-50">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={patient.profile_photo}
-                        alt={patient.name}
-                        className="w-10 h-10 rounded-full object-cover"
+                      <ImageComponent
+                        imageUrl={patient.profile_photo as string}
+                        altAttribute={patient.name}
+                        imageStyle="w-10 h-10 min-w-10 min-h-10 rounded-full object-cover"
                       />
                       <span className="font-medium text-stone-800">
                         {patient.name}
