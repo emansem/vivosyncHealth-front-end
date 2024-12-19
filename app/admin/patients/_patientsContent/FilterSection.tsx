@@ -1,16 +1,16 @@
+import SearchInput from "@/src/components/ui/forms/searchInput";
+import { Button } from "@/src/components/utils/Button";
 import { Card } from "@/src/components/utils/Card";
 import { baseInputStyles } from "@/src/components/utils/css/basicInputsStyles";
+import { FilterPatients } from "@/src/hooks/admin/usePatients";
 import { useFetchApplicationMetadata } from "@/src/hooks/useFetchGeneralData";
-import SearchInput from "@/src/components/ui/forms/searchInput";
-import { FilterDoctors } from "@/src/hooks/admin/useDoctors";
 import { ChangeEvent } from "react";
-import { Button } from "@/src/components/utils/Button";
 interface FilterSectionProps {
   handleClearFilter: () => void;
   handleOnChange: (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
-  filterValues: FilterDoctors;
+  filterValues: FilterPatients;
 }
 
 function FilterSection({
@@ -18,7 +18,7 @@ function FilterSection({
   handleOnChange,
   filterValues
 }: FilterSectionProps) {
-  const { specialties, countries } = useFetchApplicationMetadata();
+  const { countries } = useFetchApplicationMetadata();
   return (
     <Card className="p-6">
       <div className="flex flex-col md:flex-row gap-2 items-center">
@@ -47,17 +47,14 @@ function FilterSection({
           </div>
           <div className="w-full">
             <select
-              name="specialty"
-              value={filterValues.specialty}
+              name="status"
+              value={filterValues.status}
               onChange={handleOnChange}
               className={`${baseInputStyles}  px-3 bg-transparent appearance-none cursor-pointer`}
             >
-              <option value="">Select Specialty</option>
-              {specialties?.map((specialty) => (
-                <option key={specialty.id} value={specialty.title}>
-                  {specialty.title}
-                </option>
-              ))}
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
             </select>
           </div>
         </div>

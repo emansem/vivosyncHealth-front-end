@@ -43,7 +43,6 @@ export const useGetDoctorList = (
   if (error && axios.isAxiosError(error)) {
     console.log("error", error.response?.data);
   }
-  console.log(filterValues);
 
   return {
     doctors,

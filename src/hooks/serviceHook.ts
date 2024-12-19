@@ -30,7 +30,7 @@ export interface UserType {
     zip_code: string;
     gender?: "male" | "female" | 'custom' | '' | undefined
     date_of_birth?: string
-
+    status?: string,
     working_days: string;
     created_at?: Date | number | string,
     upadted_at?: Date | number | string
