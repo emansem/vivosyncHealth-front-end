@@ -1,13 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@/src/components/utils/Card";
 
 import { User, CheckCircle, Clock } from "lucide-react";
 
 import { colors } from "@/app/lib/constant";
 import DeskTopView from "./_doctorContents/DeskTopView";
-import MobileView from "./_doctorContents/MobileView";
 import FilterSection from "./_doctorContents/FilterSection";
+import usePaginationHook from "@/src/hooks/usePaginationHook";
+import { useGetDoctorList } from "@/src/hooks/admin/useDoctors";
 
 // Stats Card Component
 const StatsCard = ({ title, value, icon, color, bgColor }) => (
@@ -24,40 +25,35 @@ const StatsCard = ({ title, value, icon, color, bgColor }) => (
   </Card>
 );
 
-export const doctors = [
-  {
-    id: "D001",
-    name: "Dr. Sarah Johnson",
-    photo: "/api/placeholder/40/40",
-    specialty: "Cardiology",
-    rating: 4.8,
-    status: "online",
-    verificationStatus: "verified",
-    totalPatients: 1250,
-    responseTime: "~5 min",
-    lastActive: "2 min ago",
-    unreadMessages: 3
-  },
-  {
-    id: "D002",
-    name: "Dr. Michael Chen",
-    photo: "/api/placeholder/40/40",
-    specialty: "Neurology",
-    rating: 4.9,
-    status: "busy",
-    verificationStatus: "verified",
-    totalPatients: 980,
-    responseTime: "~10 min",
-    lastActive: "Active now",
-    unreadMessages: 0
-  }
-];
-
 const DoctorsList = () => {
+  // Track total number of transactions to calculate pagination
+  const [totalResult, setTotalResult] = useState(0);
+
+  // Get pagination controls and state from custom hook
+  // This handles page numbers, navigation, and item indexing
+  const {
+    pageNumber,
+    pages,
+    handlePrevButton,
+    startIndex,
+    endIndex,
+    getPageNumber,
+    handleNextButton,
+    setPageNumber
+  } = usePaginationHook(totalResult);
+  const {
+    totalDoctors,
+    doctors,
+    totalResult: result,
+    handleClearFilter,
+    filterValues,
+    handleOnChange
+  } = useGetDoctorList(pageNumber, setPageNumber);
+
   const stats = [
     {
       title: "Total Doctors",
-      value: "248",
+      value: totalDoctors || 0,
       icon: <User />,
       color: colors.primary,
       bgColor: colors.secondary
@@ -78,6 +74,12 @@ const DoctorsList = () => {
     }
   ];
 
+  // Update total results when the data changes
+  // This keeps pagination in sync with filtered results
+  useEffect(() => {
+    setTotalResult(result as number);
+  }, [result]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -90,13 +92,27 @@ const DoctorsList = () => {
         ))}
       </div>
       {/* Search and filter section */}
-      <FilterSection />
+      <FilterSection
+        handleClearFilter={handleClearFilter}
+        filterValues={filterValues}
+        handleOnChange={handleOnChange}
+      />
 
       {/* Desktop View */}
-      <DeskTopView />
+      <DeskTopView
+        startIndex={startIndex}
+        endIndex={endIndex}
+        pages={pages}
+        doctors={doctors}
+        getPageNumber={getPageNumber}
+        pageNumber={pageNumber}
+        handleNextButton={handleNextButton}
+        handlePrevButton={handlePrevButton}
+        totalResult={totalResult}
+      />
 
       {/* Mobile  View */}
-      <MobileView />
+      {/* <MobileView /> */}
     </div>
   );
 };
