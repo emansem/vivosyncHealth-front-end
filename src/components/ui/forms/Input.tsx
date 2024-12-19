@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { ChangeEvent, forwardRef } from "react";
 import { baseInputStyles } from "../../utils/css/basicInputsStyles";
 
-interface InputType {
+interface InputType extends React.InputHTMLAttributes<HTMLInputElement> {
   id?: string;
   inputPlaceholder?: string;
   error?: string;

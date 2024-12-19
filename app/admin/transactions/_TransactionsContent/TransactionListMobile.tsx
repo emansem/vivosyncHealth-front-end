@@ -4,7 +4,6 @@ import { StatusBadge } from "./StatusBadge";
 import { TypeBadge } from "./TypeBadge";
 import { Transactions } from "@/app/lib/types";
 import { Button } from "@/src/components/utils/Button";
-import { InnerPageLoader } from "@/src/components/ui/loading/InnerPageLoader";
 import SubmittingLoader from "@/src/components/ui/loading/SubmittingLoader";
 interface TransactionListMobileProps {
   transactions: Transactions[];
