@@ -18,7 +18,7 @@ interface PatientsApiResponse {
     };
 }
 
-interface FilterPatients {
+export interface FilterPatients {
     searchValue: string;
     country: string;
     status?: string;
