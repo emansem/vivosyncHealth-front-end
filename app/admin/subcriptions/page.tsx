@@ -3,6 +3,11 @@ import { StatsCard } from "./_subscriptionContent/StatusCard";
 import SubscriptionDesktopView from "./_subscriptionContent/SubscriptionDesktopView";
 import SubscriptionMobileView from "./_subscriptionContent/SubscriptionMobileView";
 import FIlterSection from "./_subscriptionContent/FIlterSection";
+import { useAdminSubscription } from "@/src/hooks/admin/useSubscription";
+import usePaginationHook from "@/src/hooks/usePaginationHook";
+import { useEffect, useState } from "react";
+import NoResults from "@/src/components/ui/noFound/EmptyResult";
+import { InnerPageLoader } from "@/src/components/ui/loading/InnerPageLoader";
 
 // Sample subscription data
 export const subscriptions = [
@@ -30,33 +35,41 @@ export const subscriptions = [
   }
 ];
 const SubscriptionManagement = () => {
+  // Track total number of transactions to calculate pagination
+  const [totalResult, setTotalResult] = useState(0);
+
+  // Get pagination controls and state from custom hook
+  // This handles page numbers, navigation, and item indexing
+  const {
+    pageNumber,
+    pages,
+    handlePrevButton,
+    startIndex,
+    endIndex,
+    getPageNumber,
+    handleNextButton,
+    setPageNumber
+  } = usePaginationHook(totalResult);
   // Stats data structure
-  const stats = [
-    {
-      title: "Total Revenue",
-      value: "$52,420",
-      subValue: "+12% from last month",
-      type: "revenue"
-    },
-    {
-      title: "Active Subscriptions",
-      value: "842",
-      subValue: "92% renewal rate",
-      type: "activeSubscriptions"
-    },
-    {
-      title: "Expiring Soon",
-      value: "45",
-      subValue: "Next 30 days",
-      type: "expiringSoon"
-    },
-    {
-      title: "Cancelled",
-      value: "23",
-      subValue: "This month",
-      type: "cancelled"
-    }
-  ];
+
+  const {
+    isLoading,
+    stats,
+    handleOnChange,
+    subscriptionData,
+    totalSubscription,
+    mobileSubscription,
+    filterSubscriptionValues
+  } = useAdminSubscription(pageNumber, setPageNumber);
+  useEffect(() => {
+    setTotalResult(totalSubscription as number);
+  }, [totalSubscription]);
+  const shouldShowData =
+    !isLoading &&
+    (mobileSubscription.length !== 0 || subscriptionData.length !== 0);
+  const shouldShowNoResult =
+    !isLoading &&
+    (mobileSubscription.length === 0 || subscriptionData.length === 0);
 
   return (
     <div className="space-y-6">
@@ -74,13 +87,37 @@ const SubscriptionManagement = () => {
       </div>
 
       {/* Filters and Search */}
-      <FIlterSection />
+      <FIlterSection
+        handleOnChange={handleOnChange}
+        filterSubscriptionValues={filterSubscriptionValues}
+      />
+      {isLoading && <InnerPageLoader />}
+      {shouldShowNoResult && (
+        <NoResults
+          heading="No Subscription Found"
+          message="We couldn't find any subscription"
+        />
+      )}
 
-      {/* Subscription Table - Desktop */}
-      <SubscriptionDesktopView />
+      {shouldShowData && (
+        <>
+          {/* Subscription Table - Desktop */}
+          <SubscriptionDesktopView
+            subscriptions={subscriptionData}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            pages={pages}
+            getPageNumber={getPageNumber}
+            pageNumber={pageNumber}
+            handleNextButton={handleNextButton}
+            handlePrevButton={handlePrevButton}
+            totalResult={totalResult}
+          />
 
-      {/* Subscription Cards - Mobile */}
-      <SubscriptionMobileView />
+          {/* Subscription Cards - Mobile */}
+          <SubscriptionMobileView subscriptions={mobileSubscription} />
+        </>
+      )}
     </div>
   );
 };

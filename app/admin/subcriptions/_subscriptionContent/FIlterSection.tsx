@@ -1,17 +1,28 @@
 import SelectInput from "@/src/components/ui/forms/SelectInput";
 import { Card } from "@/src/components/utils/Card";
+import { FilterSubscription } from "@/src/hooks/admin/useSubscription";
+import { ChangeEvent } from "react";
+interface FIlterSectionProps {
+  handleOnChange: (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
+  filterSubscriptionValues: FilterSubscription;
+}
 
-function FIlterSection() {
+function FIlterSection({
+  handleOnChange,
+  filterSubscriptionValues
+}: FIlterSectionProps) {
   return (
     <Card className="p-6">
       <div className="flex flex-col md:flex-row w-full md:w-[60%]  gap-2 justify-items-end">
         <SelectInput
           id=""
-          name="plan"
-          // value={selectedPlan}
-          // onChange={(e) => setSelectedPlan(e.target.value)}
+          name="plan_type"
+          value={filterSubscriptionValues.plan_type}
+          onChange={handleOnChange}
           options={[
-            { value: "all", label: "All Plans" },
+            { value: "", label: "All Plans" },
             { value: "premium", label: "Premium Plan" },
             { value: "basic", label: "Basic Plan" },
             { value: "standard", label: "Standard Plan" }
@@ -20,10 +31,10 @@ function FIlterSection() {
         <SelectInput
           id=""
           name="status"
-          // value={selectedStatus}
-          // onChange={(e) => setSelectedStatus(e.target.value)}
+          value={filterSubscriptionValues.status}
+          onChange={handleOnChange}
           options={[
-            { value: "all", label: "All Status" },
+            { value: "", label: "All Status" },
             { value: "active", label: "Active" },
             { value: "pending", label: "Pending" },
             { value: "expired", label: "Expired" },

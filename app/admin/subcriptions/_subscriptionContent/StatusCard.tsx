@@ -46,7 +46,7 @@ const getStatColors = (type: string): { color: string; bgColor: string } => {
 };
 
 // Enhanced StatsCard component using the helper functions
-export const StatsCard = ({ title, value, subValue, type }) => {
+export const StatsCard = ({ title, value, type }) => {
   const icon = getStatIcon(type);
   const { color, bgColor } = getStatColors(type);
 
@@ -56,9 +56,9 @@ export const StatsCard = ({ title, value, subValue, type }) => {
         <div>
           <p className="text-stone-600 text-sm font-medium mb-1">{title}</p>
           <h3 className="text-2xl font-bold text-stone-800">{value}</h3>
-          {subValue && (
+          {/* {subValue && (
             <p className="text-sm text-stone-500 mt-1">{subValue}</p>
-          )}
+          )} */}
         </div>
         <div className="p-3 rounded-full" style={{ backgroundColor: bgColor }}>
           {React.cloneElement(icon, { size: 24, color: color })}
