@@ -1,218 +1,91 @@
 "use client";
 import React from "react";
 import { Card } from "@/src/components/utils/Card";
+import { StatsCard, StatType } from "./_dashboardContent/StateSection";
 import {
-  Users,
-  UserCog,
-  BadgeCheck,
-  XCircle,
-  Clock,
-  AlertCircle,
-  Wallet,
-  HeadphonesIcon,
-  UserPlus
-} from "lucide-react";
-
-// Import colors from your theme
-const colors = {
-  primary: "#269c65",
-  secondary: "#e8f5e9",
-  stone: {
-    50: "#fafaf9",
-    100: "#f5f5f4",
-    200: "#e7e5e4",
-    300: "#d6d3d1",
-    400: "#a8a29e",
-    500: "#78716c",
-    600: "#57534e",
-    700: "#44403c",
-    800: "#292524",
-    900: "#1c1917"
-  }
-};
-
-// Stats Card Component
-interface StatsCardProps {
-  title: string;
-  value: string | number;
-  icon: React.ReactNode;
-  trend?: {
-    value: number;
-    isPositive: boolean;
-  };
-  color: string;
-  bgColor: string;
-}
-
-const StatsCard = ({
-  title,
-  value,
-  icon,
-  trend,
-  color,
-  bgColor
-}: StatsCardProps) => (
-  <Card className="p-6 h-full">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-stone-600 text-sm font-medium mb-1">{title}</p>
-        <h3 className="text-2xl font-bold text-stone-800">{value}</h3>
-        {trend && (
-          <p
-            className={`text-sm mt-2 ${
-              trend.isPositive ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}% from last
-            month
-          </p>
-        )}
-      </div>
-      <div className="p-3 rounded-full" style={{ backgroundColor: bgColor }}>
-        {React.cloneElement(icon as React.ReactElement, {
-          size: 24,
-          color: color
-        })}
-      </div>
-    </div>
-  </Card>
-);
-
-// Activity Item Component
-interface ActivityItemProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  time: string;
-  color: string;
-  bgColor: string;
-}
-
-const ActivityItem = ({
-  icon,
-  title,
-  description,
-  time,
-  color,
-  bgColor
-}: ActivityItemProps) => (
-  <div className="flex items-start gap-4 p-4 hover:bg-stone-50 rounded-lg transition-colors">
-    <div
-      className="p-2 rounded-full shrink-0"
-      style={{ backgroundColor: bgColor }}
-    >
-      {React.cloneElement(icon as React.ReactElement, {
-        size: 20,
-        color: color
-      })}
-    </div>
-    <div className="flex-1 min-w-0">
-      <p className="text-sm font-medium text-stone-800">{title}</p>
-      <p className="text-sm text-stone-600 mt-0.5">{description}</p>
-      <p className="text-xs text-stone-400 mt-1">{time}</p>
-    </div>
-  </div>
-);
+  ActivityItem,
+  ActivityType
+} from "./_dashboardContent/ActivitySection";
 
 // Dashboard Component
 const Dashboard = () => {
+  // Stats data with type-safe StatType
   const stats = [
     {
+      type: "totalDoctors" as StatType,
       title: "Total Doctors",
       value: "1,234",
-      icon: <UserCog />,
-      trend: { value: 12, isPositive: true },
-      color: "#2196F3",
-      bgColor: "#E3F2FD"
+      trend: { value: 12, isPositive: true }
     },
     {
+      type: "totalPatients" as StatType,
       title: "Total Patients",
       value: "5,678",
-      icon: <Users />,
-      trend: { value: 8, isPositive: true },
-      color: "#9C27B0",
-      bgColor: "#F3E5F5"
+      trend: { value: 8, isPositive: true }
     },
     {
+      type: "activeSubscriptions" as StatType,
       title: "Active Subscriptions",
       value: "892",
-      icon: <BadgeCheck />,
-      trend: { value: 5, isPositive: true },
-      color: colors.primary,
-      bgColor: colors.secondary
+      trend: { value: 5, isPositive: true }
     },
     {
+      type: "cancelledSubscriptions" as StatType,
       title: "Cancelled Subscriptions",
       value: "234",
-      icon: <XCircle />,
-      trend: { value: 2, isPositive: false },
-      color: "#F44336",
-      bgColor: "#FFEBEE"
+      trend: { value: 2, isPositive: false }
     },
     {
+      type: "expiredSubscriptions" as StatType,
       title: "Expired Subscriptions",
       value: "567",
-      icon: <Clock />,
-      trend: { value: 3, isPositive: false },
-      color: "#FF9800",
-      bgColor: "#FFF3E0"
+      trend: { value: 3, isPositive: false }
     }
   ];
 
+  // Activity data with type-safe ActivityType
   const recentTransactions = [
     {
-      icon: <Wallet />,
+      type: "premiumSubscription" as ActivityType,
       title: "Premium Plan Subscription",
       description: "Dr. Sarah Johnson - $299",
-      time: "2 hours ago",
-      color: "#2196F3",
-      bgColor: "#E3F2FD"
+      time: "2 hours ago"
     },
     {
-      icon: <Wallet />,
+      type: "basicSubscription" as ActivityType,
       title: "Basic Plan Renewal",
       description: "Dr. Michael Chen - $199",
-      time: "5 hours ago",
-      color: "#2196F3",
-      bgColor: "#E3F2FD"
+      time: "5 hours ago"
     }
   ];
 
   const recentRegistrations = [
     {
-      icon: <UserPlus />,
+      type: "doctorRegistration" as ActivityType,
       title: "New Doctor Registration",
       description: "Dr. Emily Williams - Cardiologist",
-      time: "1 hour ago",
-      color: colors.primary,
-      bgColor: colors.secondary
+      time: "1 hour ago"
     },
     {
-      icon: <UserPlus />,
+      type: "patientRegistration" as ActivityType,
       title: "New Patient Registration",
       description: "Robert Wilson",
-      time: "3 hours ago",
-      color: "#9C27B0",
-      bgColor: "#F3E5F5"
+      time: "3 hours ago"
     }
   ];
 
   const recentTickets = [
     {
-      icon: <HeadphonesIcon />,
+      type: "technicalSupport" as ActivityType,
       title: "Technical Support",
       description: "Login issues - High Priority",
-      time: "30 minutes ago",
-      color: "#F44336",
-      bgColor: "#FFEBEE"
+      time: "30 minutes ago"
     },
     {
-      icon: <HeadphonesIcon />,
+      type: "billingSupport" as ActivityType,
       title: "Billing Support",
       description: "Payment verification pending",
-      time: "2 hours ago",
-      color: "#FF9800",
-      bgColor: "#FFF3E0"
+      time: "2 hours ago"
     }
   ];
 
