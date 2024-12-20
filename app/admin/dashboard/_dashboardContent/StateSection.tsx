@@ -1,6 +1,13 @@
 import { colors } from "@/app/lib/constant";
 import { Card } from "@/src/components/utils/Card";
-import { UserCog, Users, BadgeCheck, XCircle, Clock } from "lucide-react";
+import {
+  UserCog,
+  Users,
+  BadgeCheck,
+  XCircle,
+  Clock,
+  CreditCard
+} from "lucide-react";
 import React from "react";
 
 // Utility types to ensure type safety
@@ -9,7 +16,8 @@ export type StatType =
   | "totalPatients"
   | "activeSubscriptions"
   | "cancelledSubscriptions"
-  | "expiredSubscriptions";
+  | "expiredSubscriptions"
+  | "adminBalance";
 
 // Utility functions to get icons and styles based on types
 const getStatIcon = (type: StatType): React.ReactNode => {
@@ -24,6 +32,8 @@ const getStatIcon = (type: StatType): React.ReactNode => {
       return <XCircle />;
     case "expiredSubscriptions":
       return <Clock />;
+    case "adminBalance":
+      return <CreditCard />;
   }
 };
 
@@ -39,6 +49,8 @@ const getStatColors = (type: StatType): { color: string; bgColor: string } => {
       return { color: "#F44336", bgColor: "#FFEBEE" };
     case "expiredSubscriptions":
       return { color: "#FF9800", bgColor: "#FFF3E0" };
+    case "adminBalance":
+      return { color: "#FF6900", bgColor: colors.stone[100] };
   }
 };
 
