@@ -61,8 +61,8 @@ export const useFilterTransaction = () => {
 
 // Main hook that handles all transaction data loading and state management
 export const useGetAllTransactions = (
-  page: number,
-  setPageNumber: React.Dispatch<React.SetStateAction<number>>
+  page?: number,
+  setPageNumber?: React.Dispatch<React.SetStateAction<number>>
 ) => {
   // Get filter functionality
   const { filterTransactionValues, handleClearFilter, handleOnChange } =
@@ -90,7 +90,9 @@ export const useGetAllTransactions = (
 
   // Go back to first page whenever filters change
   useEffect(() => {
-    setPageNumber(1);
+    if (setPageNumber) {
+      setPageNumber(1);
+    }
   }, [filterTransactionValues, setPageNumber]);
 
   // Calculate total pages needed for pagination
@@ -113,7 +115,7 @@ export const useGetAllTransactions = (
 
   // Load more transactions when user clicks "See More"
   const handleSeeMoreBtn = () => {
-    if (page < totalPages) {
+    if (page && setPageNumber && page < totalPages) {
       const nextPage = page + 1;
       setPageNumber(nextPage);
       setIsPending(true);
@@ -149,6 +151,8 @@ export const useGetAllTransactions = (
     handleClearFilter,
     isPending,
     handleOnChange,
+    totalRevenue: data?.totalRevenue || 0.0,
+    totalRevenueTrend: data?.revenueDifference || "0",
     preservedTotalResult,
     filterTransactionValues,
     result: totalResult,

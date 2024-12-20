@@ -69,7 +69,7 @@ export const StatsCard = ({ title, value, type, trend }: StatsCardProps) => {
                 trend.isPositive ? "text-green-600" : "text-red-600"
               }`}
             >
-              {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}% from last
+              {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)} from last
               month
             </p>
           )}
