@@ -552,5 +552,6 @@ export const ADMIN_API_END_POINT = {
     getAllPatientsData: "/admin/patients/details/all",
     getPatientById: "/admin/patients/single/details",
     updatePatientDetails: "/admin//patients/update/details",
-    getAllAdminDashboardDetails: "/admin/dashboard/details/all"
+    getAllAdminDashboardDetails: "/admin/dashboard/details/all",
+    getAllAdminSubscriptionDetails: "/admin/subscriptions/details/all"
 }
