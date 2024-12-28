@@ -553,7 +553,9 @@ export const ADMIN_API_END_POINT = {
     getPatientById: "/admin/patients/single/details",
     updatePatientDetails: "/admin//patients/update/details",
     getAllAdminDashboardDetails: "/admin/dashboard/details/all",
-    getAllAdminSubscriptionDetails: "/admin/subscriptions/details/all"
+    getAllAdminSubscriptionDetails: "/admin/subscriptions/details/all",
+    getAllAdminGeneralSettings: "/admin/general-settings/all/details",
+    updateAdminGeneralSettings: "/admin/general-settings/update/details"
 }
 
 // Constants for select options with enhanced descriptions
