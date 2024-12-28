@@ -553,5 +553,31 @@ export const ADMIN_API_END_POINT = {
     getPatientById: "/admin/patients/single/details",
     updatePatientDetails: "/admin//patients/update/details",
     getAllAdminDashboardDetails: "/admin/dashboard/details/all",
-    getAllAdminSubscriptionDetails: "/admin/subscriptions/details/all"
+    getAllAdminSubscriptionDetails: "/admin/subscriptions/details/all",
+    getAllAdminGeneralSettings: "/admin/general-settings/all/details",
+    updateAdminGeneralSettings: "/admin/general-settings/update/details"
 }
+
+// Constants for select options with enhanced descriptions
+export const SUBSCRIPTION_DURATION_OPTIONS = [
+    { value: "monthly", label: "Monthly - Flexible short-term commitment" },
+    { value: "yearly", label: "Yearly - Save 20% with annual billing" }
+];
+
+export const USER_STATUS_OPTIONS = [
+    { value: "active", label: "Active - System fully operational" },
+    {
+        value: "maintenance",
+        label: "Maintenance - Scheduled updates in progress"
+    },
+    { value: "suspended", label: "Suspended - Temporarily disabled" }
+];
+
+// Information tooltips for each section
+export const SECTION_INFO = {
+    websiteInfo: "Basic information displayed across your platform",
+    seo: "Improve your website's visibility on search engines",
+    payment: "Configure your platform's financial settings",
+    support: "Contact information for user assistance",
+    status: "Control your website's operational status"
+};

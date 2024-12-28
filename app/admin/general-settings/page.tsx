@@ -1,37 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/src/components/utils/Card";
 import { Button } from "@/src/components/utils/Button";
 import Input from "@/src/components/ui/forms/Input";
 import SelectInput from "@/src/components/ui/forms/SelectInput";
 import { HelpCircle, Info, AlertCircle } from "lucide-react";
-import { colors } from "@/app/lib/constant";
+import {
+  colors,
+  SECTION_INFO,
+  SUBSCRIPTION_DURATION_OPTIONS,
+  USER_STATUS_OPTIONS
+} from "@/app/lib/constant";
 import SubmittingLoader from "@/src/components/ui/loading/SubmittingLoader";
-
-// Constants for select options with enhanced descriptions
-const SUBSCRIPTION_DURATION_OPTIONS = [
-  { value: "monthly", label: "Monthly - Flexible short-term commitment" },
-  { value: "yearly", label: "Yearly - Save 20% with annual billing" }
-];
-
-const USER_STATUS_OPTIONS = [
-  { value: "active", label: "Active - System fully operational" },
-  {
-    value: "maintenance",
-    label: "Maintenance - Scheduled updates in progress"
-  },
-  { value: "suspended", label: "Suspended - Temporarily disabled" }
-];
-
-// Information tooltips for each section
-const SECTION_INFO = {
-  websiteInfo: "Basic information displayed across your platform",
-  seo: "Improve your website's visibility on search engines",
-  payment: "Configure your platform's financial settings",
-  support: "Contact information for user assistance",
-  status: "Control your website's operational status"
-};
+import { useGeneralSettings } from "@/src/hooks/admin/useGeneralSettigs";
 
 // Helper component for section headers with tooltips
 const SectionHeader = ({ title, info, className = "" }) => (
@@ -53,62 +34,13 @@ const InputDescription = ({ text }) => (
 );
 
 const GeneralSettings = () => {
-  const [settingsData, setSettingsData] = useState({
-    websiteName: "",
-    tagline: "",
-    metaDescription: "",
-    metaKeywords: "",
-    patientFee: "",
-    doctorCommission: "",
-    subscriptionDuration: "monthly",
-    status: "active",
-    supportEmail: "",
-    supportPhone: ""
-  });
-
-  const [isPending, setIsPending] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSettingsData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear any existing messages when user makes changes
-    setMessage({ type: "", text: "" });
-  };
-
-  const handleUpdateSettings = async () => {
-    setIsPending(true);
-    try {
-      // Validate required fields
-      const requiredFields = ["websiteName", "supportEmail", "supportPhone"];
-      const missingFields = requiredFields.filter(
-        (field) => !settingsData[field]
-      );
-
-      if (missingFields.length > 0) {
-        throw new Error(
-          `Please fill in all required fields: ${missingFields.join(", ")}`
-        );
-      }
-
-      // Add your API call here
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setMessage({
-        type: "success",
-        text: "Settings updated successfully!"
-      });
-    } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.message || "Failed to update settings"
-      });
-    } finally {
-      setIsPending(false);
-    }
-  };
+  const {
+    handleInputChange,
+    handleUpdateSettings,
+    settingsData,
+    message,
+    isPending
+  } = useGeneralSettings();
 
   return (
     <div
