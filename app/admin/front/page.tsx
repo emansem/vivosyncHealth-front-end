@@ -1,428 +1,208 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 import { Card } from "@/src/components/utils/Card";
-import { Button } from "@/src/components/utils/Button";
 import Input from "@/src/components/ui/forms/Input";
 import SelectInput from "@/src/components/ui/forms/SelectInput";
-import SearchInput from "@/src/components/ui/forms/searchInput";
-import {
-  MessageCircle,
-  PlusCircle,
-  X,
-  Send,
-  Clock,
-  AlertCircle
-} from "lucide-react";
-import { colors } from "@/app/lib/constant";
+import { Button } from "@/src/components/utils/Button";
 
-// Constants for ticket creation and management
-const TICKET_CATEGORIES = [
-  { value: "technical", label: "Technical Issue" },
-  { value: "billing", label: "Billing Question" },
-  { value: "account", label: "Account Management" },
-  { value: "other", label: "Other" }
-];
+interface TicketDashboardProps {
+  tickets: Array<{
+    id: string;
+    title: string;
+    status: string;
+    priority: string;
+    created_at: string;
+    last_updated: string;
+    category: string;
+  }>;
+  onFilterChange: (filters: unknown) => void;
+  onClearFilter: () => void;
+  currentFilters: {
+    status: string;
+    priority: string;
+    searchQuery: string;
+  };
+  onTicketClick: (ticketId: string) => void;
+}
 
-// Status badge component with color coding
-const StatusBadge = ({ status }) => {
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "open":
-        return { bg: colors.secondary, text: colors.primary };
-      case "inProgress":
-        return { bg: "#FEF3C7", text: "#D97706" };
-      case "resolved":
-        return { bg: "#DCFCE7", text: "#059669" };
+const UserSupportDashboard = ({
+  tickets,
+  onFilterChange,
+  onClearFilter,
+  currentFilters,
+  onTicketClick
+}: TicketDashboardProps) => {
+  // Helper function to format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+  };
+
+  // Helper function for priority color
+  const getPriorityColor = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case "high":
+        return "bg-red-100 text-red-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return { bg: colors.stone[200], text: colors.stone[600] };
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const style = getStatusStyle(status);
-
   return (
-    <span
-      className="px-3 py-1 rounded-full text-sm font-medium"
-      style={{
-        backgroundColor: style.bg,
-        color: style.text
-      }}
-    >
-      {status === "inProgress"
-        ? "In Progress"
-        : status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
-  );
-};
-
-// New Ticket Modal Component
-const NewTicketModal = ({ onClose, onSubmit }) => {
-  const [ticketData, setTicketData] = useState({
-    subject: "",
-    category: "",
-    message: ""
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(ticketData);
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2
-              className="text-xl font-semibold"
-              style={{ color: colors.stone[800] }}
-            >
-              Create New Support Ticket
-            </h2>
-            <button onClick={onClose} className="p-1">
-              <X size={20} style={{ color: colors.stone[500] }} />
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input
-              label="Subject"
-              name="subject"
-              inputType="text"
-              value={ticketData.subject}
-              onChange={(e) =>
-                setTicketData((prev) => ({
-                  ...prev,
-                  subject: e.target.value
-                }))
-              }
-              required
-            />
-
-            <SelectInput
-              id="category"
-              name="category"
-              label="Category"
-              value={ticketData.category}
-              options={TICKET_CATEGORIES}
-              onChange={(e) =>
-                setTicketData((prev) => ({
-                  ...prev,
-                  category: e.target.value
-                }))
-              }
-            />
-
-            <div>
-              <label
-                className="block mb-2 font-medium"
-                style={{ color: colors.stone[700] }}
-              >
-                Message
-              </label>
-              <textarea
-                className="w-full p-3 rounded-lg border"
-                style={{
-                  borderColor: colors.stone[200],
-                  minHeight: "150px"
-                }}
-                value={ticketData.message}
-                onChange={(e) =>
-                  setTicketData((prev) => ({
-                    ...prev,
-                    message: e.target.value
-                  }))
-                }
-                required
-              />
-            </div>
-
-            <div className="flex justify-end gap-3">
-              <Button
-                onClick={onClose}
-                style={{
-                  backgroundColor: colors.stone[200],
-                  color: colors.stone[700]
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                style={{
-                  backgroundColor: colors.primary,
-                  color: "white"
-                }}
-              >
-                Submit Ticket
-              </Button>
-            </div>
-          </form>
-        </div>
-      </Card>
-    </div>
-  );
-};
-
-// Main Support Interface Component
-const UserSupportInterface = () => {
-  const [showNewTicketModal, setShowNewTicketModal] = useState(false);
-  const [selectedTicketId, setSelectedTicketId] = useState(null);
-  const [replyText, setReplyText] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-
-  // Example tickets data - would normally come from API
-  const tickets = [
-    {
-      id: "TKT-001",
-      subject: "Video Call Issues",
-      category: "technical",
-      status: "open",
-      lastUpdate: "2 hours ago",
-      messages: [
-        {
-          id: 1,
-          sender: "You",
-          message:
-            "I'm having trouble with the video call feature. The screen keeps freezing.",
-          timestamp: "10:30 AM",
-          isUser: true
-        },
-        {
-          id: 2,
-          sender: "Support Team",
-          message:
-            "Hello! Could you please tell us which browser you're using?",
-          timestamp: "10:35 AM",
-          isUser: false
-        }
-      ]
-    }
-  ];
-
-  const selectedTicket = tickets.find((t) => t.id === selectedTicketId);
-
-  const handleNewTicket = (ticketData) => {
-    // Here you would typically make an API call to create the ticket
-    console.log("Creating new ticket:", ticketData);
-  };
-
-  const handleSendReply = () => {
-    if (!replyText.trim()) return;
-    // Here you would typically make an API call to send the reply
-    console.log("Sending reply:", replyText);
-    setReplyText("");
-  };
-
-  return (
-    <div className="max-w-7xl mx-auto p-4">
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1
-            className="text-2xl font-bold mb-2"
-            style={{ color: colors.primary }}
-          >
-            Support Center
-          </h1>
-          <p style={{ color: colors.stone[600] }}>
-            Get help with any issues or questions you have
-          </p>
-        </div>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-semibold text-stone-800">
+          Support Tickets
+        </h1>
         <Button
-          onClick={() => setShowNewTicketModal(true)}
-          style={{
-            backgroundColor: colors.primary,
-            color: "white"
-          }}
-          className="flex items-center gap-2"
+          variant="primary"
+          onClick={() => onTicketClick("new")}
+          className="w-full md:w-auto"
         >
-          <PlusCircle size={20} />
-          New Ticket
+          Create New Ticket
         </Button>
       </div>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Tickets List */}
-        <div className="lg:col-span-1">
-          <Card>
-            <div
-              className="p-4 border-b"
-              style={{ borderColor: colors.stone[200] }}
-            >
-              <SearchInput
-                name="searchValue"
-                onChange={(e) => setSearchValue(e.target.value)}
-                value={searchValue}
-                placeholder="Search your tickets"
-              />
-            </div>
-
-            <div
-              className="divide-y"
-              style={{ borderColor: colors.stone[200] }}
-            >
-              {tickets.map((ticket) => (
-                <div
-                  key={ticket.id}
-                  className={`p-4 cursor-pointer transition-colors ${
-                    selectedTicketId === ticket.id
-                      ? "bg-gray-50"
-                      : "hover:bg-gray-50"
-                  }`}
-                  onClick={() => setSelectedTicketId(ticket.id)}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <span
-                      className="text-sm font-medium"
-                      style={{ color: colors.stone[500] }}
-                    >
-                      {ticket.id}
-                    </span>
-                    <StatusBadge status={ticket.status} />
-                  </div>
-
-                  <h3
-                    className="font-medium mb-2"
-                    style={{ color: colors.stone[800] }}
-                  >
-                    {ticket.subject}
-                  </h3>
-
-                  <div
-                    className="flex items-center gap-2 text-sm"
-                    style={{ color: colors.stone[500] }}
-                  >
-                    <Clock size={14} />
-                    <span>Last updated {ticket.lastUpdate}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+      {/* Filters Section */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+        <div className="md:col-span-6">
+          <Input
+            label=""
+            inputType="text"
+            inputPlaceholder="Search tickets..."
+            value={currentFilters.searchQuery}
+            onChange={(e) =>
+              onFilterChange({
+                ...currentFilters,
+                searchQuery: e.target.value
+              })
+            }
+          />
         </div>
-
-        {/* Chat Interface */}
-        <div className="lg:col-span-2">
-          <Card>
-            {selectedTicket ? (
-              <div className="h-[calc(100vh-12rem)] flex flex-col">
-                {/* Ticket Header */}
-                <div
-                  className="p-4 border-b"
-                  style={{ borderColor: colors.stone[200] }}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <span
-                        className="text-sm font-medium block mb-1"
-                        style={{ color: colors.stone[500] }}
-                      >
-                        {selectedTicket.id}
-                      </span>
-                      <h2
-                        className="text-xl font-semibold"
-                        style={{ color: colors.stone[800] }}
-                      >
-                        {selectedTicket.subject}
-                      </h2>
-                    </div>
-                    <StatusBadge status={selectedTicket.status} />
-                  </div>
-                </div>
-
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                  {selectedTicket.messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${
-                        message.isUser ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-[80%] rounded-lg p-4 ${
-                          message.isUser ? "bg-blue-50" : "bg-gray-50"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          <span
-                            className="font-medium"
-                            style={{ color: colors.stone[700] }}
-                          >
-                            {message.sender}
-                          </span>
-                          <span
-                            className="text-sm"
-                            style={{ color: colors.stone[500] }}
-                          >
-                            {message.timestamp}
-                          </span>
-                        </div>
-                        <p style={{ color: colors.stone[700] }}>
-                          {message.message}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Reply Area */}
-                <div
-                  className="border-t p-4"
-                  style={{ borderColor: colors.stone[200] }}
-                >
-                  <div className="flex gap-2">
-                    <textarea
-                      className="flex-1 p-3 rounded-lg border resize-none"
-                      style={{
-                        borderColor: colors.stone[200],
-                        minHeight: "50px"
-                      }}
-                      placeholder="Type your message..."
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                    />
-                    <Button
-                      onClick={handleSendReply}
-                      disabled={!replyText.trim()}
-                      style={{
-                        backgroundColor: colors.primary,
-                        color: "white"
-                      }}
-                    >
-                      <Send size={20} />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="h-[calc(100vh-12rem)] flex items-center justify-center">
-                <div
-                  className="text-center"
-                  style={{ color: colors.stone[500] }}
-                >
-                  <MessageCircle size={48} className="mx-auto mb-4" />
-                  <p>Select a ticket to view the conversation</p>
-                </div>
-              </div>
-            )}
-          </Card>
+        <div className="md:col-span-3">
+          <SelectInput
+            id=""
+            label=""
+            value={currentFilters.status}
+            onChange={(e) =>
+              onFilterChange({
+                ...currentFilters,
+                status: e.target.value
+              })
+            }
+            options={[
+              { value: "", label: "Filter by Status" },
+              { value: "open", label: "Open" },
+              { value: "closed", label: "Closed" },
+              { value: "pending", label: "Pending" }
+            ]}
+          />
+        </div>
+        <div className="md:col-span-3">
+          <SelectInput
+            id=""
+            label=""
+            value={currentFilters.priority}
+            onChange={(e) =>
+              onFilterChange({
+                ...currentFilters,
+                priority: e.target.value
+              })
+            }
+            options={[
+              { value: "", label: "Filter by Priority" },
+              { value: "high", label: "High" },
+              { value: "medium", label: "Medium" },
+              { value: "low", label: "Low" }
+            ]}
+          />
         </div>
       </div>
 
-      {/* New Ticket Modal */}
-      {showNewTicketModal && (
-        <NewTicketModal
-          onClose={() => setShowNewTicketModal(false)}
-          onSubmit={handleNewTicket}
-        />
+      {/* Clear Filters Button */}
+      {(currentFilters.status ||
+        currentFilters.priority ||
+        currentFilters.searchQuery) && (
+        <Button onClick={onClearFilter} variant="outline" className="mb-6">
+          Clear Filters
+        </Button>
+      )}
+
+      {/* Tickets List */}
+      <div className="space-y-4">
+        {tickets.map((ticket) => (
+          <Card
+            key={ticket.id}
+            // onClick={() => onTicketClick(ticket.id)}
+            className="cursor-pointer hover:shadow-md transition-shadow"
+          >
+            <div className="p-4">
+              <div className="flex flex-col md:flex-row justify-between mb-3">
+                <div className="flex flex-wrap gap-2 items-center mb-2 md:mb-0">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${getPriorityColor(
+                      ticket.priority
+                    )}`}
+                  >
+                    {ticket.priority.toUpperCase()}
+                  </span>
+                  <span className="text-sm text-stone-500">#{ticket.id}</span>
+                </div>
+                <div className="text-sm text-stone-500">
+                  Created: {formatDate(ticket.created_at)}
+                </div>
+              </div>
+
+              <h3 className="font-medium text-stone-800 mb-2">
+                {ticket.title}
+              </h3>
+
+              <div className="flex flex-wrap gap-4 text-sm">
+                <span className="text-stone-500">
+                  Category: {ticket.category}
+                </span>
+                <span
+                  className={`${
+                    ticket.status === "open"
+                      ? "text-green-600"
+                      : ticket.status === "closed"
+                      ? "text-stone-500"
+                      : "text-yellow-600"
+                  }`}
+                >
+                  Status:{" "}
+                  {ticket.status.charAt(0).toUpperCase() +
+                    ticket.status.slice(1)}
+                </span>
+                <span className="text-stone-500">
+                  Last Updated: {formatDate(ticket.last_updated)}
+                </span>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Empty State */}
+      {tickets.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-stone-500 mb-4">No tickets found</p>
+          <Button variant="primary" onClick={() => onTicketClick("new")}>
+            Create Your First Ticket
+          </Button>
+        </div>
       )}
     </div>
   );
 };
 
-export default UserSupportInterface;
+export default UserSupportDashboard;
