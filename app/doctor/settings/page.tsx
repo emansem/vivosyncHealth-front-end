@@ -1,112 +1,61 @@
 "use client";
 
-import {
-  CHANGE_PASSWORD_INPUTS,
-  CHANGE_WITHDRAWAL_PASSWORD,
-  colors
-} from "@/app/lib/constant";
-import { DailogForm } from "./DailogForm";
-import { Button } from "@/src/components/utils/Button";
-import { Card } from "../profile/_profileCOntent/ReusableContent";
-import { useUpdateSettings } from "@/src/hooks/authentication/useUpdateSettings";
+import React, { useState } from "react";
+
+import { ProfileSection } from "./_settingsContent/ProfileSection";
+import { SettingsNavigation } from "./_settingsContent/SettingsNavigation";
+import { SecuritySection } from "./_settingsContent/SecuritySection";
+import { NotificationsSection } from "./_settingsContent/NotificationSection";
+import { FeesSection } from "./_settingsContent/FeesSection";
+import { TemplatesSection } from "./_settingsContent/TemplateSection";
 
 // Main Settings Page Component
-export default function DoctorSettings() {
-  const {
-    handleCloseWithdrawalPasswordForm,
-    handleOpenPasswordForm,
-    handleOpenWithdrawalPasswordForm,
-    handleClosePasswordForm,
-    isPasswordDialogOpen,
-    isSubmittingPasswordForm,
-    isWithdrawalPasswordDialogOpen,
-    handleOnchangeAccountPassword,
-    submitAccountPasswordForm,
-    submitWithdrawalPasswordForm,
-    isSubmitWithdrawalForm,
-    handleOnchangeWithdrawalPassword
-  } = useUpdateSettings();
+const DoctorSettingsPage = () => {
+  const [activeTab, setActiveTab] = useState("profile");
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "profile":
+        return <ProfileSection />;
+
+      case "fees":
+        return <FeesSection />;
+      case "templates":
+        return <TemplatesSection />;
+      case "notifications":
+        return <NotificationsSection />;
+
+      case "security":
+        return <SecuritySection />;
+      default:
+        return <ProfileSection />;
+    }
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className={`mb-8 text-3xl font-bold text-[${colors.primary}]`}>
-        Settings
-      </h1>
-
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Account Details Card */}
-        <Card className="p-6">
-          <h2
-            className={`text-xl font-semibold text-[${colors.stone[900]}] mb-4`}
-          >
-            Email Address
-          </h2>
-          <p className={`mb-4 text-[${colors.stone[600]}]`}>
-            Update your email address for account notifications
+    <div className="min-h-screen bg-stone-50">
+      <div className="max-w-7xl mx-auto p-4 md:p-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-stone-800">Doctor Settings</h1>
+          <p className="text-stone-500">
+            Manage your professional profile and preferences
           </p>
-          <Button
-            fullWidth
-            onClick={() => {
-              /* Navigate to profile */
-            }}
-          >
-            Update Profile
-          </Button>
-        </Card>
+        </div>
 
-        {/* Withdrawal Password Card */}
-        <Card className="p-6">
-          <h2
-            className={`text-xl font-semibold text-[${colors.stone[900]}] mb-4`}
-          >
-            Account Password
-          </h2>
-          <p className={`mb-4 text-[${colors.stone[600]}]`}>
-            Change your account password for enhanced security
-          </p>
-          <Button fullWidth onClick={handleOpenPasswordForm}>
-            Update Password
-          </Button>
-        </Card>
-
-        {/* Email Address Card */}
-        <Card className="p-6">
-          <h2
-            className={`text-xl font-semibold text-[${colors.stone[900]}] mb-4`}
-          >
-            Withdrawal Password
-          </h2>
-          <p className={`mb-4 text-[${colors.stone[600]}]`}>
-            Change your withdrawal password for enhanced security
-          </p>
-          <Button fullWidth onClick={handleOpenWithdrawalPasswordForm}>
-            Update Withdrawal Password
-          </Button>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-3">
+            <div className="sticky top-6">
+              <SettingsNavigation
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
+            </div>
+          </div>
+          <div className="lg:col-span-9">{renderContent()}</div>
+        </div>
       </div>
-
-      {/* Dialogs */}
-      <DailogForm
-        isSubmitting={isSubmittingPasswordForm}
-        onSubmit={submitAccountPasswordForm}
-        onChange={handleOnchangeAccountPassword}
-        isOpen={isPasswordDialogOpen}
-        onClose={handleClosePasswordForm}
-        inputsFields={CHANGE_PASSWORD_INPUTS}
-        title="Update Account Password"
-      />
-
-      <DailogForm
-        isSubmitting={isSubmitWithdrawalForm}
-        onSubmit={submitWithdrawalPasswordForm}
-        onChange={handleOnchangeWithdrawalPassword}
-        isOpen={isWithdrawalPasswordDialogOpen}
-        onClose={handleCloseWithdrawalPasswordForm}
-        inputsFields={CHANGE_WITHDRAWAL_PASSWORD}
-        title="Update Withdrawal Password"
-      />
-
-      {/* Toast */}
     </div>
   );
-}
+};
+
+export default DoctorSettingsPage;

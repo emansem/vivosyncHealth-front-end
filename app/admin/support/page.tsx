@@ -1,614 +1,322 @@
 "use client";
-import React, { useState } from "react";
+
+import React from "react";
 import { Card } from "@/src/components/utils/Card";
 import Input from "@/src/components/ui/forms/Input";
 import SelectInput from "@/src/components/ui/forms/SelectInput";
 import { Button } from "@/src/components/utils/Button";
-import {
-  TicketIcon,
-  MessageSquare,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Search,
-  Filter,
-  Plus,
-  ChevronRight,
-  Edit,
-  Trash2,
-  XCircle,
-  User,
-  Calendar,
-  Tag,
-  Flag,
-  MailOpen
-} from "lucide-react";
 import { colors } from "@/app/lib/constant";
 
-// Status badge component
-const StatusBadge = ({ status }) => {
-  const statusStyles = {
-    open: { bg: "bg-yellow-50", text: "text-yellow-700", icon: Clock },
-    "in-progress": {
-      bg: "bg-blue-50",
-      text: "text-blue-700",
-      icon: MessageSquare
-    },
-    resolved: { bg: "bg-green-50", text: "text-green-700", icon: CheckCircle },
-    closed: { bg: "bg-stone-50", text: "text-stone-700", icon: XCircle }
-  };
+interface TicketData {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  category: string;
+  created_at: string;
+  user_name: string;
+  response_count: number;
+  sla_status: "within" | "warning" | "breached";
+}
 
-  const style = statusStyles[status] || statusStyles.open;
-  const Icon = style.icon;
+const DEMO_TICKETS: TicketData[] = [
+  {
+    id: "TKT-2024-001",
+    title: "Unable to access patient records",
+    status: "open",
+    priority: "high",
+    category: "Technical",
+    created_at: "2024-02-15T10:30:00",
+    user_name: "Dr. Smith",
+    response_count: 2,
+    sla_status: "within"
+  },
+  {
+    id: "TKT-2024-002",
+    title: "Billing system error",
+    status: "pending",
+    priority: "medium",
+    category: "Billing",
+    created_at: "2024-02-14T09:15:00",
+    user_name: "Jane Doe",
+    response_count: 1,
+    sla_status: "warning"
+  }
+];
 
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${style.bg} ${style.text}`}
-    >
-      <Icon size={14} />
-      {status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
-  );
-};
+const AdminDashboard = () => {
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState("");
+  const [priorityFilter, setPriorityFilter] = React.useState("");
+  const [tickets, setTickets] = React.useState(DEMO_TICKETS);
 
-// Priority badge component
-const PriorityBadge = ({ priority }) => {
-  const priorityStyles = {
-    high: { bg: "bg-red-50", text: "text-red-700" },
-    medium: { bg: "bg-orange-50", text: "text-orange-700" },
-    low: { bg: "bg-green-50", text: "text-green-700" }
-  };
-
-  const style = priorityStyles[priority] || priorityStyles.medium;
-
-  return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${style.bg} ${style.text}`}
-    >
-      {priority.charAt(0).toUpperCase() + priority.slice(1)}
-    </span>
-  );
-};
-
-// Ticket creation/edit modal
-const TicketModal = ({ ticket, onSave, onClose }) => {
-  const [ticketData, setTicketData] = useState(
-    ticket || {
-      title: "",
-      description: "",
-      priority: "medium",
-      category: "technical",
-      assignedTo: "",
-      email: "",
-      status: "open"
+  const getPriorityColor = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case "high":
+        return "bg-red-100 text-red-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  };
+
+  const handleStatusChange = (ticketId: string, newStatus: string) => {
+    setTickets((currentTickets) =>
+      currentTickets.map((ticket) =>
+        ticket.id === ticketId ? { ...ticket, status: newStatus } : ticket
+      )
+    );
+  };
+
+  const handleViewDetails = (ticketId: string) => {
+    console.log(`Navigating to ticket ${ticketId}`);
+  };
+
+  const filteredTickets = React.useMemo(() => {
+    return tickets.filter((ticket) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ticket.user_name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "" || ticket.status === statusFilter;
+      const matchesPriority =
+        priorityFilter === "" || ticket.priority === priorityFilter;
+
+      return matchesSearch && matchesStatus && matchesPriority;
+    });
+  }, [tickets, searchQuery, statusFilter, priorityFilter]);
+
+  const stats = React.useMemo(
+    () => ({
+      openTickets: tickets.filter((t) => t.status === "open").length,
+      highPriority: tickets.filter((t) => t.priority === "high").length,
+      responseRate: "98%",
+      avgResponse: "2.3h"
+    }),
+    [tickets]
   );
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-full max-w-2xl m-4">
-        <div className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-stone-800">
-              {ticket ? "Edit Ticket" : "Create New Ticket"}
-            </h2>
-            <button onClick={onClose}>
-              <XCircle
-                size={24}
-                className="text-stone-400 hover:text-stone-600"
-              />
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            <Input
-              label="Title"
-              inputType="text"
-              inputPlaceholder="Enter ticket title"
-              value={ticketData.title}
-              onChange={(e) =>
-                setTicketData((prev) => ({
-                  ...prev,
-                  title: e.target.value
-                }))
-              }
-              required
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <SelectInput
-                label="Priority"
-                value={ticketData.priority}
-                onChange={(e) =>
-                  setTicketData((prev) => ({
-                    ...prev,
-                    priority: e.target.value
-                  }))
-                }
-                options={[
-                  { value: "low", label: "Low" },
-                  { value: "medium", label: "Medium" },
-                  { value: "high", label: "High" }
-                ]}
-              />
-
-              <SelectInput
-                label="Category"
-                value={ticketData.category}
-                onChange={(e) =>
-                  setTicketData((prev) => ({
-                    ...prev,
-                    category: e.target.value
-                  }))
-                }
-                options={[
-                  { value: "technical", label: "Technical Support" },
-                  { value: "billing", label: "Billing" },
-                  { value: "account", label: "Account" },
-                  { value: "feature", label: "Feature Request" }
-                ]}
-              />
-            </div>
-
-            <Input
-              label="Contact Email"
-              inputType="email"
-              inputPlaceholder="Enter contact email"
-              value={ticketData.email}
-              onChange={(e) =>
-                setTicketData((prev) => ({
-                  ...prev,
-                  email: e.target.value
-                }))
-              }
-            />
-
-            <Input
-              label="Assigned To"
-              inputType="text"
-              inputPlaceholder="Enter agent name or email"
-              value={ticketData.assignedTo}
-              onChange={(e) =>
-                setTicketData((prev) => ({
-                  ...prev,
-                  assignedTo: e.target.value
-                }))
-              }
-            />
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-stone-700">
-                Description
-              </label>
-              <textarea
-                value={ticketData.description}
-                onChange={(e) =>
-                  setTicketData((prev) => ({
-                    ...prev,
-                    description: e.target.value
-                  }))
-                }
-                className="w-full h-32 p-3 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-                placeholder="Enter ticket description..."
-              />
-            </div>
-
-            {ticket && (
-              <SelectInput
-                label="Status"
-                value={ticketData.status}
-                onChange={(e) =>
-                  setTicketData((prev) => ({
-                    ...prev,
-                    status: e.target.value
-                  }))
-                }
-                options={[
-                  { value: "open", label: "Open" },
-                  { value: "in-progress", label: "In Progress" },
-                  { value: "resolved", label: "Resolved" },
-                  { value: "closed", label: "Closed" }
-                ]}
-              />
-            )}
-          </div>
-
-          <div className="flex gap-3">
-            <Button variant="secondary" onClick={onClose} className="flex-1">
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                if (!ticketData.title || !ticketData.description) {
-                  alert("Please fill in all required fields");
-                  return;
-                }
-                onSave(ticketData);
-              }}
-              className="flex-1"
-            >
-              {ticket ? "Update Ticket" : "Create Ticket"}
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const SupportTickets = () => {
-  // State management
-  const [tickets, setTickets] = useState([
-    {
-      id: "T001",
-      title: "Cannot access dashboard",
-      description: "Getting error when trying to access dashboard",
-      priority: "high",
-      category: "technical",
-      status: "open",
-      email: "user@example.com",
-      assignedTo: "Agent Smith",
-      createdAt: "2024-03-15T10:30:00",
-      updatedAt: "2024-03-15T10:30:00"
-    }
-  ]);
-
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [showTicketModal, setShowTicketModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterPriority, setFilterPriority] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Handle ticket save
-  const handleTicketSave = (ticketData) => {
-    if (selectedTicket) {
-      // Update existing ticket
-      setTickets((prev) =>
-        prev.map((ticket) =>
-          ticket.id === selectedTicket.id
-            ? {
-                ...ticketData,
-                id: ticket.id,
-                updatedAt: new Date().toISOString()
-              }
-            : ticket
-        )
-      );
-    } else {
-      // Create new ticket
-      setTickets((prev) => [
-        ...prev,
-        {
-          ...ticketData,
-          id: `T${String(prev.length + 1).padStart(3, "0")}`,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-      ]);
-    }
-    setShowTicketModal(false);
-    setSelectedTicket(null);
-  };
-
-  // Filter tickets
-  const filteredTickets = tickets.filter((ticket) => {
-    const matchesStatus =
-      filterStatus === "all" || ticket.status === filterStatus;
-    const matchesPriority =
-      filterPriority === "all" || ticket.priority === filterPriority;
-    const matchesSearch =
-      ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ticket.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesStatus && matchesPriority && matchesSearch;
-  });
-
-  // Calculate ticket statistics
-  const stats = {
-    total: tickets.length,
-    open: tickets.filter((t) => t.status === "open").length,
-    inProgress: tickets.filter((t) => t.status === "in-progress").length,
-    resolved: tickets.filter((t) => t.status === "resolved").length
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-stone-800">Support Tickets</h1>
-          <p className="text-stone-600 mt-1">
-            Manage and track support requests
+    <div className="min-h-screen bg-stone-50 p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Dashboard Header */}
+        <header className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-semibold text-stone-800">
+            Support Dashboard
+          </h1>
+          <p className="text-stone-500 mt-2 text-lg">
+            Manage and track support tickets
           </p>
-        </div>
-        <Button variant="primary" onClick={() => setShowTicketModal(true)}>
-          <Plus size={18} className="mr-2" />
-          New Ticket
-        </Button>
-      </div>
+        </header>
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-full bg-stone-50">
-              <TicketIcon className="text-stone-600" size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-stone-600">Total Tickets</p>
-              <p className="text-xl font-semibold text-stone-800">
-                {stats.total}
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-full bg-yellow-50">
-              <Clock className="text-yellow-600" size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-stone-600">Open Tickets</p>
-              <p className="text-xl font-semibold text-stone-800">
-                {stats.open}
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-full bg-blue-50">
-              <MessageSquare className="text-blue-600" size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-stone-600">In Progress</p>
-              <p className="text-xl font-semibold text-stone-800">
-                {stats.inProgress}
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-full bg-green-50">
-              <CheckCircle className="text-green-600" size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-stone-600">Resolved</p>
-              <p className="text-xl font-semibold text-stone-800">
-                {stats.resolved}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Search and Filters */}
-      <Card className="p-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
-              size={20}
-            />
-            <input
-              type="text"
-              placeholder="Search tickets..."
-              className="w-full pl-10 pr-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <SelectInput
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            options={[
-              { value: "all", label: "All Status" },
-              { value: "open", label: "Open" },
-              { value: "in-progress", label: "In Progress" },
-              { value: "resolved", label: "Resolved" },
-              { value: "closed", label: "Closed" }
-            ]}
-          />
-          <SelectInput
-            value={filterPriority}
-            onChange={(e) => setFilterPriority(e.target.value)}
-            options={[
-              { value: "all", label: "All Priority" },
-              { value: "high", label: "High" },
-              { value: "medium", label: "Medium" },
-              { value: "low", label: "Low" }
-            ]}
-          />
-        </div>
-      </Card>
-
-      {/* Tickets List */}
-      <div className="space-y-4">
-        {filteredTickets.map((ticket) => (
-          <Card key={ticket.id} className="p-4">
-            <div className="space-y-4">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-medium text-stone-800">
-                      {ticket.title}
-                    </h3>
-                    <StatusBadge status={ticket.status} />
-                    <PriorityBadge priority={ticket.priority} />{" "}
-                    {/* Fixed: Added missing closing tag */}
-                  </div>
-                  <p className="text-sm text-stone-600">{ticket.description}</p>
-                  <div className="flex items-center gap-4 text-sm text-stone-500">
-                    <div className="flex items-center gap-1">
-                      <User size={14} />
-                      <span>{ticket.assignedTo || "Unassigned"}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MailOpen size={14} />
-                      <span>{ticket.email}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Tag size={14} />
-                      <span>{ticket.category}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar size={14} />
-                      <span>
-                        {new Date(ticket.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <button
-                    onClick={() => {
-                      setSelectedTicket(ticket);
-                      setShowTicketModal(true);
-                    }}
-                    className="p-2 hover:bg-stone-100 rounded-lg transition-colors"
-                    title="Edit Ticket"
-                  >
-                    <Edit size={18} className="text-stone-400" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (
-                        window.confirm(
-                          "Are you sure you want to delete this ticket?"
-                        )
-                      ) {
-                        setTickets((prev) =>
-                          prev.filter((t) => t.id !== ticket.id)
-                        );
-                      }
-                    }}
-                    className="p-2 hover:bg-stone-100 rounded-lg transition-colors"
-                    title="Delete Ticket"
-                  >
-                    <Trash2 size={18} className="text-stone-400" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-stone-200">
-                <div className="flex items-center gap-4">
-                  {ticket.status !== "resolved" &&
-                    ticket.status !== "closed" && (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => {
-                          setTickets((prev) =>
-                            prev.map((t) =>
-                              t.id === ticket.id
-                                ? {
-                                    ...t,
-                                    status: "resolved",
-                                    updatedAt: new Date().toISOString()
-                                  }
-                                : t
-                            )
-                          );
-                        }}
-                      >
-                        <CheckCircle size={16} className="mr-2" />
-                        Mark as Resolved
-                      </Button>
-                    )}
-                  {ticket.status === "resolved" && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => {
-                        setTickets((prev) =>
-                          prev.map((t) =>
-                            t.id === ticket.id
-                              ? {
-                                  ...t,
-                                  status: "closed",
-                                  updatedAt: new Date().toISOString()
-                                }
-                              : t
-                          )
-                        );
-                      }}
-                    >
-                      <XCircle size={16} className="mr-2" />
-                      Close Ticket
-                    </Button>
-                  )}
-                  {ticket.status === "open" && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => {
-                        setTickets((prev) =>
-                          prev.map((t) =>
-                            t.id === ticket.id
-                              ? {
-                                  ...t,
-                                  status: "in-progress",
-                                  updatedAt: new Date().toISOString()
-                                }
-                              : t
-                          )
-                        );
-                      }}
-                    >
-                      <MessageSquare size={16} className="mr-2" />
-                      Start Working
-                    </Button>
-                  )}
-                </div>
-                <div className="text-sm text-stone-500">
-                  Last updated: {new Date(ticket.updatedAt).toLocaleString()}
-                </div>
-              </div>
-            </div>
-          </Card>
-        ))}
-
-        {filteredTickets.length === 0 && (
-          <div className="text-center py-12">
-            <TicketIcon size={48} className="mx-auto text-stone-300 mb-4" />
-            <h3 className="text-lg font-medium text-stone-600 mb-1">
-              No tickets found
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+          <Card className="p-4 md:p-6">
+            <h3 className="text-stone-500 text-sm md:text-base">
+              Open Tickets
             </h3>
-            <p className="text-stone-500">
-              {searchTerm
-                ? "Try adjusting your search or filters"
-                : "Create a new ticket to get started"}
+            <p
+              className="text-2xl md:text-3xl font-semibold mt-2"
+              style={{ color: colors.primary }}
+            >
+              {stats.openTickets}
             </p>
+          </Card>
+
+          <Card className="p-4 md:p-6">
+            <h3 className="text-stone-500 text-sm md:text-base">
+              High Priority
+            </h3>
+            <p className="text-2xl md:text-3xl font-semibold mt-2 text-red-600">
+              {stats.highPriority}
+            </p>
+          </Card>
+
+          <Card className="p-4 md:p-6">
+            <h3 className="text-stone-500 text-sm md:text-base">
+              Response Rate
+            </h3>
+            <p className="text-2xl md:text-3xl font-semibold mt-2 text-blue-600">
+              {stats.responseRate}
+            </p>
+          </Card>
+
+          <Card className="p-4 md:p-6">
+            <h3 className="text-stone-500 text-sm md:text-base">
+              Average Response
+            </h3>
+            <p className="text-2xl md:text-3xl font-semibold mt-2 text-green-600">
+              {stats.avgResponse}
+            </p>
+          </Card>
+        </div>
+
+        {/* Filters */}
+        <div className="mb-8 space-y-4 lg:space-y-0 lg:flex lg:gap-6">
+          <div className="flex-1">
+            <Input
+              label="Search Tickets"
+              inputType="text"
+              inputPlaceholder="Search by title, ID, or user..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              id="search-tickets"
+              name="search-tickets"
+            />
           </div>
-        )}
+
+          <div className="w-full lg:w-56">
+            <SelectInput
+              label="Status"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              options={[
+                { value: "", label: "All Statuses" },
+                { value: "open", label: "Open" },
+                { value: "pending", label: "Pending" },
+                { value: "closed", label: "Closed" }
+              ]}
+              id="status-filter"
+              name="status-filter"
+            />
+          </div>
+
+          <div className="w-full lg:w-56">
+            <SelectInput
+              label="Priority"
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+              options={[
+                { value: "", label: "All Priorities" },
+                { value: "high", label: "High" },
+                { value: "medium", label: "Medium" },
+                { value: "low", label: "Low" }
+              ]}
+              id="priority-filter"
+              name="priority-filter"
+            />
+          </div>
+        </div>
+
+        {/* Tickets Table */}
+        <div className="space-y-4">
+          {filteredTickets.length === 0 ? (
+            <Card className="p-8 text-center">
+              <p className="text-stone-500 text-lg">
+                No tickets found matching your criteria
+              </p>
+            </Card>
+          ) : (
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-stone-50 border-b border-stone-200">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-stone-500">
+                      Ticket ID
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-stone-500">
+                      Title
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-stone-500">
+                      User
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-stone-500">
+                      Priority
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-stone-500">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-stone-500">
+                      Created
+                    </th>
+                    <th className="px-6 py-4 text-right text-sm font-medium text-stone-500">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stone-200">
+                  {filteredTickets.map((ticket) => (
+                    <tr key={ticket.id} className="hover:bg-stone-50">
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-medium text-stone-900">
+                          {ticket.id}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-stone-900">
+                          {ticket.title}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-stone-600">
+                          {ticket.user_name}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(
+                            ticket.priority
+                          )}`}
+                        >
+                          {ticket.priority.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <SelectInput
+                          label=""
+                          value={ticket.status}
+                          onChange={(e) =>
+                            handleStatusChange(ticket.id, e.target.value)
+                          }
+                          options={[
+                            { value: "open", label: "Open" },
+                            { value: "pending", label: "Pending" },
+                            { value: "closed", label: "Closed" }
+                          ]}
+                          id={`status-${ticket.id}`}
+                          name={`status-${ticket.id}`}
+                          className="w-32"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-stone-600">
+                          {formatDate(ticket.created_at)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Button
+                          variant="primary"
+                          onClick={() => handleViewDetails(ticket.id)}
+                          className="bg-[#269c65] hover:bg-[#1a724a] text-sm px-4"
+                        >
+                          View
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Ticket Modal */}
-      {showTicketModal && (
-        <TicketModal
-          ticket={selectedTicket}
-          onSave={handleTicketSave}
-          onClose={() => {
-            setShowTicketModal(false);
-            setSelectedTicket(null);
-          }}
-        />
-      )}
-
-      {/* Toast Notifications (you can add these for success/error messages) */}
-      {/* Example:
-<Toast
-  message="Ticket updated successfully!"
-  type="success"
-  onClose={() => setToast(null)}
-/>
-*/}
     </div>
   );
 };
 
-export default SupportTickets;
+export default AdminDashboard;
