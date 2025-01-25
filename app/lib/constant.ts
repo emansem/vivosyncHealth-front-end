@@ -1,7 +1,6 @@
 import { CreditCard, BadgeJapaneseYen, Wallet } from "lucide-react";
 import { PaymentMethod } from "../patient/checkout/[planId]/page";
-import { FormFields, OnboardingFormFields, SubscriptionData, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
-import { InputsProps } from "../doctor/settings/DailogForm";
+import { FormFields, InputsProps, OnboardingFormFields, SubscriptionData, SubscriptionPlanType, WithdrawalAccountInputs } from "./types";
 
 export const SOCKET_SERVER = 'http://localhost:5740/';
 
@@ -581,3 +580,102 @@ export const SECTION_INFO = {
     support: "Contact information for user assistance",
     status: "Control your website's operational status"
 };
+
+
+export const DoctorBasicInformation = [
+    {
+        label: 'Full Name',
+        name: 'name',
+        type: 'text',
+        placeholder: 'Enter your full name'
+    },
+    {
+        label: 'Email Address',
+        name: 'email',
+        type: 'email',
+        placeholder: 'Enter your email address'
+    },
+    {
+        label: 'Phone Number',
+        name: 'phone_number',
+        type: 'text',
+        placeholder: 'Enter your phone number'
+    },
+
+    {
+        label: 'Medical License',
+        name: 'medical_license',
+        type: 'text',
+        placeholder: 'Enter your medical license number'
+    },
+    {
+        label: 'Years of Experience',
+        name: 'years_of_experience',
+        type: 'text',
+        placeholder: 'Enter your years of experience'
+    },
+
+    {
+        label: 'Speciality',
+        name: 'speciality',
+        type: 'text',
+        placeholder: 'Enter your speciality'
+    }
+]
+
+export const DoctorContactInformation = [
+    {
+        label: 'Hospital Name',
+        name: 'hospital_name',
+        type: 'text',
+        placeholder: 'Enter your hospital name'
+    },
+    {
+        label: "Email",
+        name: 'email',
+        type: 'email',
+        placeholder: 'Enter your email address'
+    },
+    {
+        label: 'Phone Number',
+        name: 'phone_number',
+        type: 'text',
+        placeholder: 'Enter your phone number'
+    },
+    {
+        label: 'Hospital Address',
+        name: 'hospital_address',
+        type: 'text',
+        placeholder: 'Enter your hospital address'
+    },
+    {
+        label: 'Country',
+        name: 'country',
+        type: 'text',
+        placeholder: 'Enter your country'
+    },
+    {
+        label: 'State',
+        name: 'state',
+        type: 'text',
+        placeholder: 'Enter your state'
+    },
+    {
+        label: 'City',
+        name: 'city',
+        type: 'text',
+        placeholder: 'Enter your city'
+    },
+    {
+        label: 'Zip Code',
+        name: 'zip_code',
+        type: 'text',
+        placeholder: 'Enter your zip code'
+    },
+    {
+        label: 'Working Days',
+        name: 'working_days',
+        type: 'text',
+        placeholder: 'Enter your working days'
+    }
+]

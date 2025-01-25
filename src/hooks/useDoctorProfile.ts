@@ -28,6 +28,7 @@ export interface DoctorProfileTypes {
     working_days: string;
 }
 
+
 // API response type
 interface DoctorApiResponse {
     data: {
@@ -38,7 +39,7 @@ interface DoctorApiResponse {
 // Hook for managing doctor profile updates
 export const useUpdateDoctorProfile = () => {
     // Fetch current doctor data
-    const { data, error } = useGetData<DoctorApiResponse>(
+    const { data, error, isLoading } = useGetData<DoctorApiResponse>(
         DOCTOR_API_END_POINTS.PROFILE.getDetails,
         GET_DOCTOR_DETAILS
     );
@@ -78,13 +79,18 @@ export const useUpdateDoctorProfile = () => {
     const submitDoctorUpdateForm = () => {
         const doctorUpdatedData = { ...profileData, profile_photo: image };
         if (doctorUpdatedData) {
-            mutate(doctorUpdatedData as DoctorProfileTypes);
+            mutate(doctorUpdatedData as DoctorProfileTypes, {
+                onSuccess: () => {
+                    toast.success("Profile updated successfully");
+                }
+            });
         }
     };
 
     return {
         profileData,
         data,
+        isLoading,
         handlePhotoChange,
         previewImage,
         isPending,

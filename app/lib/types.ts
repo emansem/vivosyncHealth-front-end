@@ -11,6 +11,18 @@ export interface TokenType {
     subject?: string,
 }
 
+export type InputsProps = {
+
+    label: string;
+
+    type: string;
+
+    placeHolder: string;
+
+    name: string;
+
+};
+
 // Props for displaying referral link component
 export interface ReferralLinkProps {
     referralLink: string;
